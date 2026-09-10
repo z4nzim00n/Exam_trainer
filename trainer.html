@@ -1,0 +1,1913 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark">
+    <title>C Practice — генератор заданий</title>
+
+    <style>
+        :root {
+            --bg: #0c1019;
+            --panel: #141b29;
+            --panel-hover: #1b2536;
+            --border: #293348;
+            --text: #eef2ff;
+            --muted: #9eacc6;
+            --accent: #a998ff;
+            --green: #70ddb0;
+            --yellow: #ffd17b;
+            --red: #ff98aa;
+            --radius: 20px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: var(--text);
+            background:
+                radial-gradient(ellipse at 10% 0%, #28204366, transparent 45%),
+                radial-gradient(ellipse at 100% 15%, #123f4666, transparent 40%),
+                var(--bg);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont,
+                         "Segoe UI", sans-serif;
+            line-height: 1.55;
+        }
+
+        button, input {
+            font: inherit;
+        }
+
+        button {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 11px 16px;
+            background: var(--panel);
+            color: var(--text);
+            cursor: pointer;
+            transition: background .15s, transform .15s;
+        }
+
+        button:hover:not(:disabled) {
+            background: var(--panel-hover);
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+        }
+
+        button:focus-visible,
+        input:focus-visible,
+        summary:focus-visible,
+        a:focus-visible {
+            outline: 3px solid var(--accent);
+            outline-offset: 4px;
+        }
+
+        button.primary {
+            color: #171224;
+            background: var(--accent);
+            border-color: var(--accent);
+            font-weight: 700;
+        }
+
+        button.primary:hover:not(:disabled) {
+            background: #beb0ff;
+        }
+
+        a {
+            color: var(--accent);
+        }
+
+        code, pre, .timer, .path {
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+        }
+
+        .container {
+            width: min(1700px, 100%);
+            margin: 0 auto;
+            padding: 36px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        .eyebrow {
+            margin-bottom: 8px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: .16em;
+            font-size: 12px;
+            font-weight: 750;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(30px, 4vw, 48px);
+            letter-spacing: -.05em;
+            line-height: 1.15;
+        }
+
+        .subtitle {
+            margin: 12px 0 0;
+            max-width: 720px;
+            color: var(--muted);
+        }
+
+        .clock {
+            min-width: 155px;
+            padding: 16px 22px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: #141b29aa;
+            text-align: center;
+        }
+
+        .clock-label {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .timer {
+            margin-top: 3px;
+            font-size: 27px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+            padding: 18px;
+            background: #141b29d9;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+
+        .checkbox {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            margin-left: auto;
+            color: var(--muted);
+            cursor: pointer;
+        }
+
+        .checkbox input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+        }
+
+        .status {
+            margin: 16px 0 8px;
+            padding: 13px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--muted);
+            background: #101723;
+            overflow-wrap: anywhere;
+        }
+
+        .status.success {
+            color: var(--green);
+            border-color: #315849;
+        }
+
+        .status.error {
+            color: var(--red);
+            border-color: #754454;
+        }
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 20px;
+            margin-bottom: 22px;
+            padding: 0 3px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            align-items: start;
+        }
+
+        .card {
+            min-width: 0;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--panel);
+            box-shadow: 0 12px 40px #00000020;
+        }
+
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 12px;
+            font-weight: 750;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+        }
+
+        .badge::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .easy .badge {
+            color: var(--green);
+        }
+
+        .medium .badge {
+            color: var(--yellow);
+        }
+
+        .hard .badge {
+            color: var(--red);
+        }
+
+        .extra {
+            padding: 3px 8px;
+            border: 1px solid #53466e;
+            border-radius: 7px;
+            color: #c6b8f5;
+            font-size: 11px;
+        }
+
+        .extra[hidden] {
+            display: none;
+        }
+
+        .task-title {
+            margin: 15px 0 9px;
+            font-size: 20px;
+            line-height: 1.3;
+            letter-spacing: -.025em;
+        }
+
+        .path {
+            color: var(--muted);
+            font-size: 11px;
+            overflow-wrap: anywhere;
+        }
+
+        .card-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-top: 16px;
+        }
+
+        .card-actions button {
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+
+        .document {
+            height: min(65vh, 850px);
+            min-height: 360px;
+            overflow: auto;
+            padding: 20px;
+            scrollbar-color: #4c5972 transparent;
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        .document.empty {
+            display: grid;
+            place-items: center;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .empty-inner {
+            max-width: 280px;
+        }
+
+        .empty-icon {
+            margin-bottom: 12px;
+            font-size: 35px;
+            color: var(--accent);
+        }
+
+        .document h1,
+        .document h2,
+        .document h3,
+        .document h4,
+        .document h5,
+        .document h6 {
+            margin: 22px 0 10px;
+            font-size: 18px;
+            line-height: 1.35;
+            letter-spacing: -.02em;
+        }
+
+        .document h1:first-child,
+        .document h2:first-child {
+            margin-top: 0;
+        }
+
+        .document h3,
+        .document h4,
+        .document h5,
+        .document h6 {
+            font-size: 15px;
+        }
+
+        .document p {
+            margin: 10px 0;
+            white-space: pre-line;
+        }
+
+        .document ul,
+        .document ol {
+            padding-left: 23px;
+        }
+
+        .document li {
+            margin: 6px 0;
+        }
+
+        .document code {
+            padding: 2px 5px;
+            border-radius: 5px;
+            background: #080d1680;
+            color: #d4c7ff;
+            font-size: .92em;
+        }
+
+        .document pre,
+        .commands {
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: auto;
+            background: #0a101b;
+            line-height: 1.6;
+            white-space: pre;
+        }
+
+        .document pre code {
+            padding: 0;
+            background: transparent;
+            color: #dfe8ff;
+        }
+
+        .document blockquote {
+            margin: 14px 0;
+            padding: 1px 14px;
+            border-left: 3px solid var(--accent);
+            color: #bbc5d9;
+            background: #a998ff09;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            margin: 14px 0;
+        }
+
+        .document table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .document th,
+        .document td {
+            border: 1px solid var(--border);
+            padding: 9px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .document th {
+            background: #222c3e;
+        }
+
+        .document hr {
+            border: 0;
+            border-top: 1px solid var(--border);
+            margin: 20px 0;
+        }
+
+        .help {
+            margin-top: 24px;
+            padding: 18px 20px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--muted);
+            background: #141b2980;
+            font-size: 14px;
+        }
+
+        .help summary {
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        .help li {
+            margin: 8px 0;
+        }
+
+        .footer {
+            margin: 24px 0 0;
+            color: var(--muted);
+            text-align: center;
+            font-size: 12px;
+        }
+
+        @media (max-width: 1050px) {
+            .container {
+                padding: 22px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .document {
+                height: auto;
+                max-height: 65vh;
+                min-height: 180px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 16px;
+            }
+
+            .header {
+                flex-direction: column;
+            }
+
+            .clock {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .timer {
+                margin: 0;
+            }
+
+            .checkbox {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .toolbar > button {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container">
+        <header class="header">
+            <div>
+                <div class="eyebrow">C Practice / local trainer</div>
+                <h1>Три задачи. Чистый main.c.</h1>
+                <p class="subtitle">
+                    Получи случайный набор, открой редактор и попробуй сам.
+                    Условия здесь, рабочие файлы — в Your_tasks.
+                </p>
+            </div>
+
+            <div class="clock">
+                <div class="clock-label">Время текущего набора</div>
+                <div class="timer" id="timer">00:00:00</div>
+            </div>
+        </header>
+
+        <section class="toolbar" aria-label="Управление тренировкой">
+            <button id="chooseButton" type="button">Выбрать папку проекта</button>
+            <button id="generateButton" class="primary" type="button" disabled>
+                Новый набор
+            </button>
+            <button id="pauseButton" type="button" disabled>Пауза</button>
+
+            <label class="checkbox">
+                <input id="extraCheckbox" type="checkbox" checked>
+                Включать дополнительные задания
+            </label>
+        </section>
+
+        <div id="status" class="status" role="status" aria-live="polite">
+            Выбери корень проекта — папку, внутри которой находится tasks.
+        </div>
+
+        <div class="meta">
+            <span id="catalogInfo">Каталог не подключён</span>
+            <span id="attemptInfo">Набор ещё не создан</span>
+        </div>
+
+        <section class="grid" id="cards" aria-label="Задания"></section>
+
+        <details class="help">
+            <summary>Как пользоваться и что сохраняется</summary>
+            <ol>
+                <li>
+                    Нажми «Выбрать папку проекта» и разреши доступ.
+                    Нужен корень репозитория, не сама папка tasks.
+                </li>
+                <li>
+                    Нажми «Новый набор». Страница выберет три задания и
+                    создаст отдельную попытку в Your_tasks.
+                </li>
+                <li>
+                    В каждой рабочей папке будут копия README.md и пустой
+                    main.c. Эталон, теория и тесты не копируются.
+                </li>
+                <li>
+                    Открой созданный main.c в редакторе.
+                    Компиляция и проверка выполняются через терминал.
+                </li>
+                <li>
+                    «Заменить» создаёт новую рабочую папку для выбранной
+                    сложности. Предыдущая работа остаётся нетронутой.
+                </li>
+            </ol>
+
+            <p>
+                Это тренировочный формат из трёх задач, а не точная копия
+                экзамена. Сложность назначена для этого тренажёра.
+                Переключатель extra влияет на последующие выборы:
+                уже открытые задания остаются на месте.
+            </p>
+
+            <p>
+                Всё работает локально: страница не отправляет файлы в сеть.
+                После перезагрузки страницы нужно снова выбрать папку.
+                Файлы попыток сохранятся, но таймер и история выпадений
+                в интерфейсе начнутся заново.
+            </p>
+
+            <p>
+                Нужен браузер с поддержкой File System Access API —
+                обычно актуальный Chrome или Edge на компьютере.
+                Встроенная проверка C-кода не выполняется.
+            </p>
+
+            <pre class="commands"># Из рабочей папки задания:
+gcc -Wall -Wextra -Werror -std=c11 main.c -o main
+./main
+
+# Для задач с математическими функциями:
+gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm</pre>
+        </details>
+
+        <p class="footer">
+            Не запоминай билет. Разбирайся, почему работает решение.
+        </p>
+    </main>
+
+    <script>
+        "use strict";
+
+        /*
+         * Каталог заданий.
+         *
+         * level:
+         *   easy   — лёгкое;
+         *   medium — среднее;
+         *   hard   — сложное.
+         *
+         * path указан относительно tasks/.
+         * Для добавления задания достаточно добавить запись в этот массив.
+         */
+        const TASKS = [
+            {
+                path: "01_basics/01_fix_int_keyword",
+                title: "Исправление INT",
+                level: "easy"
+            },
+            {
+                path: "01_basics/02_fix_declaration_separator",
+                title: "Разделитель в объявлении",
+                level: "easy"
+            },
+            {
+                path: "01_basics/03_fix_declaration_syntax",
+                title: "Ошибка в объявлении переменных",
+                level: "easy"
+            },
+            {
+                path: "01_basics/04_fix_multiple_declaration",
+                title: "Повторный тип после запятой",
+                level: "easy"
+            },
+            {
+                path: "01_basics/05_fix_missing_type",
+                title: "Отсутствующий тип переменной",
+                level: "easy"
+            },
+            {
+                path: "01_basics/06_fix_double_initialization",
+                title: "Инициализация double",
+                level: "easy"
+            },
+
+            {
+                path: "02_input_output/01_zero_padding",
+                title: "Ведущие нули",
+                level: "easy"
+            },
+            {
+                path: "02_input_output/02_fix_output_width",
+                title: "Исправление ширины вывода",
+                level: "easy"
+            },
+            {
+                path: "02_input_output/03_groot",
+                title: "Я есть Грут!",
+                level: "easy"
+            },
+            {
+                path: "02_input_output/04_windows_path",
+                title: "Путь к Блокноту",
+                level: "easy"
+            },
+            {
+                path: "02_input_output/05_print_205",
+                title: "Вывод числа 205",
+                level: "easy"
+            },
+
+            {
+                path: "03_expressions/01_sphere_mass",
+                title: "Масса шара",
+                level: "medium"
+            },
+            {
+                path: "03_expressions/02_radians_to_degrees",
+                title: "Перевод радиан в градусы",
+                level: "medium"
+            },
+            {
+                path: "03_expressions/03_swap_edge_digits",
+                title: "Перестановка крайних цифр",
+                level: "medium"
+            },
+            {
+                path: "03_expressions/04_strictly_between",
+                title: "Число строго между двумя числами",
+                level: "medium"
+            },
+            {
+                path: "03_expressions/05_boolean_expression",
+                title: "Логическое выражение",
+                level: "medium"
+            },
+
+            {
+                path: "04_loops/01_sequence_max",
+                title: "Поиск наибольшего",
+                level: "medium"
+            },
+            {
+                path: "04_loops/02_max_digit",
+                title: "Наибольшая цифра",
+                level: "medium"
+            },
+            {
+                path: "04_loops/03_odd_digits_product",
+                title: "Произведение нечётных цифр",
+                level: "medium"
+            },
+            {
+                path: "04_loops/04_reverse_number_extra",
+                title: "Разворот числа",
+                level: "medium"
+            },
+            {
+                path: "04_loops/05_unpaired_number_extra",
+                title: "Число без пары",
+                level: "medium"
+            },
+
+            {
+                path: "05_dynamic_arrays/01_dot_product",
+                title: "Скалярное произведение",
+                level: "hard"
+            },
+            {
+                path: "05_dynamic_arrays/02_alternate_ends",
+                title: "Чередование первого и последнего",
+                level: "hard"
+            },
+            {
+                path: "05_dynamic_arrays/03_remove_duplicates",
+                title: "Удаление повторов",
+                level: "hard"
+            },
+            {
+                path: "05_dynamic_arrays/04_reverse_sequence",
+                title: "Реверс последовательности",
+                level: "hard"
+            },
+
+            {
+                path: "06_strings/01_string_length_extra",
+                title: "Длина строки",
+                level: "medium"
+            },
+            {
+                path: "06_strings/02_count_letters_digits_extra",
+                title: "Подсчёт букв и цифр",
+                level: "medium"
+            },
+            {
+                path: "06_strings/03_to_lower_extra",
+                title: "Перевод в нижний регистр",
+                level: "medium"
+            },
+            {
+                path: "06_strings/04_to_upper_extra",
+                title: "Перевод в верхний регистр",
+                level: "medium"
+            },
+            {
+                path: "06_strings/05_remove_digits_extra",
+                title: "Удаление цифр",
+                level: "medium"
+            },
+            {
+                path: "06_strings/06_count_words_extra",
+                title: "Подсчёт слов",
+                level: "medium"
+            },
+            {
+                path: "06_strings/07_trim_spaces_extra",
+                title: "Удаление лишних пробелов",
+                level: "medium"
+            },
+            {
+                path: "06_strings/08_reverse_string_extra",
+                title: "Разворот строки",
+                level: "medium"
+            },
+            {
+                path: "06_strings/09_palindrome_extra",
+                title: "Палиндром",
+                level: "medium"
+            },
+            {
+                path: "06_strings/10_compare_strings_extra",
+                title: "Сравнение строк",
+                level: "medium"
+            },
+            {
+                path: "06_strings/11_caesar_cipher_extra",
+                title: "Шифр Цезаря",
+                level: "medium"
+            },
+
+            {
+                path: "07_matrices/01_matrix_addition_extra",
+                title: "Сложение квадратных матриц",
+                level: "medium"
+            },
+            {
+                path: "07_matrices/02_matrix_multiplication",
+                title: "Умножение квадратных матриц",
+                level: "hard"
+            },
+            {
+                path: "07_matrices/03_swap_rows",
+                title: "Перестановка строк",
+                level: "hard"
+            },
+            {
+                path: "07_matrices/04_rotate_clockwise",
+                title: "Поворот матрицы",
+                level: "hard"
+            },
+            {
+                path: "07_matrices/05_spiral_clockwise",
+                title: "Спираль по часовой стрелке",
+                level: "hard"
+            },
+            {
+                path: "07_matrices/06_spiral_squares",
+                title: "Квадраты чисел по спирали",
+                level: "hard"
+            }
+        ];
+
+        const LEVELS = [
+            { id: "easy", label: "Лёгкое" },
+            { id: "medium", label: "Среднее" },
+            { id: "hard", label: "Сложное" }
+        ];
+
+        /*
+         * Поддержка прежних опечаток в названиях.
+         * Исправленные названия предпочтительнее, но старые тоже найдутся.
+         */
+        const PATH_ALIASES = {
+            "03_expressions/05_boolean_expression":
+                "03_expressions/05_boolean_expressio",
+            "05_dynamic_arrays/03_remove_duplicates":
+                "05_dynamic_arrays/03_remove_duplicate",
+            "07_matrices/06_spiral_squares":
+                "07_matrices/06_spiral_square"
+        };
+
+        const ui = {
+            choose: document.getElementById("chooseButton"),
+            generate: document.getElementById("generateButton"),
+            pause: document.getElementById("pauseButton"),
+            extra: document.getElementById("extraCheckbox"),
+            status: document.getElementById("status"),
+            catalog: document.getElementById("catalogInfo"),
+            attempt: document.getElementById("attemptInfo"),
+            timer: document.getElementById("timer"),
+            cards: document.getElementById("cards")
+        };
+
+        const state = {
+            root: null,
+            available: [],
+            missing: [],
+            busy: false,
+            attempt: null,
+            current: { easy: null, medium: null, hard: null },
+            seen: {
+                easy: new Set(),
+                medium: new Set(),
+                hard: new Set()
+            },
+            timer: {
+                running: false,
+                startedAt: 0,
+                elapsed: 0
+            }
+        };
+
+        const cardUI = {};
+
+        function element(tag, className, text) {
+            const node = document.createElement(tag);
+
+            if (className) {
+                node.className = className;
+            }
+            if (text !== undefined) {
+                node.textContent = text;
+            }
+
+            return node;
+        }
+
+        function setStatus(message, kind = "") {
+            ui.status.className = "status" + (kind ? " " + kind : "");
+            ui.status.textContent = message;
+        }
+
+        function extraEnabled() {
+            return ui.extra.checked;
+        }
+
+        function poolFor(level) {
+            return state.available.filter(task =>
+                task.level === level && (extraEnabled() || !task.extra)
+            );
+        }
+
+        function refreshControls() {
+            ui.choose.disabled = state.busy;
+
+            ui.generate.disabled =
+                state.busy ||
+                !state.root ||
+                LEVELS.some(level => poolFor(level.id).length === 0);
+
+            ui.extra.disabled = state.busy;
+            ui.pause.disabled = !state.attempt;
+            ui.pause.textContent = state.timer.running ? "Пауза" : "Продолжить";
+
+            for (const level of LEVELS) {
+                const card = cardUI[level.id];
+                const current = state.current[level.id];
+
+                card.skip.disabled = state.busy || !current;
+                card.open.disabled = !current;
+            }
+
+            if (state.root) {
+                const counts = LEVELS.map(level =>
+                    `${level.label.toLowerCase()}: ${poolFor(level.id).length}`
+                ).join(" · ");
+
+                ui.catalog.textContent =
+                    `Найдено ${state.available.length}/${TASKS.length} · ${counts}`;
+            } else {
+                ui.catalog.textContent = "Каталог не подключён";
+            }
+        }
+
+        async function runOperation(operation) {
+            if (state.busy) {
+                return;
+            }
+
+            state.busy = true;
+            refreshControls();
+
+            try {
+                await operation();
+            } catch (error) {
+                console.error(error);
+
+                if (error.name === "AbortError") {
+                    setStatus("Действие отменено.");
+                } else {
+                    setStatus(
+                        `${error.message || "Не удалось выполнить действие."} ` +
+                        "Если запись уже началась, могла остаться неполная новая " +
+                        "папка. Старые попытки не изменялись.",
+                        "error"
+                    );
+                }
+            } finally {
+                state.busy = false;
+                refreshControls();
+            }
+        }
+
+        /* ---------------- Таймер ---------------- */
+
+        function elapsedMilliseconds() {
+            return state.timer.elapsed +
+                (state.timer.running
+                    ? Date.now() - state.timer.startedAt
+                    : 0);
+        }
+
+        function updateTimer() {
+            const total = Math.floor(elapsedMilliseconds() / 1000);
+            const hours = Math.floor(total / 3600);
+            const minutes = Math.floor(total / 60) % 60;
+            const seconds = total % 60;
+
+            ui.timer.textContent = [hours, minutes, seconds]
+                .map(value => String(value).padStart(2, "0"))
+                .join(":");
+        }
+
+        function resetTimer(start = false) {
+            state.timer.elapsed = 0;
+            state.timer.startedAt = Date.now();
+            state.timer.running = start;
+            updateTimer();
+        }
+
+        function toggleTimer() {
+            if (!state.attempt) {
+                return;
+            }
+
+            if (state.timer.running) {
+                state.timer.elapsed += Date.now() - state.timer.startedAt;
+                state.timer.running = false;
+            } else {
+                state.timer.startedAt = Date.now();
+                state.timer.running = true;
+            }
+
+            updateTimer();
+            refreshControls();
+        }
+
+        setInterval(updateTimer, 500);
+
+        /* ---------------- Доступ к файлам ---------------- */
+
+        async function getNestedDirectory(parent, path) {
+            let directory = parent;
+
+            for (const part of path.split("/").filter(Boolean)) {
+                directory = await directory.getDirectoryHandle(part);
+            }
+
+            return directory;
+        }
+
+        async function resolveTaskDirectory(tasksDirectory, task) {
+            const candidates = [task.path];
+
+            if (task.path.endsWith("_extra")) {
+                candidates.push(task.path.replace(/_extra$/, "__extra"));
+            }
+
+            if (PATH_ALIASES[task.path]) {
+                candidates.push(PATH_ALIASES[task.path]);
+            }
+
+            for (const path of candidates) {
+                try {
+                    const directory = await getNestedDirectory(
+                        tasksDirectory,
+                        path
+                    );
+
+                    const readme = await directory.getFileHandle("README.md");
+
+                    return {
+                        ...task,
+                        actualPath: path,
+                        directory,
+                        readme,
+                        extra: task.path.endsWith("_extra")
+                    };
+                } catch (error) {
+                    if (
+                        error.name !== "NotFoundError" &&
+                        error.name !== "TypeMismatchError"
+                    ) {
+                        throw error;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        async function ensureWritePermission() {
+            if (!state.root) {
+                throw new Error("Сначала выбери папку проекта.");
+            }
+
+            const options = { mode: "readwrite" };
+
+            if (await state.root.queryPermission(options) === "granted") {
+                return;
+            }
+
+            if (await state.root.requestPermission(options) !== "granted") {
+                throw new Error(
+                    "Для сохранения заданий нужно разрешение на запись."
+                );
+            }
+        }
+
+        async function writeFile(directory, filename, content) {
+            const handle = await directory.getFileHandle(filename, {
+                create: true
+            });
+
+            const writable = await handle.createWritable();
+
+            try {
+                await writable.write(content);
+                await writable.close();
+            } catch (error) {
+                try {
+                    await writable.abort();
+                } catch (_) {
+                    /* Поток мог уже закрыться. */
+                }
+                throw error;
+            }
+        }
+
+        function uniqueSuffix() {
+            const values = new Uint32Array(2);
+            crypto.getRandomValues(values);
+
+            return Array.from(values, value =>
+                value.toString(16).padStart(8, "0")
+            ).join("");
+        }
+
+        /*
+         * Новое случайное имя + проверка существования.
+         * Старые папки не используются как место записи новой попытки.
+         */
+        async function createUniqueDirectory(parent, prefix) {
+            for (let attempt = 0; attempt < 10; attempt++) {
+                const name = `${prefix}_${uniqueSuffix()}`;
+
+                try {
+                    await parent.getDirectoryHandle(name);
+                    continue;
+                } catch (error) {
+                    if (error.name === "TypeMismatchError") {
+                        continue;
+                    }
+                    if (error.name !== "NotFoundError") {
+                        throw error;
+                    }
+                }
+
+                const directory = await parent.getDirectoryHandle(name, {
+                    create: true
+                });
+
+                return { name, directory };
+            }
+
+            throw new Error("Не удалось выбрать имя для новой папки.");
+        }
+
+        function timestamp() {
+            const date = new Date();
+            const pad = value => String(value).padStart(2, "0");
+
+            return [
+                date.getFullYear(),
+                pad(date.getMonth() + 1),
+                pad(date.getDate())
+            ].join("-") + "_" + [
+                pad(date.getHours()),
+                pad(date.getMinutes()),
+                pad(date.getSeconds())
+            ].join("-");
+        }
+
+        async function readTask(task) {
+            const file = await task.readme.getFile();
+            const markdown = await file.text();
+
+            if (!markdown.trim()) {
+                throw new Error(
+                    `README.md пустой: tasks/${task.actualPath}`
+                );
+            }
+
+            return markdown;
+        }
+
+        async function saveSelection(attempt, level, task, markdown) {
+            const levelDirectory = await attempt.directory.getDirectoryHandle(
+                level,
+                { create: true }
+            );
+
+            const leaf = task.path.split("/").pop();
+            const selection = await createUniqueDirectory(
+                levelDirectory,
+                leaf
+            );
+
+            await writeFile(selection.directory, "README.md", markdown);
+
+            /*
+             * Не копируем исходный main.c: там может находиться старое решение.
+             */
+            await writeFile(selection.directory, "main.c", "");
+
+            const relativePath =
+                `Your_tasks/${attempt.name}/${level}/${selection.name}`;
+
+            return {
+                task,
+                markdown,
+                directory: selection.directory,
+                relativePath
+            };
+        }
+
+        async function chooseProject() {
+            if (!window.isSecureContext ||
+                typeof window.showDirectoryPicker !== "function") {
+                throw new Error(
+                    "Этот браузер или способ открытия страницы не поддерживает " +
+                    "доступ к папкам. Используй актуальный Chrome/Edge. " +
+                    "Если локальный HTML заблокирован, открой его через " +
+                    "локальный сервер на localhost."
+                );
+            }
+
+            const root = await window.showDirectoryPicker({
+                id: "c-practice-project",
+                mode: "readwrite"
+            });
+
+            let tasksDirectory;
+
+            try {
+                tasksDirectory = await root.getDirectoryHandle("tasks");
+            } catch (error) {
+                if (error.name === "NotFoundError") {
+                    throw new Error(
+                        "В выбранной папке нет tasks. Выбери корень проекта."
+                    );
+                }
+                throw error;
+            }
+
+            setStatus("Читаю каталог заданий…");
+
+            const available = [];
+            const missing = [];
+
+            for (const task of TASKS) {
+                const resolved = await resolveTaskDirectory(
+                    tasksDirectory,
+                    task
+                );
+
+                if (resolved) {
+                    available.push(resolved);
+                } else {
+                    missing.push(task.path);
+                }
+            }
+
+            if (!available.length) {
+                throw new Error(
+                    "Не найдено ни одного задания с README.md. " +
+                    "Проверь названия папок."
+                );
+            }
+
+            state.root = root;
+            state.available = available;
+            state.missing = missing;
+            state.attempt = null;
+
+            for (const level of LEVELS) {
+                state.current[level.id] = null;
+                state.seen[level.id].clear();
+                renderCard(level.id);
+            }
+
+            resetTimer();
+            ui.attempt.textContent = "Набор ещё не создан";
+
+            if (missing.length) {
+                setStatus(
+                    `Подключён проект «${root.name}». ` +
+                    `Не найдены ${missing.length} задания: ` +
+                    missing.join(", ")
+                );
+            } else {
+                setStatus(
+                    `Проект «${root.name}» подключён. ` +
+                    "Все 42 задания найдены. Можно создавать набор.",
+                    "success"
+                );
+            }
+        }
+
+        /* ---------------- Выбор заданий ---------------- */
+
+        function randomItem(items) {
+            return items[Math.floor(Math.random() * items.length)];
+        }
+
+        function chooseCandidate(level) {
+            const current = state.current[level]?.task.path;
+            const pool = poolFor(level);
+
+            const unseen = pool.filter(task =>
+                task.path !== current && !state.seen[level].has(task.path)
+            );
+
+            if (unseen.length) {
+                return {
+                    task: randomItem(unseen),
+                    restart: false
+                };
+            }
+
+            const alternatives = pool.filter(task => task.path !== current);
+
+            if (!alternatives.length) {
+                if (!current && pool.length) {
+                    return { task: randomItem(pool), restart: false };
+                }
+
+                throw new Error(
+                    "Для этой сложности нет другого доступного задания. " +
+                    "Попробуй включить дополнительные упражнения."
+                );
+            }
+
+            const label = LEVELS.find(item => item.id === level).label;
+
+            if (!confirm(
+                `Категория «${label}»: все доступные задания уже выпадали. ` +
+                "Начать новый круг без повторения текущего задания?"
+            )) {
+                return null;
+            }
+
+            return {
+                task: randomItem(alternatives),
+                restart: true
+            };
+        }
+
+        function commitCandidate(level, candidate, selection) {
+            if (candidate.restart) {
+                state.seen[level].clear();
+            }
+
+            state.seen[level].add(candidate.task.path);
+            state.current[level] = selection;
+        }
+
+        async function generateSet() {
+            if (!state.root) {
+                throw new Error("Сначала выбери папку проекта.");
+            }
+
+            await ensureWritePermission();
+
+            const planned = [];
+
+            for (const level of LEVELS) {
+                const candidate = chooseCandidate(level.id);
+
+                if (!candidate) {
+                    setStatus("Создание нового набора отменено.");
+                    return;
+                }
+
+                planned.push({
+                    level: level.id,
+                    candidate,
+                    markdown: null
+                });
+            }
+
+            setStatus("Читаю условия и создаю рабочие файлы…");
+
+            /*
+             * Сначала читаем все условия. Если одно отсутствует или пустое,
+             * папка новой попытки ещё не создаётся.
+             */
+            for (const item of planned) {
+                item.markdown = await readTask(item.candidate.task);
+            }
+
+            const output = await state.root.getDirectoryHandle("Your_tasks", {
+                create: true
+            });
+
+            const attempt = await createUniqueDirectory(
+                output,
+                `attempt_${timestamp()}`
+            );
+
+            const saved = [];
+
+            for (const item of planned) {
+                const selection = await saveSelection(
+                    attempt,
+                    item.level,
+                    item.candidate.task,
+                    item.markdown
+                );
+
+                saved.push({ ...item, selection });
+            }
+
+            /*
+             * Интерфейс переключается на новый набор только после
+             * успешного сохранения всех трёх заданий.
+             */
+            state.attempt = attempt;
+
+            for (const item of saved) {
+                commitCandidate(
+                    item.level,
+                    item.candidate,
+                    item.selection
+                );
+                renderCard(item.level);
+            }
+
+            resetTimer(true);
+            ui.attempt.textContent = `Попытка: ${attempt.name}`;
+
+            setStatus(
+                `Три задания сохранены в Your_tasks/${attempt.name}. ` +
+                "Открывай main.c в редакторе. Таймер запущен.",
+                "success"
+            );
+        }
+
+        async function skipTask(level) {
+            if (!state.attempt || !state.current[level]) {
+                return;
+            }
+
+            await ensureWritePermission();
+
+            const candidate = chooseCandidate(level);
+
+            if (!candidate) {
+                setStatus("Замена отменена.");
+                return;
+            }
+
+            setStatus("Подбираю замену и сохраняю новые файлы…");
+
+            const markdown = await readTask(candidate.task);
+
+            const selection = await saveSelection(
+                state.attempt,
+                level,
+                candidate.task,
+                markdown
+            );
+
+            commitCandidate(level, candidate, selection);
+            renderCard(level);
+
+            setStatus(
+                `Новое задание сохранено: ${selection.relativePath}. ` +
+                "Предыдущие файлы остались на месте. Таймер не сбрасывался.",
+                "success"
+            );
+        }
+
+        /* ---------------- Безопасное отображение Markdown ---------------- */
+
+        /*
+         * Небольшой встроенный рендерер:
+         * заголовки, абзацы, списки, таблицы, цитаты, код и выделение.
+         *
+         * Сырой HTML не исполняется. Содержимое README добавляется
+         * через textContent/text nodes, а не innerHTML.
+         *
+         * Это базовая поддержка Markdown, не полная реализация GitHub Markdown.
+         */
+        function appendInline(parent, text) {
+            const pattern = /(`[^`\n]+`|\*\*[^*\n]+\*\*)/g;
+            let position = 0;
+            let match;
+
+            while ((match = pattern.exec(text)) !== null) {
+                parent.appendChild(
+                    document.createTextNode(text.slice(position, match.index))
+                );
+
+                const token = match[0];
+
+                if (token.startsWith("`")) {
+                    parent.appendChild(element("code", "", token.slice(1, -1)));
+                } else {
+                    parent.appendChild(
+                        element("strong", "", token.slice(2, -2))
+                    );
+                }
+
+                position = pattern.lastIndex;
+            }
+
+            parent.appendChild(
+                document.createTextNode(text.slice(position))
+            );
+        }
+
+        function tableCells(line) {
+            /*
+             * Защищаем экранированный вертикальный разделитель \|.
+             */
+            let value = line.trim()
+                .replace(/\\\|/g, "\u0001");
+
+            if (value.startsWith("|")) {
+                value = value.slice(1);
+            }
+
+            if (value.endsWith("|")) {
+                value = value.slice(0, -1);
+            }
+
+            return value.split("|")
+                .map(cell => cell.trim().replace(/\u0001/g, "|"));
+        }
+
+        function isTableDivider(line) {
+            if (!line || !line.includes("|")) {
+                return false;
+            }
+
+            const cells = tableCells(line);
+            return cells.length > 0 &&
+                cells.every(cell => /^:?-{3,}:?$/.test(cell));
+        }
+
+        function isBlockStart(lines, index) {
+            const line = lines[index];
+
+            return (
+                /^\s*$/.test(line) ||
+                /^\s*(`{3,}|~{3,})/.test(line) ||
+                /^#{1,6}\s+/.test(line) ||
+                /^\s*>/.test(line) ||
+                /^\s*[-+*]\s+/.test(line) ||
+                /^\s*\d+[.)]\s+/.test(line) ||
+                /^\s*([-*_])(?:\s*\1){2,}\s*$/.test(line) ||
+                (
+                    line.includes("|") &&
+                    isTableDivider(lines[index + 1])
+                )
+            );
+        }
+
+        function renderMarkdown(markdown) {
+            const fragment = document.createDocumentFragment();
+            const lines = markdown
+                .replace(/\r\n?/g, "\n")
+                .split("\n");
+
+            let i = 0;
+
+            while (i < lines.length) {
+                const line = lines[i];
+
+                if (!line.trim()) {
+                    i++;
+                    continue;
+                }
+
+                const fence = line.match(/^\s*(`{3,}|~{3,})(.*)$/);
+
+                if (fence) {
+                    const marker = fence[1];
+                    const codeLines = [];
+                    i++;
+
+                    while (i < lines.length) {
+                        const closing = lines[i].trim();
+
+                        if (
+                            closing.length >= marker.length &&
+                            [...closing].every(char => char === marker[0])
+                        ) {
+                            i++;
+                            break;
+                        }
+
+                        codeLines.push(lines[i]);
+                        i++;
+                    }
+
+                    const pre = element("pre");
+                    pre.appendChild(
+                        element("code", "", codeLines.join("\n"))
+                    );
+                    fragment.appendChild(pre);
+                    continue;
+                }
+
+                const heading = line.match(/^(#{1,6})\s+(.*)$/);
+
+                if (heading) {
+                    const node = element(`h${heading[1].length}`);
+                    appendInline(node, heading[2]);
+                    fragment.appendChild(node);
+                    i++;
+                    continue;
+                }
+
+                if (
+                    line.includes("|") &&
+                    isTableDivider(lines[i + 1])
+                ) {
+                    const wrapper = element("div", "table-wrap");
+                    const table = element("table");
+                    const head = element("thead");
+                    const headRow = element("tr");
+
+                    for (const cell of tableCells(line)) {
+                        const th = element("th");
+                        appendInline(th, cell);
+                        headRow.appendChild(th);
+                    }
+
+                    head.appendChild(headRow);
+                    table.appendChild(head);
+                    i += 2;
+
+                    const body = element("tbody");
+
+                    while (
+                        i < lines.length &&
+                        lines[i].trim() &&
+                        lines[i].includes("|")
+                    ) {
+                        const row = element("tr");
+
+                        for (const cell of tableCells(lines[i])) {
+                            const td = element("td");
+                            appendInline(td, cell);
+                            row.appendChild(td);
+                        }
+
+                        body.appendChild(row);
+                        i++;
+                    }
+
+                    table.appendChild(body);
+                    wrapper.appendChild(table);
+                    fragment.appendChild(wrapper);
+                    continue;
+                }
+
+                if (/^\s*>/.test(line)) {
+                    const quoteLines = [];
+
+                    while (i < lines.length && /^\s*>/.test(lines[i])) {
+                        quoteLines.push(lines[i].replace(/^\s*>\s?/, ""));
+                        i++;
+                    }
+
+                    const quote = element("blockquote");
+                    quote.appendChild(renderMarkdown(quoteLines.join("\n")));
+                    fragment.appendChild(quote);
+                    continue;
+                }
+
+                if (/^\s*([-*_])(?:\s*\1){2,}\s*$/.test(line)) {
+                    fragment.appendChild(element("hr"));
+                    i++;
+                    continue;
+                }
+
+                const unordered = /^\s*[-+*]\s+/.test(line);
+                const ordered = /^\s*\d+[.)]\s+/.test(line);
+
+                if (unordered || ordered) {
+                    const list = element(ordered ? "ol" : "ul");
+                    const itemPattern = ordered
+                        ? /^\s*\d+[.)]\s+(.*)$/
+                        : /^\s*[-+*]\s+(.*)$/;
+
+                    while (i < lines.length) {
+                        const match = lines[i].match(itemPattern);
+
+                        if (!match) {
+                            break;
+                        }
+
+                        const li = element("li");
+                        appendInline(li, match[1]);
+                        list.appendChild(li);
+                        i++;
+                    }
+
+                    fragment.appendChild(list);
+                    continue;
+                }
+
+                const paragraph = [line];
+                i++;
+
+                while (
+                    i < lines.length &&
+                    !isBlockStart(lines, i)
+                ) {
+                    paragraph.push(lines[i]);
+                    i++;
+                }
+
+                const p = element("p");
+                appendInline(p, paragraph.join("\n"));
+                fragment.appendChild(p);
+            }
+
+            return fragment;
+        }
+
+        /* ---------------- Карточки ---------------- */
+
+        function createCards() {
+            for (const level of LEVELS) {
+                const card = element("article", `card ${level.id}`);
+                const header = element("div", "card-header");
+                const top = element("div", "card-top");
+                const badge = element("span", "badge", level.label);
+                const extra = element("span", "extra", "EXTRA");
+                extra.hidden = true;
+
+                top.append(badge, extra);
+
+                const title = element("h2", "task-title", "Ждёт своего часа");
+                const path = element(
+                    "div",
+                    "path",
+                    "Рабочая папка появится после создания набора"
+                );
+
+                const actions = element("div", "card-actions");
+
+                const skip = element("button", "", "Заменить");
+                skip.type = "button";
+                skip.disabled = true;
+                skip.setAttribute(
+                    "aria-label",
+                    `Заменить задание: ${level.label.toLowerCase()}`
+                );
+                skip.addEventListener("click", () =>
+                    runOperation(() => skipTask(level.id))
+                );
+
+                const open = element("button", "", "README отдельно");
+                open.type = "button";
+                open.disabled = true;
+                open.addEventListener("click", () =>
+                    openReadme(level.id)
+                );
+
+                actions.append(skip, open);
+                header.append(top, title, path, actions);
+
+                const documentBody = element("div", "document empty");
+                card.append(header, documentBody);
+                ui.cards.appendChild(card);
+
+                cardUI[level.id] = {
+                    title,
+                    extra,
+                    path,
+                    skip,
+                    open,
+                    document: documentBody
+                };
+
+                renderCard(level.id);
+            }
+        }
+
+        function renderCard(level) {
+            const card = cardUI[level];
+            const selection = state.current[level];
+
+            card.document.replaceChildren();
+            card.document.scrollTop = 0;
+
+            if (!selection) {
+                card.title.textContent = "Ждёт своего часа";
+                card.extra.hidden = true;
+                card.path.textContent =
+                    "Рабочая папка появится после создания набора";
+                card.document.className = "document empty";
+
+                const inner = element("div", "empty-inner");
+                inner.append(
+                    element("div", "empty-icon", "{ }"),
+                    element(
+                        "p",
+                        "",
+                        "Выбери папку проекта и нажми «Новый набор»."
+                    )
+                );
+
+                card.document.appendChild(inner);
+                return;
+            }
+
+            card.title.textContent = selection.task.title;
+            card.extra.hidden = !selection.task.extra;
+            card.path.textContent = selection.relativePath;
+            card.document.className = "document";
+            card.document.appendChild(
+                renderMarkdown(selection.markdown)
+            );
+        }
+
+        /*
+         * Открываем копию условия в отдельной вкладке.
+         * Скрипты и HTML из README не исполняются.
+         */
+        function openReadme(level) {
+            const selection = state.current[level];
+
+            if (!selection) {
+                return;
+            }
+
+            const tab = window.open("about:blank", "_blank");
+
+            if (!tab) {
+                setStatus(
+                    "Браузер заблокировал вкладку. Разреши всплывающие окна " +
+                    "для этой страницы или читай условие в карточке.",
+                    "error"
+                );
+                return;
+            }
+
+            tab.opener = null;
+
+            const doc = tab.document;
+            doc.documentElement.lang = "ru";
+            doc.title = selection.task.title;
+
+            const charset = doc.createElement("meta");
+            charset.setAttribute("charset", "UTF-8");
+
+            const viewport = doc.createElement("meta");
+            viewport.name = "viewport";
+            viewport.content = "width=device-width, initial-scale=1";
+
+            const style = doc.createElement("style");
+            style.textContent = document.querySelector("style").textContent +
+                `
+                body { padding: 20px; }
+                .standalone {
+                    max-width: 960px;
+                    margin: 0 auto;
+                    height: auto;
+                    min-height: 0;
+                    overflow: visible;
+                    background: var(--panel);
+                    border: 1px solid var(--border);
+                    border-radius: 16px;
+                }
+                `;
+
+            doc.head.append(charset, viewport, style);
+
+            const content = doc.createElement("main");
+            content.className = "document standalone";
+            content.appendChild(
+                doc.importNode(renderMarkdown(selection.markdown), true)
+            );
+
+            doc.body.replaceChildren(content);
+        }
+
+        /* ---------------- Запуск ---------------- */
+
+        createCards();
+        refreshControls();
+
+        ui.choose.addEventListener("click", () =>
+            runOperation(chooseProject)
+        );
+
+        ui.generate.addEventListener("click", () =>
+            runOperation(generateSet)
+        );
+
+        ui.pause.addEventListener("click", toggleTimer);
+
+        ui.extra.addEventListener("change", () => {
+            refreshControls();
+
+            setStatus(
+                extraEnabled()
+                    ? "Дополнительные задания включены для следующих выборов."
+                    : "Дополнительные задания исключены из следующих выборов. " +
+                      "Текущие карточки не изменены."
+            );
+        });
+
+        if (
+            !window.isSecureContext ||
+            typeof window.showDirectoryPicker !== "function"
+        ) {
+            setStatus(
+                "Доступ к папкам недоступен в этом браузере или контексте. " +
+                "Открой страницу в актуальном Chrome/Edge. " +
+                "Если требуется, используй локальный сервер на localhost.",
+                "error"
+            );
+        }
+    </script>
+</body>
+</html>
