@@ -21,7 +21,6 @@
             --radius:       20px;
             --divider:      #4a3f7a;
 
-            /* Цветовая схема подсветки кода Си */
             --hl-comment:   #6272a4;
             --hl-string:    #50fa7b;
             --hl-char:      #f1fa8c;
@@ -87,6 +86,12 @@
 
         button.reveal { color: var(--yellow); border-color: #6b5c30; }
         button.reveal:hover:not(:disabled) { background: #2a2418; }
+
+        button.done-btn {
+            color: var(--green);
+            border-color: #315849;
+        }
+        button.done-btn:hover:not(:disabled) { background: #1a2e25; }
 
         button.file-btn { font-size: 13px; padding: 8px 12px; }
 
@@ -206,9 +211,15 @@
             border-radius: var(--radius);
             background: var(--panel);
             box-shadow: 0 12px 40px #00000020;
+            transition: border-color 0.25s, box-shadow 0.25s;
         }
 
-        /* Заметный разделитель между шапкой карточки и телом документа */
+        .card:hover { border-color: #384663; }
+
+        .card.completed {
+            border-color: #315849;
+        }
+
         .card-header {
             position: relative;
             padding: 20px;
@@ -218,6 +229,15 @@
                     0 4px 12px -6px #a998ff40;
             background:
                     linear-gradient(180deg, transparent 0%, #a998ff08 100%);
+        }
+
+        .card.completed .card-header {
+            border-bottom-color: #315849;
+            box-shadow:
+                    0 1px 0 0 #70ddb033,
+                    0 4px 12px -6px #70ddb040;
+            background:
+                    linear-gradient(180deg, transparent 0%, #70ddb008 100%);
         }
 
         .card-header::after {
@@ -236,6 +256,16 @@
             );
             opacity: .55;
             pointer-events: none;
+        }
+
+        .card.completed .card-header::after {
+            background: linear-gradient(
+                    90deg,
+                    transparent 0%,
+                    var(--green) 20%,
+                    var(--green) 80%,
+                    transparent 100%
+            );
         }
 
         .card-top {
@@ -318,7 +348,6 @@
             margin-top: 16px;
         }
 
-        /* Разделитель между действиями и списком файлов задания */
         .card-files {
             display: flex;
             flex-wrap: wrap;
@@ -357,6 +386,7 @@
             scrollbar-color: #4c5972 transparent;
             font-size: 14px;
             overflow-wrap: anywhere;
+            transition: height 0.35s ease, min-height 0.35s ease, padding 0.35s ease;
         }
 
         .document.empty {
@@ -366,8 +396,79 @@
             color: var(--muted);
         }
 
-        .empty-inner { max-width: 280px; }
+        .document.empty.locked {
+            background: rgba(12, 16, 25, 0.4);
+        }
+
+        /* Свернутая карточка */
+        .document.collapsed {
+            height: 0;
+            min-height: 0;
+            padding: 0 20px;
+            overflow: hidden;
+        }
+
+        /* Компактная полоска «Выполнено» */
+        .completed-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 20px;
+            background: linear-gradient(90deg, #1a2e25, #141b29);
+            border-top: 1px solid #315849;
+            cursor: default;
+        }
+
+        .completed-bar[hidden] { display: none; }
+
+        .completed-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .completed-bar-icon {
+            font-size: 20px;
+            animation: pop-in 0.3s ease;
+        }
+
+        @keyframes pop-in {
+            0%   { transform: scale(0); opacity: 0; }
+            60%  { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .completed-bar-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--green);
+        }
+
+        .completed-bar-title {
+            font-size: 12px;
+            color: var(--muted);
+            margin-left: 4px;
+        }
+
+        .completed-bar button {
+            font-size: 12px;
+            padding: 6px 12px;
+            border-radius: 8px;
+        }
+
+        .empty-inner { max-width: 320px; padding: 20px 0; }
         .empty-icon { margin-bottom: 12px; font-size: 35px; color: var(--accent); }
+
+        .empty-icon.locked-animation {
+            animation: pulse-lock 2s infinite alternate;
+            color: var(--yellow);
+        }
+
+        @keyframes pulse-lock {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.1); opacity: 1; }
+        }
 
         .document h1, .document h2, .document h3,
         .document h4, .document h5, .document h6 {
@@ -407,7 +508,6 @@
             color: #dfe8ff;
         }
 
-        /* Классы подсветки кода */
         .hl-comment { color: var(--hl-comment); font-style: italic; opacity: 0.85; }
         .hl-string  { color: var(--hl-string); }
         .hl-char    { color: var(--hl-char); }
@@ -498,6 +598,7 @@
             .container { padding: 22px; }
             .grid { grid-template-columns: 1fr; }
             .document { height: auto; max-height: 65vh; min-height: 180px; }
+            .document.collapsed { height: 0; min-height: 0; max-height: 0; }
         }
 
         @media (max-width: 600px) {
@@ -588,42 +689,31 @@ gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm</pre>
     "use strict";
 
     const TASKS = [
-        /* 01_basics */
         { path: "01_basics/01_fix_int_keyword",            title: "Исправление INT",                level: "easy" },
         { path: "01_basics/02_fix_declaration_separator",   title: "Разделитель в объявлении",        level: "easy" },
         { path: "01_basics/03_fix_declaration_syntax",      title: "Ошибка в объявлении переменных",  level: "easy" },
         { path: "01_basics/04_fix_multiple_declaration",    title: "Повторный тип после запятой",     level: "easy" },
         { path: "01_basics/05_fix_missing_type",            title: "Отсутствующий тип переменной",    level: "easy" },
         { path: "01_basics/06_fix_double_initialization",   title: "Инициализация double",            level: "easy" },
-
-        /* 02_input_output */
         { path: "02_input_output/01_zero_padding",          title: "Ведущие нули",                    level: "easy" },
         { path: "02_input_output/02_fix_output_width",      title: "Исправление ширины вывода",       level: "easy" },
         { path: "02_input_output/03_groot",                 title: "Я есть Грут!",                    level: "easy" },
         { path: "02_input_output/04_windows_path",          title: "Путь к Блокноту",                 level: "easy" },
         { path: "02_input_output/05_print_205",             title: "Вывод числа 205",                 level: "easy" },
-
-        /* 03_expressions */
         { path: "03_expressions/01_sphere_mass",            title: "Масса шара",                      level: "medium" },
         { path: "03_expressions/02_radians_to_degrees",     title: "Перевод радиан в градусы",        level: "medium" },
         { path: "03_expressions/03_swap_edge_digits",       title: "Перестановка крайних цифр",       level: "medium" },
         { path: "03_expressions/04_strictly_between",       title: "Число строго между двумя числами",level: "medium" },
         { path: "03_expressions/05_boolean_expression",     title: "Логическое выражение",            level: "medium" },
-
-        /* 04_loops */
         { path: "04_loops/01_sequence_max",                 title: "Поиск наибольшего",               level: "medium" },
         { path: "04_loops/02_max_digit",                    title: "Наибольшая цифра",                level: "medium" },
         { path: "04_loops/03_odd_digits_product",           title: "Произведение нечётных цифр",      level: "medium" },
         { path: "04_loops/04_reverse_number_extra",         title: "Разворот числа",                  level: "medium" },
         { path: "04_loops/05_unpaired_number_extra",        title: "Число без пары",                  level: "medium" },
-
-        /* 05_dynamic_arrays */
         { path: "05_dynamic_arrays/01_dot_product",         title: "Скалярное произведение",          level: "hard" },
         { path: "05_dynamic_arrays/02_alternate_ends",      title: "Чередование первого и последнего",level: "hard" },
         { path: "05_dynamic_arrays/03_remove_duplicates",   title: "Удаление повторов",               level: "hard" },
         { path: "05_dynamic_arrays/04_reverse_sequence",    title: "Реверс последовательности",       level: "hard" },
-
-        /* 06_strings */
         { path: "06_strings/01_string_length_extra",        title: "Длина строки",                    level: "medium" },
         { path: "06_strings/02_count_letters_digits_extra", title: "Подсчёт букв и цифр",             level: "medium" },
         { path: "06_strings/03_to_lower_extra",             title: "Перевод в нижний регистр",        level: "medium" },
@@ -638,16 +728,12 @@ gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm</pre>
         { path: "06_strings/12_remove_last_substring",      title: "Удаление последней подстроки",    level: "hard" },
         { path: "06_strings/13_palindrome",                 title: "Проверка на палиндром (экзамен)", level: "medium" },
         { path: "06_strings/14_trim_whitespace",            title: "Удаление пробелов и табуляций",   level: "medium" },
-
-        /* 07_matrices */
         { path: "07_matrices/01_matrix_addition_extra",     title: "Сложение квадратных матриц",      level: "medium" },
         { path: "07_matrices/02_matrix_multiplication",     title: "Умножение квадратных матриц",     level: "hard" },
         { path: "07_matrices/03_swap_rows",                 title: "Перестановка строк",              level: "hard" },
         { path: "07_matrices/04_rotate_clockwise",          title: "Поворот матрицы",                 level: "hard" },
         { path: "07_matrices/05_spiral_clockwise",          title: "Спираль по часовой стрелке",      level: "hard" },
         { path: "07_matrices/06_spiral_squares",            title: "Квадраты чисел по спирали",       level: "hard" },
-
-        /* 08_structures */
         { path: "08_structures/01_students_above_average",  title: "Студенты выше среднего балла",    level: "hard" },
         { path: "08_structures/02_students_sort_by_rate",   title: "Сортировка студентов по баллам",  level: "hard" },
         { path: "08_structures/03_best_student_extra",      title: "Студент с наивысшим баллом",      level: "medium" },
@@ -694,14 +780,16 @@ gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm</pre>
         missing:   [],
         busy:      false,
         attempt:   null,
-        current: { easy: null, medium: null, hard: null },
-        seen:    { easy: new Set(), medium: new Set(), hard: new Set() },
-        timer: { running: false, startedAt: 0, elapsed: 0 }
+        current:   { easy: null, medium: null, hard: null },
+        seen:      { easy: new Set(), medium: new Set(), hard: new Set() },
+        timer:     { running: false, startedAt: 0, elapsed: 0 },
+        locked:    { easy: false, medium: true, hard: true },
+        completed: { easy: false, medium: false, hard: false }
     };
 
     const cardUI = {};
 
-    function element(tag, className, text) {
+    function el(tag, className, text) {
         const node = document.createElement(tag);
         if (className) node.className = className;
         if (text !== undefined) node.textContent = text;
@@ -729,25 +817,34 @@ gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm</pre>
 
         ui.generate.disabled = state.busy
             || !state.root
-            || LEVELS.some(function (level) {
-                return poolFor(level.id).length === 0;
-            });
+            || LEVELS.some(function (level) { return poolFor(level.id).length === 0; });
 
         for (var i = 0; i < LEVELS.length; i++) {
-            var levelId  = LEVELS[i].id;
-            var card     = cardUI[levelId];
-            var current  = state.current[levelId];
-            var hasTask  = !!current;
+            var levelId   = LEVELS[i].id;
+            var card      = cardUI[levelId];
+            var current   = state.current[levelId];
+            var hasTask   = !!current;
+            var isLocked  = state.locked[levelId];
+            var isDone    = state.completed[levelId];
 
-            card.skip.disabled = state.busy || !hasTask;
+            card.skip.disabled = state.busy || !hasTask || isDone;
+            card.doneBtn.disabled = !hasTask || isLocked;
+
+            if (isDone) {
+                card.doneBtn.textContent = "↩️ Вернуть";
+                card.doneBtn.className = "file-btn";
+            } else {
+                card.doneBtn.textContent = "✅ Решено";
+                card.doneBtn.className = "file-btn done-btn";
+            }
 
             for (var j = 0; j < FILE_BUTTONS.length; j++) {
                 var cfg = FILE_BUTTONS[j];
                 var btn = card.fileButtons[cfg.key];
 
-                if (!hasTask) {
+                if (!hasTask || isLocked || isDone) {
                     btn.disabled = true;
-                    btn.title = "";
+                    btn.title = isLocked ? "Сначала откройте задание" : "";
                     btn.textContent = cfg.label;
                 } else {
                     var exists = current.task.availableFiles
@@ -759,7 +856,7 @@ gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm</pre>
                 }
             }
 
-            card.source.disabled = !hasTask;
+            card.source.disabled = !hasTask || isLocked || isDone;
         }
 
         if (state.root) {
@@ -778,7 +875,6 @@ gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm</pre>
         if (state.busy) return;
         state.busy = true;
         refreshControls();
-
         try {
             await operation();
         } catch (error) {
@@ -786,11 +882,7 @@ gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm</pre>
             if (error.name === "AbortError") {
                 setStatus("Действие отменено.");
             } else {
-                setStatus(
-                    (error.message || "Ошибка.")
-                    + " Старые попытки не изменялись.",
-                    "error"
-                );
+                setStatus((error.message || "Ошибка.") + " Старые попытки не изменялись.", "error");
             }
         } finally {
             state.busy = false;
@@ -799,26 +891,22 @@ gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm</pre>
     }
 
     function elapsedMilliseconds() {
-        var extra = state.timer.running
-            ? Date.now() - state.timer.startedAt
-            : 0;
-        return state.timer.elapsed + extra;
+        return state.timer.elapsed + (state.timer.running ? Date.now() - state.timer.startedAt : 0);
     }
 
     function updateTimer() {
-        var total   = Math.floor(elapsedMilliseconds() / 1000);
-        var hours   = Math.floor(total / 3600);
-        var minutes = Math.floor(total / 60) % 60;
-        var seconds = total % 60;
-        ui.timer.textContent = [hours, minutes, seconds]
-            .map(function (v) { return String(v).padStart(2, "0"); })
-            .join(":");
+        var total = Math.floor(elapsedMilliseconds() / 1000);
+        ui.timer.textContent = [
+            Math.floor(total / 3600),
+            Math.floor(total / 60) % 60,
+            total % 60
+        ].map(function (v) { return String(v).padStart(2, "0"); }).join(":");
     }
 
     function resetTimer(start) {
-        state.timer.elapsed   = 0;
+        state.timer.elapsed = 0;
         state.timer.startedAt = Date.now();
-        state.timer.running   = !!start;
+        state.timer.running = !!start;
         updateTimer();
     }
 
@@ -826,10 +914,10 @@ gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm</pre>
         if (!state.attempt) return;
         if (state.timer.running) {
             state.timer.elapsed += Date.now() - state.timer.startedAt;
-            state.timer.running  = false;
+            state.timer.running = false;
         } else {
             state.timer.startedAt = Date.now();
-            state.timer.running   = true;
+            state.timer.running = true;
         }
         updateTimer();
         refreshControls();
@@ -838,486 +926,247 @@ gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm</pre>
     setInterval(updateTimer, 500);
 
     async function getNestedDirectory(parent, path) {
-        var directory = parent;
+        var dir = parent;
         var parts = path.split("/").filter(Boolean);
-        for (var i = 0; i < parts.length; i++) {
-            directory = await directory.getDirectoryHandle(parts[i]);
-        }
-        return directory;
+        for (var i = 0; i < parts.length; i++) dir = await dir.getDirectoryHandle(parts[i]);
+        return dir;
     }
 
-    async function resolveTaskDirectory(tasksDirectory, task) {
+    async function resolveTaskDirectory(tasksDir, task) {
         var candidates = [task.path];
-
-        if (task.path.endsWith("_extra")) {
-            candidates.push(task.path.replace(/_extra$/, "__extra"));
-        }
-
-        if (PATH_ALIASES[task.path]) {
-            candidates.push(PATH_ALIASES[task.path]);
-        }
+        if (task.path.endsWith("_extra")) candidates.push(task.path.replace(/_extra$/, "__extra"));
+        if (PATH_ALIASES[task.path]) candidates.push(PATH_ALIASES[task.path]);
 
         for (var i = 0; i < candidates.length; i++) {
             try {
-                var directory = await getNestedDirectory(tasksDirectory, candidates[i]);
-                var readme = await directory.getFileHandle("README.md");
-
-                /* Проверяем наличие опциональных файлов. */
-                var availableFiles = { readme: true };
-
+                var dir = await getNestedDirectory(tasksDir, candidates[i]);
+                var readme = await dir.getFileHandle("README.md");
+                var avail = { readme: true };
                 for (var f = 0; f < FILE_BUTTONS.length; f++) {
-                    var fname = FILE_BUTTONS[f].filename;
-                    if (fname === "README.md") continue;
-
-                    try {
-                        await directory.getFileHandle(fname);
-                        availableFiles[FILE_BUTTONS[f].key] = true;
-                    } catch (err) {
-                        if (err.name === "NotFoundError") {
-                            availableFiles[FILE_BUTTONS[f].key] = false;
-                        } else {
-                            throw err;
-                        }
-                    }
+                    var fn = FILE_BUTTONS[f].filename;
+                    if (fn === "README.md") continue;
+                    try { await dir.getFileHandle(fn); avail[FILE_BUTTONS[f].key] = true; }
+                    catch (e) { if (e.name === "NotFoundError") avail[FILE_BUTTONS[f].key] = false; else throw e; }
                 }
-
                 return {
-                    path:           task.path,
-                    title:          task.title,
-                    level:          task.level,
-                    actualPath:     candidates[i],
-                    directory:      directory,
-                    readme:         readme,
-                    extra:          task.path.endsWith("_extra"),
-                    availableFiles: availableFiles
+                    path: task.path, title: task.title, level: task.level,
+                    actualPath: candidates[i], directory: dir, readme: readme,
+                    extra: task.path.endsWith("_extra"), availableFiles: avail
                 };
-            } catch (error) {
-                if (error.name !== "NotFoundError"
-                    && error.name !== "TypeMismatchError") {
-                    throw error;
-                }
+            } catch (e) {
+                if (e.name !== "NotFoundError" && e.name !== "TypeMismatchError") throw e;
             }
         }
-
         return null;
     }
 
     async function ensureWritePermission() {
         if (!state.root) throw new Error("Сначала выбери папку проекта.");
-        var options = { mode: "readwrite" };
-        if (await state.root.queryPermission(options) === "granted") return;
-        if (await state.root.requestPermission(options) !== "granted") {
+        var opt = { mode: "readwrite" };
+        if (await state.root.queryPermission(opt) === "granted") return;
+        if (await state.root.requestPermission(opt) !== "granted")
             throw new Error("Для сохранения нужно разрешение на запись.");
-        }
     }
 
-    async function writeFile(directory, filename, content) {
-        var handle   = await directory.getFileHandle(filename, { create: true });
-        var writable = await handle.createWritable();
-        try {
-            await writable.write(content);
-            await writable.close();
-        } catch (error) {
-            try { await writable.abort(); } catch (_) {}
-            throw error;
-        }
+    async function writeFile(dir, name, content) {
+        var h = await dir.getFileHandle(name, { create: true });
+        var w = await h.createWritable();
+        try { await w.write(content); await w.close(); }
+        catch (e) { try { await w.abort(); } catch (_) {} throw e; }
     }
 
     function uniqueSuffix() {
-        var values = new Uint32Array(2);
-        crypto.getRandomValues(values);
-        return Array.from(values, function (v) {
-            return v.toString(16).padStart(8, "0");
-        }).join("");
+        var v = new Uint32Array(2); crypto.getRandomValues(v);
+        return Array.from(v, function (x) { return x.toString(16).padStart(8, "0"); }).join("");
     }
 
     async function createUniqueDirectory(parent, prefix) {
-        for (var attempt = 0; attempt < 10; attempt++) {
+        for (var a = 0; a < 10; a++) {
             var name = prefix + "_" + uniqueSuffix();
-            try {
-                await parent.getDirectoryHandle(name);
-                continue;
-            } catch (error) {
-                if (error.name === "TypeMismatchError") continue;
-                if (error.name !== "NotFoundError") throw error;
-            }
-            var directory = await parent.getDirectoryHandle(name, { create: true });
-            return { name: name, directory: directory };
+            try { await parent.getDirectoryHandle(name); continue; }
+            catch (e) { if (e.name === "TypeMismatchError") continue; if (e.name !== "NotFoundError") throw e; }
+            return { name: name, directory: await parent.getDirectoryHandle(name, { create: true }) };
         }
         throw new Error("Не удалось создать уникальную папку.");
     }
 
     function timestamp() {
-        var d   = new Date();
-        var pad = function (v) { return String(v).padStart(2, "0"); };
-        return [d.getFullYear(), pad(d.getMonth() + 1), pad(d.getDate())].join("-")
-            + "_"
-            + [pad(d.getHours()), pad(d.getMinutes()), pad(d.getSeconds())].join("-");
+        var d = new Date(), p = function (v) { return String(v).padStart(2, "0"); };
+        return [d.getFullYear(), p(d.getMonth()+1), p(d.getDate())].join("-")
+            + "_" + [p(d.getHours()), p(d.getMinutes()), p(d.getSeconds())].join("-");
     }
 
     async function readTaskReadme(task) {
-        var file     = await task.readme.getFile();
-        var markdown = await file.text();
-        if (!markdown.trim()) {
-            throw new Error("README.md пустой: tasks/" + task.actualPath);
-        }
-        return markdown;
+        var f = await task.readme.getFile(), md = await f.text();
+        if (!md.trim()) throw new Error("README.md пустой: tasks/" + task.actualPath);
+        return md;
     }
 
     async function readFileFromTask(task, filename) {
-        try {
-            var handle = await task.directory.getFileHandle(filename);
-            var file   = await handle.getFile();
-            return await file.text();
-        } catch (error) {
-            if (error.name === "NotFoundError") {
-                throw new Error(
-                    "Файл " + filename + " не найден в tasks/" + task.actualPath
-                );
-            }
-            throw error;
-        }
+        try { var h = await task.directory.getFileHandle(filename); var f = await h.getFile(); return await f.text(); }
+        catch (e) { if (e.name === "NotFoundError") throw new Error("Файл " + filename + " не найден в tasks/" + task.actualPath); throw e; }
     }
 
     async function saveSelection(attempt, level, task, markdown) {
-        var levelDirectory = await attempt.directory.getDirectoryHandle(
-            level, { create: true }
-        );
-        var leaf      = task.path.split("/").pop();
-        var selection = await createUniqueDirectory(levelDirectory, leaf);
-        await writeFile(selection.directory, "README.md", markdown);
-        await writeFile(selection.directory, "main.c", "");
-        var relativePath = "Your_tasks/" + attempt.name + "/" + level + "/" + selection.name;
-        return {
-            task:         task,
-            markdown:     markdown,
-            directory:    selection.directory,
-            relativePath: relativePath
-        };
+        var ld = await attempt.directory.getDirectoryHandle(level, { create: true });
+        var leaf = task.path.split("/").pop();
+        var sel = await createUniqueDirectory(ld, leaf);
+        await writeFile(sel.directory, "README.md", markdown);
+        await writeFile(sel.directory, "main.c", "");
+        return { task: task, markdown: markdown, directory: sel.directory,
+            relativePath: "Your_tasks/" + attempt.name + "/" + level + "/" + sel.name };
     }
 
     async function chooseProject() {
-        if (!window.isSecureContext
-            || typeof window.showDirectoryPicker !== "function") {
-            throw new Error(
-                "Этот браузер не поддерживает доступ к папкам. "
-                + "Используй актуальный Chrome или Edge."
-            );
-        }
-
-        var root = await window.showDirectoryPicker({
-            id: "c-practice-project",
-            mode: "readwrite"
-        });
-
-        var tasksDirectory;
-        try {
-            tasksDirectory = await root.getDirectoryHandle("tasks");
-        } catch (error) {
-            if (error.name === "NotFoundError") {
-                throw new Error("В выбранной папке нет tasks. Выбери корень проекта.");
-            }
-            throw error;
-        }
-
+        if (!window.isSecureContext || typeof window.showDirectoryPicker !== "function")
+            throw new Error("Этот браузер не поддерживает доступ к папкам. Используй Chrome или Edge.");
+        var root = await window.showDirectoryPicker({ id: "c-practice-project", mode: "readwrite" });
+        var td;
+        try { td = await root.getDirectoryHandle("tasks"); }
+        catch (e) { if (e.name === "NotFoundError") throw new Error("В выбранной папке нет tasks."); throw e; }
         setStatus("Читаю каталог заданий…");
-
-        var available = [];
-        var missing   = [];
-
+        var avail = [], miss = [];
         for (var i = 0; i < TASKS.length; i++) {
-            var resolved = await resolveTaskDirectory(tasksDirectory, TASKS[i]);
-            if (resolved) available.push(resolved);
-            else missing.push(TASKS[i].path);
+            var r = await resolveTaskDirectory(td, TASKS[i]);
+            if (r) avail.push(r); else miss.push(TASKS[i].path);
         }
-
-        if (!available.length) {
-            throw new Error("Не найдено ни одного задания с README.md.");
-        }
-
-        state.root      = root;
-        state.tasksDir   = tasksDirectory;
-        state.available  = available;
-        state.missing    = missing;
-        state.attempt    = null;
-
+        if (!avail.length) throw new Error("Не найдено ни одного задания с README.md.");
+        state.root = root; state.tasksDir = td; state.available = avail; state.missing = miss; state.attempt = null;
+        state.locked.easy = false; state.locked.medium = true; state.locked.hard = true;
+        state.completed.easy = false; state.completed.medium = false; state.completed.hard = false;
         for (var j = 0; j < LEVELS.length; j++) {
-            var levelId = LEVELS[j].id;
-            state.current[levelId] = null;
-            state.seen[levelId].clear();
-            renderCard(levelId);
+            state.current[LEVELS[j].id] = null; state.seen[LEVELS[j].id].clear(); renderCard(LEVELS[j].id);
         }
-
         resetTimer();
         ui.attempt.textContent = "Набор ещё не создан";
-
-        if (missing.length) {
-            setStatus(
-                "Подключён проект «" + root.name + "». "
-                + "Не найдены " + missing.length + " задания: " + missing.join(", ")
-            );
-        } else {
-            setStatus(
-                "Проект «" + root.name + "» подключён. Все 50 заданий найдены.",
-                "success"
-            );
-        }
+        setStatus(miss.length
+            ? "Подключён проект «" + root.name + "». Не найдены " + miss.length + " задания: " + miss.join(", ")
+            : "Проект «" + root.name + "» подключён. Все 50 заданий найдены.", miss.length ? undefined : "success");
     }
 
-    function randomItem(items) {
-        return items[Math.floor(Math.random() * items.length)];
-    }
+    function randomItem(items) { return items[Math.floor(Math.random() * items.length)]; }
 
     function chooseCandidate(level) {
-        var currentPath = state.current[level]
-            ? state.current[level].task.path
-            : null;
-
-        var pool   = poolFor(level);
-        var unseen = pool.filter(function (task) {
-            return task.path !== currentPath && !state.seen[level].has(task.path);
-        });
-
-        if (unseen.length) {
-            return { task: randomItem(unseen), restart: false };
+        var cp = state.current[level] ? state.current[level].task.path : null;
+        var pool = poolFor(level);
+        var unseen = pool.filter(function (t) { return t.path !== cp && !state.seen[level].has(t.path); });
+        if (unseen.length) return { task: randomItem(unseen), restart: false };
+        var alt = pool.filter(function (t) { return t.path !== cp; });
+        if (!alt.length) {
+            if (!cp && pool.length) return { task: randomItem(pool), restart: false };
+            throw new Error("Нет другого задания. Включи дополнительные упражнения.");
         }
-
-        var alternatives = pool.filter(function (task) {
-            return task.path !== currentPath;
-        });
-
-        if (!alternatives.length) {
-            if (!currentPath && pool.length) {
-                return { task: randomItem(pool), restart: false };
-            }
-            throw new Error(
-                "Нет другого доступного задания для этой сложности. "
-                + "Попробуй включить дополнительные упражнения."
-            );
-        }
-
-        var label = LEVELS.find(function (l) { return l.id === level; }).label;
-
-        if (!confirm(
-            "Категория «" + label + "»: все задания уже выпадали. "
-            + "Начать новый круг?"
-        )) {
-            return null;
-        }
-
-        return { task: randomItem(alternatives), restart: true };
+        var lbl = LEVELS.find(function (l) { return l.id === level; }).label;
+        if (!confirm("Категория «" + lbl + "»: все задания уже выпадали. Начать новый круг?")) return null;
+        return { task: randomItem(alt), restart: true };
     }
 
-    function commitCandidate(level, candidate, selection) {
-        if (candidate.restart) state.seen[level].clear();
-        state.seen[level].add(candidate.task.path);
-        state.current[level] = selection;
+    function commitCandidate(level, cand, sel) {
+        if (cand.restart) state.seen[level].clear();
+        state.seen[level].add(cand.task.path);
+        state.current[level] = sel;
     }
 
     async function generateSet() {
         if (!state.root) throw new Error("Сначала выбери папку проекта.");
         await ensureWritePermission();
-
         var planned = [];
-
         for (var i = 0; i < LEVELS.length; i++) {
-            var candidate = chooseCandidate(LEVELS[i].id);
-            if (!candidate) {
-                setStatus("Создание набора отменено.");
-                return;
-            }
-            planned.push({
-                level:     LEVELS[i].id,
-                candidate: candidate,
-                markdown:  null
-            });
+            var c = chooseCandidate(LEVELS[i].id);
+            if (!c) { setStatus("Создание набора отменено."); return; }
+            planned.push({ level: LEVELS[i].id, candidate: c, markdown: null });
         }
-
         setStatus("Читаю условия и создаю рабочие файлы…");
-
-        for (var j = 0; j < planned.length; j++) {
-            planned[j].markdown = await readTaskReadme(planned[j].candidate.task);
-        }
-
-        var output  = await state.root.getDirectoryHandle("Your_tasks", { create: true });
+        for (var j = 0; j < planned.length; j++) planned[j].markdown = await readTaskReadme(planned[j].candidate.task);
+        var output = await state.root.getDirectoryHandle("Your_tasks", { create: true });
         var attempt = await createUniqueDirectory(output, "attempt_" + timestamp());
-        var saved   = [];
-
+        var saved = [];
         for (var k = 0; k < planned.length; k++) {
-            var selection = await saveSelection(
-                attempt,
-                planned[k].level,
-                planned[k].candidate.task,
-                planned[k].markdown
-            );
-            saved.push({
-                level:     planned[k].level,
-                candidate: planned[k].candidate,
-                selection: selection
-            });
+            saved.push({ level: planned[k].level, candidate: planned[k].candidate,
+                selection: await saveSelection(attempt, planned[k].level, planned[k].candidate.task, planned[k].markdown) });
         }
-
         state.attempt = attempt;
-
+        state.locked.easy = false; state.locked.medium = true; state.locked.hard = true;
+        state.completed.easy = false; state.completed.medium = false; state.completed.hard = false;
         for (var m = 0; m < saved.length; m++) {
             commitCandidate(saved[m].level, saved[m].candidate, saved[m].selection);
             renderCard(saved[m].level);
         }
-
         resetTimer(true);
         ui.attempt.textContent = "Попытка: " + attempt.name;
-
-        setStatus(
-            "Три задания сохранены в Your_tasks/" + attempt.name + ". Таймер запущен.",
-            "success"
-        );
+        setStatus("Три задания сохранены в Your_tasks/" + attempt.name + ". Таймер запущен.", "success");
     }
 
     async function skipTask(level) {
         if (!state.attempt || !state.current[level]) return;
         await ensureWritePermission();
-
-        var candidate = chooseCandidate(level);
-        if (!candidate) {
-            setStatus("Замена отменена.");
-            return;
-        }
-
+        var c = chooseCandidate(level); if (!c) { setStatus("Замена отменена."); return; }
         setStatus("Подбираю замену…");
-
-        var markdown  = await readTaskReadme(candidate.task);
-        var selection = await saveSelection(
-            state.attempt, level, candidate.task, markdown
-        );
-
-        commitCandidate(level, candidate, selection);
-        renderCard(level);
-
-        setStatus("Замена сохранена: " + selection.relativePath, "success");
+        var md = await readTaskReadme(c.task);
+        var sel = await saveSelection(state.attempt, level, c.task, md);
+        state.locked[level] = false; state.completed[level] = false;
+        commitCandidate(level, c, sel); renderCard(level);
+        setStatus("Замена сохранена: " + sel.relativePath, "success");
     }
 
     async function openFileInTab(level, filename, tabTitle) {
-        var selection = state.current[level];
-        if (!selection) return;
-
+        var sel = state.current[level]; if (!sel) return;
         var content;
-        try {
-            content = await readFileFromTask(selection.task, filename);
-        } catch (error) {
-            setStatus(error.message, "error");
-            return;
-        }
-
+        try { content = await readFileFromTask(sel.task, filename); }
+        catch (e) { setStatus(e.message, "error"); return; }
         var tab = window.open("about:blank", "_blank");
-        if (!tab) {
-            setStatus(
-                "Браузер заблокировал вкладку. Разреши всплывающие окна.",
-                "error"
-            );
-            return;
-        }
-
+        if (!tab) { setStatus("Браузер заблокировал вкладку. Разреши всплывающие окна.", "error"); return; }
         tab.opener = null;
-
-        var doc        = tab.document;
-        var isMarkdown = filename.endsWith(".md");
-
+        var doc = tab.document, isMd = filename.endsWith(".md");
         doc.documentElement.lang = "ru";
-        doc.title = tabTitle + " — " + selection.task.title;
-
-        var metaCharset = doc.createElement("meta");
-        metaCharset.setAttribute("charset", "UTF-8");
-
-        var metaViewport      = doc.createElement("meta");
-        metaViewport.name     = "viewport";
-        metaViewport.content  = "width=device-width, initial-scale=1";
-
+        doc.title = tabTitle + " — " + sel.task.title;
+        var mc = doc.createElement("meta"); mc.setAttribute("charset", "UTF-8");
+        var mv = doc.createElement("meta"); mv.name = "viewport"; mv.content = "width=device-width, initial-scale=1";
         var style = doc.createElement("style");
-        style.textContent = document.querySelector("style").textContent + "\n"
-            + "body { padding: 20px; }\n"
-            + ".standalone {\n"
-            + "    max-width: 960px; margin: 0 auto;\n"
-            + "    height: auto; min-height: 0; overflow: visible;\n"
-            + "    padding: 28px;\n"
-            + "    background: var(--panel);\n"
-            + "    border: 1px solid var(--border);\n"
-            + "    border-radius: 16px;\n"
-            + "}\n";
-
-        doc.head.append(metaCharset, metaViewport, style);
-
-        var main       = doc.createElement("main");
-        main.className = "document standalone";
-
-        if (isMarkdown) {
-            main.appendChild(doc.importNode(renderMarkdown(content), true));
-        } else {
-            var pre  = doc.createElement("pre");
-            var code = doc.createElement("code");
-
-            // Если открываем исходник на Си, подсвечиваем синтаксис
-            if (filename.endsWith(".c") || filename.endsWith(".h")) {
-                code.innerHTML = highlightC(content);
-            } else {
-                code.textContent = content;
-            }
-
-            pre.appendChild(code);
-            main.appendChild(pre);
+        style.textContent = document.querySelector("style").textContent
+            + "\nbody { padding: 20px; }\n.standalone { max-width: 960px; margin: 0 auto; height: auto; min-height: 0; overflow: visible; padding: 28px; background: var(--panel); border: 1px solid var(--border); border-radius: 16px; }\n";
+        doc.head.append(mc, mv, style);
+        var main = doc.createElement("main"); main.className = "document standalone";
+        if (isMd) { main.appendChild(doc.importNode(renderMarkdown(content), true)); }
+        else {
+            var pre = doc.createElement("pre"), code = doc.createElement("code");
+            if (filename.endsWith(".c") || filename.endsWith(".h")) code.innerHTML = highlightC(content);
+            else code.textContent = content;
+            pre.appendChild(code); main.appendChild(pre);
         }
-
         doc.body.replaceChildren(main);
     }
 
-    function toggleSource(level) {
-        var card = cardUI[level];
-        card.sourceRow.hidden = !card.sourceRow.hidden;
+    function toggleSource(level) { cardUI[level].sourceRow.hidden = !cardUI[level].sourceRow.hidden; }
+
+    function toggleCompleted(level) {
+        state.completed[level] = !state.completed[level];
+        renderCard(level);
+        refreshControls();
     }
 
     /* ================================================================
-       LIGHTWEIGHT C SYNTAX HIGHLIGHTER
+       C SYNTAX HIGHLIGHTER
        ================================================================ */
 
-    function escapeHtml(str) {
-        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
+    function escapeHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
     function highlightC(code) {
-        var regex = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\])*")|('(?:\\.|[^'\\])*')|(^\s*#[a-zA-Z_]+)|(\b(?:break|case|char|const|continue|default|do|double|else|enum|extern|float|for|goto|if|inline|int|long|register|restrict|return|short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|volatile|while)\b)|(\b(?:size_t|ssize_t|uintptr_t|intptr_t|FILE|NULL|stdin|stdout|stderr|[a-zA-Z0-9_]+_t)\b)|(\b0x[0-9a-fA-F]+\b|\b\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[fFlL]?\b)|(\b[a-zA-Z_][a-zA-Z0-9_]*(?=\s*\())/gm;
-
-        let lastIndex = 0;
-        let html = '';
-
-        code.replace(regex, function(match, comment, string, char, preproc, keyword, type, number, func, index) {
-            if (index > lastIndex) {
-                html += escapeHtml(code.slice(lastIndex, index));
-            }
-
-            if (comment) {
-                html += '<span class="hl-comment">' + escapeHtml(comment) + '</span>';
-            } else if (string) {
-                html += '<span class="hl-string">' + escapeHtml(string) + '</span>';
-            } else if (char) {
-                html += '<span class="hl-char">' + escapeHtml(char) + '</span>';
-            } else if (preproc) {
-                html += '<span class="hl-preproc">' + escapeHtml(preproc) + '</span>';
-            } else if (keyword) {
-                html += '<span class="hl-keyword">' + escapeHtml(keyword) + '</span>';
-            } else if (type) {
-                html += '<span class="hl-type">' + escapeHtml(type) + '</span>';
-            } else if (number) {
-                html += '<span class="hl-number">' + escapeHtml(number) + '</span>';
-            } else if (func) {
-                html += '<span class="hl-func">' + escapeHtml(func) + '</span>';
-            }
-
-            lastIndex = index + match.length;
+        var rx = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\])*")|('(?:\\.|[^'\\])*')|(^\s*#[a-zA-Z_]+)|(\b(?:break|case|char|const|continue|default|do|double|else|enum|extern|float|for|goto|if|inline|int|long|register|restrict|return|short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|volatile|while)\b)|(\b(?:size_t|ssize_t|uintptr_t|intptr_t|FILE|NULL|stdin|stdout|stderr|[a-zA-Z0-9_]+_t)\b)|(\b0x[0-9a-fA-F]+\b|\b\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[fFlL]?\b)|(\b[a-zA-Z_][a-zA-Z0-9_]*(?=\s*\())/gm;
+        var li = 0, html = '';
+        code.replace(rx, function(m, cm, st, ch, pp, kw, ty, nu, fn, idx) {
+            if (idx > li) html += escapeHtml(code.slice(li, idx));
+            if (cm)      html += '<span class="hl-comment">' + escapeHtml(cm) + '</span>';
+            else if (st) html += '<span class="hl-string">'  + escapeHtml(st) + '</span>';
+            else if (ch) html += '<span class="hl-char">'    + escapeHtml(ch) + '</span>';
+            else if (pp) html += '<span class="hl-preproc">' + escapeHtml(pp) + '</span>';
+            else if (kw) html += '<span class="hl-keyword">' + escapeHtml(kw) + '</span>';
+            else if (ty) html += '<span class="hl-type">'    + escapeHtml(ty) + '</span>';
+            else if (nu) html += '<span class="hl-number">'  + escapeHtml(nu) + '</span>';
+            else if (fn) html += '<span class="hl-func">'    + escapeHtml(fn) + '</span>';
+            li = idx + m.length;
         });
-
-        if (lastIndex < code.length) {
-            html += escapeHtml(code.slice(lastIndex));
-        }
-
+        if (li < code.length) html += escapeHtml(code.slice(li));
         return html;
     }
 
@@ -1329,432 +1178,241 @@ gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm</pre>
         var pat = /(`[^`\n]+`|\*\*[^*\n]+\*\*|\*[^*\n]+\*|\[[^\]]*\]\([^)]*\)|<br\s*\/?>|<b>.*?<\/b>|<strong>.*?<\/strong>|<i>.*?<\/i>|<em>.*?<\/em>|<u>.*?<\/u>|<code>.*?<\/code>)/gi;
         var pos = 0, m;
         while ((m = pat.exec(text)) !== null) {
-            if (m.index > pos) {
-                parent.appendChild(document.createTextNode(text.slice(pos, m.index)));
-            }
-            var tok = m[0];
-            var tokLower = tok.toLowerCase();
-
-            if (tok.startsWith("`")) {
-                parent.appendChild(element("code", "", tok.slice(1, -1)));
-            } else if (tok.startsWith("**")) {
-                var s = element("strong");
-                appendInline(s, tok.slice(2, -2));
-                parent.appendChild(s);
-            } else if (tok.startsWith("*")) {
-                var e = element("em");
-                appendInline(e, tok.slice(1, -1));
-                parent.appendChild(e);
-            } else if (tok.startsWith("[")) {
-                var lm = tok.match(/^\[([^\]]*)\]\(([^)]*)\)$/);
-                if (lm) {
-                    var a = element("a");
-                    a.href = lm[2];
-                    a.target = "_blank";
-                    a.rel = "noopener noreferrer";
-                    appendInline(a, lm[1]);
-                    parent.appendChild(a);
-                } else {
-                    parent.appendChild(document.createTextNode(tok));
-                }
-            } else if (tokLower.startsWith("<br")) {
-                parent.appendChild(document.createElement("br"));
-            } else if (tokLower.startsWith("<b>")) {
-                var s = element("strong");
-                appendInline(s, tok.slice(3, -4));
-                parent.appendChild(s);
-            } else if (tokLower.startsWith("<strong>")) {
-                var s = element("strong");
-                appendInline(s, tok.slice(8, -9));
-                parent.appendChild(s);
-            } else if (tokLower.startsWith("<i>")) {
-                var e = element("em");
-                appendInline(e, tok.slice(3, -4));
-                parent.appendChild(e);
-            } else if (tokLower.startsWith("<em>")) {
-                var e = element("em");
-                appendInline(e, tok.slice(4, -5));
-                parent.appendChild(e);
-            } else if (tokLower.startsWith("<u>")) {
-                var u = element("u");
-                appendInline(u, tok.slice(3, -4));
-                parent.appendChild(u);
-            } else if (tokLower.startsWith("<code>")) {
-                parent.appendChild(element("code", "", tok.slice(6, -7)));
-            }
+            if (m.index > pos) parent.appendChild(document.createTextNode(text.slice(pos, m.index)));
+            var tok = m[0], tl = tok.toLowerCase();
+            if      (tok.startsWith("`"))       parent.appendChild(el("code","",tok.slice(1,-1)));
+            else if (tok.startsWith("**"))    { var s=el("strong"); appendInline(s,tok.slice(2,-2)); parent.appendChild(s); }
+            else if (tok.startsWith("*"))     { var e=el("em");     appendInline(e,tok.slice(1,-1)); parent.appendChild(e); }
+            else if (tok.startsWith("["))      { var lm=tok.match(/^\[([^\]]*)\]\(([^)]*)\)$/);
+                if(lm){var a=el("a");a.href=lm[2];a.target="_blank";a.rel="noopener noreferrer";appendInline(a,lm[1]);parent.appendChild(a);}
+                else parent.appendChild(document.createTextNode(tok)); }
+            else if (tl.startsWith("<br"))       parent.appendChild(document.createElement("br"));
+            else if (tl.startsWith("<b>"))      { var s=el("strong"); appendInline(s,tok.slice(3,-4)); parent.appendChild(s); }
+            else if (tl.startsWith("<strong>")) { var s=el("strong"); appendInline(s,tok.slice(8,-9)); parent.appendChild(s); }
+            else if (tl.startsWith("<i>"))      { var e=el("em");     appendInline(e,tok.slice(3,-4)); parent.appendChild(e); }
+            else if (tl.startsWith("<em>"))     { var e=el("em");     appendInline(e,tok.slice(4,-5)); parent.appendChild(e); }
+            else if (tl.startsWith("<u>"))      { var u=el("u");      appendInline(u,tok.slice(3,-4)); parent.appendChild(u); }
+            else if (tl.startsWith("<code>"))     parent.appendChild(el("code","",tok.slice(6,-7)));
             pos = pat.lastIndex;
         }
-        if (pos < text.length) {
-            parent.appendChild(document.createTextNode(text.slice(pos)));
-        }
+        if (pos < text.length) parent.appendChild(document.createTextNode(text.slice(pos)));
     }
 
-    function appendCellWithBreaks(parent, text) {
-        appendInline(parent, text);
-    }
+    function appendCellWithBreaks(p,t) { appendInline(p,t); }
 
     function tableCells(line) {
-        var value = line.trim().replace(/\\\|/g, "\u0001");
-        if (value.startsWith("|")) value = value.slice(1);
-        if (value.endsWith("|"))   value = value.slice(0, -1);
-        return value.split("|").map(function (cell) {
-            return cell.trim().replace(/\u0001/g, "|");
-        });
+        var v = line.trim().replace(/\\\|/g,"\u0001");
+        if(v.startsWith("|"))v=v.slice(1); if(v.endsWith("|"))v=v.slice(0,-1);
+        return v.split("|").map(function(c){return c.trim().replace(/\u0001/g,"|");});
     }
 
-    function isTableDivider(line) {
-        if (!line || !line.includes("|")) return false;
-        var cells = tableCells(line);
-        return cells.length > 0
-            && cells.every(function (cell) {
-                return /^:?-{3,}:?$/.test(cell);
-            });
+    function isTableDivider(l) {
+        if(!l||!l.includes("|"))return false; var c=tableCells(l);
+        return c.length>0&&c.every(function(x){return /^:?-{3,}:?$/.test(x);});
     }
 
-    function isBlockStart(lines, index) {
-        if (index >= lines.length) return true;
-        var line = lines[index];
-        return /^\s*$/.test(line)
-            || /^\s*(`{3,}|~{3,})/.test(line)
-            || /^#{1,6}\s+/.test(line)
-            || /^\s*>/.test(line)
-            || /^\s*[-+*]\s+/.test(line)
-            || /^\s*\d+[.)]\s+/.test(line)
-            || /^\s*([-*_])(?:\s*\1){2,}\s*$/.test(line)
-            || /^\s*<details/i.test(line)
-            || /^\s*<\/details/i.test(line)
-            || (line.includes("|") && isTableDivider(lines[index + 1]));
+    function isBlockStart(lines,idx) {
+        if(idx>=lines.length)return true; var l=lines[idx];
+        return /^\s*$/.test(l)||/^\s*(`{3,}|~{3,})/.test(l)||/^#{1,6}\s+/.test(l)||/^\s*>/.test(l)
+            ||/^\s*[-+*]\s+/.test(l)||/^\s*\d+[.)]\s+/.test(l)||/^\s*([-*_])(?:\s*\1){2,}\s*$/.test(l)
+            ||/^\s*<details/i.test(l)||/^\s*<\/details/i.test(l)||(l.includes("|")&&isTableDivider(lines[idx+1]));
     }
 
-    function renderMarkdown(markdown) {
-        var fragment = document.createDocumentFragment();
-        var lines    = markdown.replace(/\r\n?/g, "\n").split("\n");
-        var i        = 0;
-
+    function renderMarkdown(md) {
+        var frag = document.createDocumentFragment(), lines = md.replace(/\r\n?/g,"\n").split("\n"), i = 0;
         while (i < lines.length) {
             var line = lines[i];
-
             if (!line.trim()) { i++; continue; }
 
-            // Блоки кода в Markdown (```c)
             var fence = line.match(/^\s*(`{3,}|~{3,})(.*)$/);
             if (fence) {
-                var marker    = fence[1];
-                var lang      = fence[2].trim().toLowerCase();
-                var codeLines = [];
-                i++;
-                while (i < lines.length) {
-                    var closingTest = lines[i].trim();
-                    if (closingTest.length >= marker.length
-                        && Array.from(closingTest).every(function (ch) {
-                            return ch === marker[0];
-                        })) {
-                        i++;
-                        break;
-                    }
-                    codeLines.push(lines[i]);
-                    i++;
-                }
-                var preNode  = element("pre");
-                var codeNode = element("code");
-
-                // Если язык блоков C/C++, подсвечиваем его
-                if (lang === "c" || lang === "cpp") {
-                    codeNode.innerHTML = highlightC(codeLines.join("\n"));
-                } else {
-                    codeNode.textContent = codeLines.join("\n");
-                }
-
-                preNode.appendChild(codeNode);
-                fragment.appendChild(preNode);
-                continue;
+                var mk=fence[1],lang=fence[2].trim().toLowerCase(),cl=[]; i++;
+                while(i<lines.length){var ct=lines[i].trim();
+                    if(ct.length>=mk.length&&Array.from(ct).every(function(c){return c===mk[0];})){i++;break;}
+                    cl.push(lines[i]);i++;}
+                var pre=el("pre"),code=el("code");
+                if(lang==="c"||lang==="cpp")code.innerHTML=highlightC(cl.join("\n"));else code.textContent=cl.join("\n");
+                pre.appendChild(code);frag.appendChild(pre);continue;
             }
 
-            var heading = line.match(/^(#{1,6})\s+(.*)$/);
-            if (heading) {
-                var hNode = element("h" + heading[1].length);
-                appendInline(hNode, heading[2]);
-                fragment.appendChild(hNode);
-                i++;
-                continue;
+            var hd=line.match(/^(#{1,6})\s+(.*)$/);
+            if(hd){var h=el("h"+hd[1].length);appendInline(h,hd[2]);frag.appendChild(h);i++;continue;}
+
+            if(/^\s*<details/i.test(line)){
+                var det=document.createElement("details");if(/open/i.test(line))det.open=true;
+                var dc=[],fl=line.replace(/^\s*<details[^>]*>/i,"");if(fl.trim())dc.push(fl);i++;
+                while(i<lines.length&&!/^\s*<\/details/i.test(lines[i])){dc.push(lines[i]);i++;}
+                if(i<lines.length){var ll=lines[i].replace(/<\/details\s*>\s*$/i,"");if(ll.trim())dc.push(ll);i++;}
+                var dtc=dc.join("\n"),sm=dtc.match(/<summary>([\s\S]*?)<\/summary>/i);
+                if(sm){var sn=document.createElement("summary");appendInline(sn,sm[1].trim());det.appendChild(sn);
+                    dtc=dtc.replace(/<summary>[\s\S]*?<\/summary>/i,"");}
+                if(dtc.trim())det.appendChild(renderMarkdown(dtc));frag.appendChild(det);continue;
             }
 
-            // Надежный разбор спойлеров <details>
-            if (/^\s*<details/i.test(line)) {
-                var det = document.createElement("details");
-                if (/open/i.test(line)) {
-                    det.open = true;
-                }
-
-                var dc = [];
-                var firstLine = line.replace(/^\s*<details[^>]*>/i, "");
-                if (firstLine.trim()) {
-                    dc.push(firstLine);
-                }
-                i++;
-
-                while (i < lines.length && !/^\s*<\/details/i.test(lines[i])) {
-                    dc.push(lines[i]);
-                    i++;
-                }
-
-                if (i < lines.length) {
-                    var lastLine = lines[i].replace(/<\/details\s*>\s*$/i, "");
-                    if (lastLine.trim()) {
-                        dc.push(lastLine);
-                    }
-                    i++;
-                }
-
-                var detailsContent = dc.join("\n");
-
-                var sm = detailsContent.match(/<summary>([\s\S]*?)<\/summary>/i);
-                if (sm) {
-                    var sn = document.createElement("summary");
-                    appendInline(sn, sm[1].trim());
-                    det.appendChild(sn);
-                    detailsContent = detailsContent.replace(/<summary>[\s\S]*?<\/summary>/i, "");
-                }
-
-                if (detailsContent.trim()) {
-                    det.appendChild(renderMarkdown(detailsContent));
-                }
-
-                fragment.appendChild(det);
-                continue;
+            if(line.includes("|")&&isTableDivider(lines[i+1])){
+                var w=el("div","table-wrap"),tbl=el("table"),thd=el("thead"),hr=el("tr"),hc=tableCells(line);
+                for(var hi=0;hi<hc.length;hi++){var th=el("th");appendCellWithBreaks(th,hc[hi]);hr.appendChild(th);}
+                thd.appendChild(hr);tbl.appendChild(thd);i+=2;var tb=el("tbody");
+                while(i<lines.length&&lines[i].trim()&&lines[i].includes("|")){
+                    var dr=el("tr"),dc2=tableCells(lines[i]);
+                    for(var di=0;di<dc2.length;di++){var td=el("td");if(dc2[di])appendCellWithBreaks(td,dc2[di]);dr.appendChild(td);}
+                    tb.appendChild(dr);i++;}
+                tbl.appendChild(tb);w.appendChild(tbl);frag.appendChild(w);continue;
             }
 
-            if (line.includes("|") && isTableDivider(lines[i + 1])) {
-                var wrapper  = element("div", "table-wrap");
-                var table    = element("table");
-                var thead    = element("thead");
-                var headRow  = element("tr");
-                var headCells = tableCells(line);
-
-                for (var h = 0; h < headCells.length; h++) {
-                    var th = element("th");
-                    appendCellWithBreaks(th, headCells[h]);
-                    headRow.appendChild(th);
-                }
-
-                thead.appendChild(headRow);
-                table.appendChild(thead);
-                i += 2;
-
-                var tbody = element("tbody");
-                while (i < lines.length && lines[i].trim() && lines[i].includes("|")) {
-                    var dataRow   = element("tr");
-                    var dataCells = tableCells(lines[i]);
-                    for (var d = 0; d < dataCells.length; d++) {
-                        var td = element("td");
-                        if (dataCells[d]) {
-                            appendCellWithBreaks(td, dataCells[d]);
-                        }
-                        dataRow.appendChild(td);
-                    }
-                    tbody.appendChild(dataRow);
-                    i++;
-                }
-
-                table.appendChild(tbody);
-                wrapper.appendChild(table);
-                fragment.appendChild(wrapper);
-                continue;
+            if(/^\s*>/.test(line)){
+                var ql=[];while(i<lines.length&&/^\s*>/.test(lines[i])){ql.push(lines[i].replace(/^\s*>\s?/,""));i++;}
+                var bq=el("blockquote");bq.appendChild(renderMarkdown(ql.join("\n")));frag.appendChild(bq);continue;
             }
 
-            if (/^\s*>/.test(line)) {
-                var quoteLines = [];
-                while (i < lines.length && /^\s*>/.test(lines[i])) {
-                    quoteLines.push(lines[i].replace(/^\s*>\s?/, ""));
-                    i++;
-                }
-                var blockquote = element("blockquote");
-                blockquote.appendChild(renderMarkdown(quoteLines.join("\n")));
-                fragment.appendChild(blockquote);
-                continue;
+            if(/^\s*([-*_])(?:\s*\1){2,}\s*$/.test(line)){frag.appendChild(el("hr"));i++;continue;}
+
+            var uo=/^\s*[-+*]\s+/.test(line),od=/^\s*\d+[.)]\s+/.test(line);
+            if(uo||od){var list=el(od?"ol":"ul"),ip=od?/^\s*\d+[.)]\s+(.*)$/:/ ^\s*[-+*]\s+(.*)$/;
+                // fix: regex without space
+                ip=od?/^\s*\d+[.)]\s+(.*)$/:/ ^\s*[-+*]\s+(.*)$/;
+                ip=od?/^\s*\d+[.)]\s+(.*)$/:(/^\s*[-+*]\s+(.*)$/);
+                while(i<lines.length){var im=lines[i].match(ip);if(!im)break;
+                    var lt=[im[1]];i++;while(i<lines.length&&lines[i].trim()&&!ip.test(lines[i])&&!isBlockStart(lines,i)){lt.push(lines[i].trim());i++;}
+                    var li2=el("li");appendInline(li2,lt.join(" "));list.appendChild(li2);}
+                frag.appendChild(list);continue;
             }
 
-            if (/^\s*([-*_])(?:\s*\1){2,}\s*$/.test(line)) {
-                fragment.appendChild(element("hr"));
-                i++;
-                continue;
-            }
-
-            var isUnordered = /^\s*[-+*]\s+/.test(line);
-            var isOrdered   = /^\s*\d+[.)]\s+/.test(line);
-
-            if (isUnordered || isOrdered) {
-                var list = element(isOrdered ? "ol" : "ul");
-                var itemPattern = isOrdered
-                    ? /^\s*\d+[.)]\s+(.*)$/
-                    : /^\s*[-+*]\s+(.*)$/;
-
-                while (i < lines.length) {
-                    var itemMatch = lines[i].match(itemPattern);
-                    if (!itemMatch) break;
-                    var liText = [itemMatch[1]];
-                    i++;
-                    while (i < lines.length
-                    && lines[i].trim()
-                    && !itemPattern.test(lines[i])
-                    && !isBlockStart(lines, i)) {
-                        liText.push(lines[i].trim());
-                        i++;
-                    }
-                    var li = element("li");
-                    appendInline(li, liText.join(" "));
-                    list.appendChild(li);
-                }
-                fragment.appendChild(list);
-                continue;
-            }
-
-            var paragraphLines = [line];
-            i++;
-            while (i < lines.length && !isBlockStart(lines, i)) {
-                paragraphLines.push(lines[i]);
-                i++;
-            }
-            var paragraph = element("p");
-            appendInline(paragraph, paragraphLines.join("\n"));
-            fragment.appendChild(paragraph);
+            var pl=[line];i++;
+            while(i<lines.length&&!isBlockStart(lines,i)){pl.push(lines[i]);i++;}
+            var p=el("p");appendInline(p,pl.join("\n"));frag.appendChild(p);
         }
-
-        return fragment;
+        return frag;
     }
 
     /* ================================================================
-       CARDS GENERATION & UI
+       CARDS
        ================================================================ */
 
     function createCards() {
         for (var i = 0; i < LEVELS.length; i++) {
             var level = LEVELS[i];
-
-            var card   = element("article", "card " + level.id);
-            var header = element("div", "card-header");
-
-            var top        = element("div", "card-top");
-            var badge      = element("span", "badge", level.label);
-            var extraBadge = element("span", "extra-badge", "EXTRA");
-            extraBadge.hidden = true;
+            var card = el("article", "card " + level.id);
+            var header = el("div", "card-header");
+            var top = el("div", "card-top");
+            var badge = el("span", "badge", level.label);
+            var extraBadge = el("span", "extra-badge", "EXTRA"); extraBadge.hidden = true;
             top.append(badge, extraBadge);
 
-            var title = element("h2", "task-title", "Ждёт своего часа");
-            var path  = element("div", "path", "Рабочая папка появится после создания набора");
-
-            var sourceRow = element("div", "source-row");
-            sourceRow.hidden = true;
-            var srcLabel  = element("span", "source-label", "📂 Исходная папка:");
-            var srcPath   = element("span", "source-path", "");
-            sourceRow.append(srcLabel, srcPath);
-
-            var spoilerHint = element("div", "spoiler-hint",
-                "💡 Попробуй сначала решить сам, прежде чем смотреть теорию или решение");
+            var title = el("h2", "task-title", "Ждёт своего часа");
+            var path = el("div", "path", "Рабочая папка появится после создания набора");
+            var sourceRow = el("div", "source-row"); sourceRow.hidden = true;
+            var srcLabel = el("span", "source-label", "📂 Исходная папка:");
+            var srcPath = el("span", "source-path", ""); sourceRow.append(srcLabel, srcPath);
+            var spoilerHint = el("div", "spoiler-hint", "💡 Попробуй сначала решить сам, прежде чем смотреть теорию или решение");
             spoilerHint.hidden = true;
 
-            var actions = element("div", "card-actions");
+            var actions = el("div", "card-actions");
+            var skipBtn = el("button", "file-btn", "🔄 Заменить"); skipBtn.type = "button"; skipBtn.disabled = true;
+            (function(lid){skipBtn.addEventListener("click",function(){runOperation(function(){return skipTask(lid);});});})(level.id);
 
-            var skipBtn = element("button", "file-btn", "🔄 Заменить");
-            skipBtn.type = "button";
-            skipBtn.disabled = true;
-            (function (levelId) {
-                skipBtn.addEventListener("click", function () {
-                    runOperation(function () { return skipTask(levelId); });
-                });
-            })(level.id);
+            var sourceBtn = el("button", "file-btn", "📂 Источник"); sourceBtn.type = "button"; sourceBtn.disabled = true;
+            (function(lid){sourceBtn.addEventListener("click",function(){toggleSource(lid);});})(level.id);
 
-            var sourceBtn = element("button", "file-btn", "📂 Источник");
-            sourceBtn.type = "button";
-            sourceBtn.disabled = true;
-            (function (levelId) {
-                sourceBtn.addEventListener("click", function () {
-                    toggleSource(levelId);
-                });
-            })(level.id);
+            var doneBtn = el("button", "file-btn done-btn", "✅ Решено"); doneBtn.type = "button"; doneBtn.disabled = true;
+            (function(lid){doneBtn.addEventListener("click",function(){toggleCompleted(lid);});})(level.id);
 
-            actions.append(skipBtn, sourceBtn);
+            actions.append(skipBtn, sourceBtn, doneBtn);
 
-            var fileSection = element("div", "card-files");
-            var fileLabel   = element("div", "card-files-label", "Файлы задания");
-            fileSection.appendChild(fileLabel);
-
+            var fileSection = el("div", "card-files");
+            var fileLabel = el("div", "card-files-label", "Файлы задания"); fileSection.appendChild(fileLabel);
             var fileButtons = {};
-
             for (var j = 0; j < FILE_BUTTONS.length; j++) {
-                var config = FILE_BUTTONS[j];
-                var btnClass = "file-btn" + (config.reveal ? " reveal" : "");
-                var btn = element("button", btnClass, config.label);
-                btn.type = "button";
-                btn.disabled = true;
-
-                (function (levelId, cfg, hint) {
-                    btn.addEventListener("click", function () {
-                        if (cfg.reveal) hint.hidden = true;
-                        openFileInTab(levelId, cfg.filename, cfg.tabTitle);
-                    });
-                })(level.id, config, spoilerHint);
-
-                fileButtons[config.key] = btn;
-                fileSection.appendChild(btn);
+                var cfg = FILE_BUTTONS[j];
+                var btn = el("button", "file-btn" + (cfg.reveal ? " reveal" : ""), cfg.label); btn.type = "button"; btn.disabled = true;
+                (function(lid,c,hint){btn.addEventListener("click",function(){if(c.reveal)hint.hidden=true;openFileInTab(lid,c.filename,c.tabTitle);});})(level.id,cfg,spoilerHint);
+                fileButtons[cfg.key] = btn; fileSection.appendChild(btn);
             }
 
             header.append(top, title, path, sourceRow, spoilerHint, actions, fileSection);
 
-            var documentBody = element("div", "document empty");
-            card.append(header, documentBody);
+            var documentBody = el("div", "document empty");
+
+            // Полоска «Выполнено» (по умолчанию скрыта)
+            var completedBar = el("div", "completed-bar"); completedBar.hidden = true;
+            var cbLeft = el("div", "completed-bar-left");
+            var cbIcon = el("span", "completed-bar-icon", "✅");
+            var cbText = el("span", "completed-bar-text", "Задание выполнено");
+            var cbTitle = el("span", "completed-bar-title", "");
+            cbLeft.append(cbIcon, cbText, cbTitle);
+            var cbShowBtn = el("button", "", "👁️ Показать условие"); cbShowBtn.type = "button";
+            (function(lid){cbShowBtn.addEventListener("click",function(){toggleCompleted(lid);});})(level.id);
+            completedBar.append(cbLeft, cbShowBtn);
+
+            card.append(header, documentBody, completedBar);
             ui.cards.appendChild(card);
 
             cardUI[level.id] = {
-                title:       title,
-                extra:       extraBadge,
-                path:        path,
-                sourceRow:   sourceRow,
-                srcPath:     srcPath,
-                spoilerHint: spoilerHint,
-                skip:        skipBtn,
-                source:      sourceBtn,
-                fileButtons: fileButtons,
-                document:    documentBody
+                card: card, title: title, extra: extraBadge, path: path,
+                sourceRow: sourceRow, srcPath: srcPath, spoilerHint: spoilerHint,
+                skip: skipBtn, source: sourceBtn, doneBtn: doneBtn,
+                fileButtons: fileButtons, document: documentBody,
+                completedBar: completedBar, cbTitle: cbTitle
             };
-
             renderCard(level.id);
         }
     }
 
     function renderCard(level) {
-        var card      = cardUI[level];
-        var selection = state.current[level];
+        var c = cardUI[level], sel = state.current[level];
+        var isLocked = state.locked[level], isDone = state.completed[level];
 
-        card.document.replaceChildren();
-        card.document.scrollTop = 0;
+        c.document.replaceChildren(); c.document.scrollTop = 0;
 
-        if (!selection) {
-            card.title.textContent = "Ждёт своего часа";
-            card.extra.hidden      = true;
-            card.path.textContent  = "Рабочая папка появится после создания набора";
-            card.sourceRow.hidden  = true;
-            card.spoilerHint.hidden = true;
-            card.srcPath.textContent = "";
-            card.document.className  = "document empty";
+        // Класс completed на карточку
+        c.card.classList.toggle("completed", isDone && !!sel);
 
-            var inner = element("div", "empty-inner");
-            inner.append(
-                element("div", "empty-icon", "{ }"),
-                element("p", "", "Выбери папку проекта и нажми «Новый набор».")
-            );
-            card.document.appendChild(inner);
+        if (!sel) {
+            c.title.textContent = "Ждёт своего часа"; c.extra.hidden = true;
+            c.path.textContent = "Рабочая папка появится после создания набора";
+            c.sourceRow.hidden = true; c.spoilerHint.hidden = true; c.srcPath.textContent = "";
+            c.document.className = "document empty"; c.completedBar.hidden = true;
+            var inner = el("div","empty-inner");
+            inner.append(el("div","empty-icon","{ }"),el("p","","Выбери папку проекта и нажми «Новый набор»."));
+            c.document.appendChild(inner); return;
+        }
+
+        // Заблокировано
+        if (isLocked) {
+            c.title.textContent = "Задание скрыто"; c.extra.hidden = true;
+            c.path.textContent = "Папка создана: " + sel.relativePath;
+            c.sourceRow.hidden = true; c.spoilerHint.hidden = true; c.srcPath.textContent = "";
+            c.document.className = "document empty locked"; c.completedBar.hidden = true;
+            var inner = el("div","empty-inner");
+            var icon = el("div","empty-icon locked-animation","🔒");
+            var mt = el("h3","","Дорогу осилит идущий"); mt.style.marginTop="10px"; mt.style.marginBottom="8px";
+            var prevName = level === "medium" ? "Лёгкое" : "Среднее";
+            var msg = el("p","","Рекомендуем сначала решить " + prevName + " задание. Нажмите «Открыть», когда будете готовы!");
+            msg.style.cssText = "font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.45";
+            var ub = el("button","primary","🔓 Открыть задание"); ub.type = "button";
+            (function(lvl){ub.addEventListener("click",function(){state.locked[lvl]=false;renderCard(lvl);refreshControls();});})(level);
+            inner.append(icon,mt,msg,ub); c.document.appendChild(inner); return;
+        }
+
+        // Свёрнуто (выполнено)
+        if (isDone) {
+            c.title.textContent = sel.task.title; c.extra.hidden = !sel.task.extra;
+            c.path.textContent = sel.relativePath;
+            c.sourceRow.hidden = true; c.srcPath.textContent = "tasks/" + sel.task.actualPath + "/";
+            c.spoilerHint.hidden = true;
+            c.document.className = "document collapsed";
+            c.completedBar.hidden = false;
+            c.cbTitle.textContent = " — " + sel.task.title;
             return;
         }
 
-        card.title.textContent   = selection.task.title;
-        card.extra.hidden        = !selection.task.extra;
-        card.path.textContent    = selection.relativePath;
-        card.sourceRow.hidden    = true;
-        card.srcPath.textContent = "tasks/" + selection.task.actualPath + "/";
-        card.spoilerHint.hidden  = false;
-        card.document.className  = "document";
-        card.document.appendChild(renderMarkdown(selection.markdown));
+        // Обычный рендер
+        c.title.textContent = sel.task.title; c.extra.hidden = !sel.task.extra;
+        c.path.textContent = sel.relativePath;
+        c.sourceRow.hidden = true; c.srcPath.textContent = "tasks/" + sel.task.actualPath + "/";
+        c.spoilerHint.hidden = false; c.completedBar.hidden = true;
+        c.document.className = "document";
+        c.document.appendChild(renderMarkdown(sel.markdown));
     }
 
     createCards();
@@ -1763,23 +1421,15 @@ gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm</pre>
     ui.choose.addEventListener("click", function () { runOperation(chooseProject); });
     ui.generate.addEventListener("click", function () { runOperation(generateSet); });
     ui.pause.addEventListener("click", toggleTimer);
-
     ui.extra.addEventListener("change", function () {
         refreshControls();
-        setStatus(
-            extraEnabled()
-                ? "Дополнительные задания включены для следующих выборов."
-                : "Дополнительные задания исключены из следующих выборов."
-        );
+        setStatus(extraEnabled()
+            ? "Дополнительные задания включены для следующих выборов."
+            : "Дополнительные задания исключены из следующих выборов.");
     });
 
-    if (!window.isSecureContext
-        || typeof window.showDirectoryPicker !== "function") {
-        setStatus(
-            "Доступ к папкам недоступен. Открой страницу в Chrome/Edge.",
-            "error"
-        );
-    }
+    if (!window.isSecureContext || typeof window.showDirectoryPicker !== "function")
+        setStatus("Доступ к папкам недоступен. Открой страницу в Chrome/Edge.", "error");
 </script>
 </body>
 </html>
