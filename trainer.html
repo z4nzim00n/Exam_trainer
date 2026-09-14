@@ -19,6 +19,7 @@
             --yellow:       #ffd17b;
             --red:          #ff98aa;
             --radius:       20px;
+            --divider:      #4a3f7a;
         }
 
         * { box-sizing: border-box; }
@@ -197,9 +198,34 @@
             box-shadow: 0 12px 40px #00000020;
         }
 
+        /* Заметный разделитель между шапкой карточки и телом документа */
         .card-header {
+            position: relative;
             padding: 20px;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 2px solid var(--divider);
+            box-shadow:
+                    0 1px 0 0 #a998ff33,
+                    0 4px 12px -6px #a998ff40;
+            background:
+                    linear-gradient(180deg, transparent 0%, #a998ff08 100%);
+        }
+
+        .card-header::after {
+            content: "";
+            position: absolute;
+            left: 20px;
+            right: 20px;
+            bottom: -2px;
+            height: 2px;
+            background: linear-gradient(
+                    90deg,
+                    transparent 0%,
+                    var(--accent) 20%,
+                    var(--accent) 80%,
+                    transparent 100%
+            );
+            opacity: .55;
+            pointer-events: none;
         }
 
         .card-top {
@@ -282,13 +308,14 @@
             margin-top: 16px;
         }
 
+        /* Разделитель между действиями и списком файлов задания */
         .card-files {
             display: flex;
             flex-wrap: wrap;
             gap: 7px;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid var(--border);
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px dashed #3a4666;
         }
 
         .card-files-label {

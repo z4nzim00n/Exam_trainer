@@ -1,18 +1,20 @@
 #include <stdio.h>
 
 int main(void) {
-    char text[102];
-    int length = 0;
+    char str[102];
+    int len = 0;
+    int ch;
 
-    if (fgets(text, sizeof(text), stdin) != NULL) {
-        while (text[length] != '\0' && text[length] != '\n') {
-            length++;
+    while ((ch = getchar()) != EOF && ch != '\n') {
+        if (len < 101) {
+            str[len] = (char)ch;
+            len++;
         }
     }
+    str[len] = '\0';
 
-    while (length > 0) {
-        length--;
-        putchar(text[length]);
+    for (int i = len - 1; i >= 0; i--) {
+        putchar(str[i]);
     }
 
     return 0;

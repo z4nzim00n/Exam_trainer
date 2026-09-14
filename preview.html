@@ -245,13 +245,16 @@
 
         .layout-toggle:hover { background: #243044; color: var(--text); }
 
-        /* ---- Split panels ---- */
+        /* ---- Split panels (Modern Card Layout) ---- */
 
         .panels {
             flex: 1;
             display: flex;
+            gap: 16px;
+            padding: 16px;
             overflow: hidden;
             min-height: 0;
+            background: rgba(8, 11, 19, 0.4); /* Подложка под панелями */
         }
 
         .panels.vertical {
@@ -265,15 +268,16 @@
             scrollbar-color: #4c5972 transparent;
             min-height: 0;
             min-width: 0;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
         }
 
-        .panel + .panel {
-            border-left: 1px solid var(--border);
-        }
-
-        .panels.vertical .panel + .panel {
-            border-left: none;
-            border-top: 1px solid var(--border);
+        .panel:hover {
+            border-color: #384663;
+            box-shadow: 0 12px 40px -10px rgba(0, 0, 0, 0.85);
         }
 
         .panel-topbar {
@@ -487,9 +491,12 @@
                 border-right: none;
                 border-bottom: 1px solid var(--border);
             }
-            .panels { flex-direction: column !important; }
-            .panel + .panel { border-left: none !important; border-top: 1px solid var(--border); }
-            .panel { padding: 16px; }
+            .panels {
+                flex-direction: column !important;
+                padding: 12px;
+                gap: 12px;
+            }
+            .panel { padding: 18px; }
         }
     </style>
 </head>
