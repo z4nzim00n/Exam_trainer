@@ -254,7 +254,7 @@
             padding: 16px;
             overflow: hidden;
             min-height: 0;
-            background: rgba(8, 11, 19, 0.4); /* Подложка под панелями */
+            background: rgba(8, 11, 19, 0.4);
         }
 
         .panels.vertical {
@@ -1025,35 +1025,72 @@
     }
 
     function appendInline(parent, text) {
-        var pat = /(`[^`\n]+`|\*\*[^*\n]+\*\*|\*[^*\n]+\*|\[[^\]]*\]\([^)]*\))/g;
+        // Регулярное выражение для Markdown и базовых HTML тегов (br, b, strong, i, em, u, code)
+        var pat = /(`[^`\n]+`|\*\*[^*\n]+\*\*|\*[^*\n]+\*|\[[^\]]*\]\([^)]*\)|<br\s*\/?>|<b>.*?<\/b>|<strong>.*?<\/strong>|<i>.*?<\/i>|<em>.*?<\/em>|<u>.*?<\/u>|<code>.*?<\/code>)/gi;
         var pos = 0, m;
         while ((m = pat.exec(text)) !== null) {
-            if (m.index > pos) parent.appendChild(document.createTextNode(text.slice(pos, m.index)));
+            if (m.index > pos) {
+                parent.appendChild(document.createTextNode(text.slice(pos, m.index)));
+            }
             var tok = m[0];
+            var tokLower = tok.toLowerCase();
+
             if (tok.startsWith("`")) {
                 parent.appendChild(element("code", "", tok.slice(1, -1)));
             } else if (tok.startsWith("**")) {
-                var s = element("strong"); appendInline(s, tok.slice(2, -2)); parent.appendChild(s);
+                var s = element("strong");
+                appendInline(s, tok.slice(2, -2));
+                parent.appendChild(s);
             } else if (tok.startsWith("*")) {
-                var e = element("em"); appendInline(e, tok.slice(1, -1)); parent.appendChild(e);
+                var e = element("em");
+                appendInline(e, tok.slice(1, -1));
+                parent.appendChild(e);
             } else if (tok.startsWith("[")) {
                 var lm = tok.match(/^\[([^\]]*)\]\(([^)]*)\)$/);
                 if (lm) {
-                    var a = element("a"); a.href = lm[2]; a.target = "_blank"; a.rel = "noopener noreferrer";
-                    appendInline(a, lm[1]); parent.appendChild(a);
-                } else parent.appendChild(document.createTextNode(tok));
+                    var a = element("a");
+                    a.href = lm[2];
+                    a.target = "_blank";
+                    a.rel = "noopener noreferrer";
+                    appendInline(a, lm[1]);
+                    parent.appendChild(a);
+                } else {
+                    parent.appendChild(document.createTextNode(tok));
+                }
+            } else if (tokLower.startsWith("<br")) {
+                parent.appendChild(document.createElement("br"));
+            } else if (tokLower.startsWith("<b>")) {
+                var s = element("strong");
+                appendInline(s, tok.slice(3, -4));
+                parent.appendChild(s);
+            } else if (tokLower.startsWith("<strong>")) {
+                var s = element("strong");
+                appendInline(s, tok.slice(8, -9));
+                parent.appendChild(s);
+            } else if (tokLower.startsWith("<i>")) {
+                var e = element("em");
+                appendInline(e, tok.slice(3, -4));
+                parent.appendChild(e);
+            } else if (tokLower.startsWith("<em>")) {
+                var e = element("em");
+                appendInline(e, tok.slice(4, -5));
+                parent.appendChild(e);
+            } else if (tokLower.startsWith("<u>")) {
+                var u = element("u");
+                appendInline(u, tok.slice(3, -4));
+                parent.appendChild(u);
+            } else if (tokLower.startsWith("<code>")) {
+                parent.appendChild(element("code", "", tok.slice(6, -7)));
             }
             pos = pat.lastIndex;
         }
-        if (pos < text.length) parent.appendChild(document.createTextNode(text.slice(pos)));
+        if (pos < text.length) {
+            parent.appendChild(document.createTextNode(text.slice(pos)));
+        }
     }
 
     function appendCellWithBreaks(parent, text) {
-        var parts = text.split(/<br\s*\/?>/i);
-        for (var i = 0; i < parts.length; i++) {
-            if (i > 0) parent.appendChild(document.createElement("br"));
-            appendInline(parent, parts[i]);
-        }
+        appendInline(parent, text);
     }
 
     function tableCells(line) {
@@ -1104,16 +1141,56 @@
             var hd = line.match(/^(#{1,6})\s+(.*)$/);
             if (hd) { var h = element("h" + hd[1].length); appendInline(h, hd[2]); frag.appendChild(h); i++; continue; }
 
+            // ОБНОВЛЕННЫЙ БЛОК: Надежный разбор спойлеров <details>
             if (/^\s*<details/i.test(line)) {
                 var det = document.createElement("details");
-                var sm = line.match(/<summary>(.*?)<\/summary>/i);
-                if (!sm) { i++; if (i < lines.length) { sm = lines[i].match(/<summary>(.*?)<\/summary>/i); if (sm) i++; } }
-                if (sm) { var sn = document.createElement("summary"); appendInline(sn, sm[1]); det.appendChild(sn); }
+                if (/open/i.test(line)) {
+                    det.open = true;
+                }
+
                 var dc = [];
-                while (i < lines.length && !/^\s*<\/details/i.test(lines[i])) { dc.push(lines[i]); i++; }
-                if (i < lines.length) i++;
-                if (dc.length) det.appendChild(renderMarkdown(dc.join("\n")));
-                frag.appendChild(det); continue;
+                // Убираем открывающий тег details из первой строчки, если там есть что-то еще
+                var firstLine = line.replace(/^\s*<details[^>]*>/i, "");
+                if (firstLine.trim()) {
+                    dc.push(firstLine);
+                }
+                i++;
+
+                // Собираем все строки до закрывающего </details>
+                while (i < lines.length && !/^\s*<\/details/i.test(lines[i])) {
+                    dc.push(lines[i]);
+                    i++;
+                }
+
+                // Обрабатываем последнюю строку (удаляем </details>)
+                if (i < lines.length) {
+                    var lastLine = lines[i].replace(/<\/details\s*>\s*$/i, "");
+                    if (lastLine.trim()) {
+                        dc.push(lastLine);
+                    }
+                    i++; // Пропускаем строку с </details>
+                }
+
+                var detailsContent = dc.join("\n");
+
+                // Ищем тег <summary> внутри собранного блока (даже если он перенесен или содержит вложенность)
+                var sm = detailsContent.match(/<summary>([\s\S]*?)<\/summary>/i);
+                if (sm) {
+                    var sn = document.createElement("summary");
+                    appendInline(sn, sm[1].trim());
+                    det.appendChild(sn);
+
+                    // Удаляем блок <summary> из контента, чтобы он не дублировался в тексте
+                    detailsContent = detailsContent.replace(/<summary>[\s\S]*?<\/summary>/i, "");
+                }
+
+                // Оставшееся содержимое спойлера рендерим как стандартный Markdown
+                if (detailsContent.trim()) {
+                    det.appendChild(renderMarkdown(detailsContent));
+                }
+
+                frag.appendChild(det);
+                continue;
             }
 
             if (line.includes("|") && isTableDivider(lines[i + 1])) {
