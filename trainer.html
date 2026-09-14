@@ -20,6 +20,16 @@
             --red:          #ff98aa;
             --radius:       20px;
             --divider:      #4a3f7a;
+
+            /* Цветовая схема подсветки кода Си */
+            --hl-comment:   #6272a4;
+            --hl-string:    #50fa7b;
+            --hl-char:      #f1fa8c;
+            --hl-preproc:   #ff79c6;
+            --hl-keyword:   #ff79c6;
+            --hl-type:      var(--accent);
+            --hl-number:    #bd93f9;
+            --hl-func:      #8be9fd;
         }
 
         * { box-sizing: border-box; }
@@ -396,6 +406,16 @@
             background: transparent;
             color: #dfe8ff;
         }
+
+        /* Классы подсветки кода */
+        .hl-comment { color: var(--hl-comment); font-style: italic; opacity: 0.85; }
+        .hl-string  { color: var(--hl-string); }
+        .hl-char    { color: var(--hl-char); }
+        .hl-preproc { color: var(--hl-preproc); font-weight: bold; }
+        .hl-keyword { color: var(--hl-keyword); font-weight: bold; }
+        .hl-type    { color: var(--accent); font-weight: 600; }
+        .hl-number  { color: var(--hl-number); }
+        .hl-func    { color: var(--yellow); }
 
         .document blockquote {
             margin: 14px 0;
@@ -1234,7 +1254,14 @@ gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm</pre>
         } else {
             var pre  = doc.createElement("pre");
             var code = doc.createElement("code");
-            code.textContent = content;
+
+            // Если открываем исходник на Си, подсвечиваем синтаксис
+            if (filename.endsWith(".c") || filename.endsWith(".h")) {
+                code.innerHTML = highlightC(content);
+            } else {
+                code.textContent = content;
+            }
+
             pre.appendChild(code);
             main.appendChild(pre);
         }
@@ -1247,71 +1274,123 @@ gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm</pre>
         card.sourceRow.hidden = !card.sourceRow.hidden;
     }
 
-    function escapeHtml(text) {
-        return text
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;");
+    /* ================================================================
+       LIGHTWEIGHT C SYNTAX HIGHLIGHTER
+       ================================================================ */
+
+    function escapeHtml(str) {
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
+
+    function highlightC(code) {
+        var regex = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\])*")|('(?:\\.|[^'\\])*')|(^\s*#[a-zA-Z_]+)|(\b(?:break|case|char|const|continue|default|do|double|else|enum|extern|float|for|goto|if|inline|int|long|register|restrict|return|short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|volatile|while)\b)|(\b(?:size_t|ssize_t|uintptr_t|intptr_t|FILE|NULL|stdin|stdout|stderr|[a-zA-Z0-9_]+_t)\b)|(\b0x[0-9a-fA-F]+\b|\b\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[fFlL]?\b)|(\b[a-zA-Z_][a-zA-Z0-9_]*(?=\s*\())/gm;
+
+        let lastIndex = 0;
+        let html = '';
+
+        code.replace(regex, function(match, comment, string, char, preproc, keyword, type, number, func, index) {
+            if (index > lastIndex) {
+                html += escapeHtml(code.slice(lastIndex, index));
+            }
+
+            if (comment) {
+                html += '<span class="hl-comment">' + escapeHtml(comment) + '</span>';
+            } else if (string) {
+                html += '<span class="hl-string">' + escapeHtml(string) + '</span>';
+            } else if (char) {
+                html += '<span class="hl-char">' + escapeHtml(char) + '</span>';
+            } else if (preproc) {
+                html += '<span class="hl-preproc">' + escapeHtml(preproc) + '</span>';
+            } else if (keyword) {
+                html += '<span class="hl-keyword">' + escapeHtml(keyword) + '</span>';
+            } else if (type) {
+                html += '<span class="hl-type">' + escapeHtml(type) + '</span>';
+            } else if (number) {
+                html += '<span class="hl-number">' + escapeHtml(number) + '</span>';
+            } else if (func) {
+                html += '<span class="hl-func">' + escapeHtml(func) + '</span>';
+            }
+
+            lastIndex = index + match.length;
+        });
+
+        if (lastIndex < code.length) {
+            html += escapeHtml(code.slice(lastIndex));
+        }
+
+        return html;
+    }
+
+    /* ================================================================
+       MARKDOWN PARSER
+       ================================================================ */
 
     function appendInline(parent, text) {
-        var pattern = /(`[^`\n]+`|\*\*[^*\n]+\*\*|\*[^*\n]+\*|\[[^\]]*\]\([^)]*\))/g;
-        var position = 0;
-        var match;
-
-        while ((match = pattern.exec(text)) !== null) {
-            if (match.index > position) {
-                parent.appendChild(
-                    document.createTextNode(text.slice(position, match.index))
-                );
+        var pat = /(`[^`\n]+`|\*\*[^*\n]+\*\*|\*[^*\n]+\*|\[[^\]]*\]\([^)]*\)|<br\s*\/?>|<b>.*?<\/b>|<strong>.*?<\/strong>|<i>.*?<\/i>|<em>.*?<\/em>|<u>.*?<\/u>|<code>.*?<\/code>)/gi;
+        var pos = 0, m;
+        while ((m = pat.exec(text)) !== null) {
+            if (m.index > pos) {
+                parent.appendChild(document.createTextNode(text.slice(pos, m.index)));
             }
+            var tok = m[0];
+            var tokLower = tok.toLowerCase();
 
-            var token = match[0];
-
-            if (token.startsWith("`")) {
-                parent.appendChild(element("code", "", token.slice(1, -1)));
-            } else if (token.startsWith("**")) {
-                var strongNode = element("strong");
-                appendInline(strongNode, token.slice(2, -2));
-                parent.appendChild(strongNode);
-            } else if (token.startsWith("*")) {
-                var emNode = element("em");
-                appendInline(emNode, token.slice(1, -1));
-                parent.appendChild(emNode);
-            } else if (token.startsWith("[")) {
-                var linkMatch = token.match(/^\[([^\]]*)\]\(([^)]*)\)$/);
-                if (linkMatch) {
-                    var anchor    = element("a");
-                    anchor.href   = linkMatch[2];
-                    anchor.target = "_blank";
-                    anchor.rel    = "noopener noreferrer";
-                    appendInline(anchor, linkMatch[1]);
-                    parent.appendChild(anchor);
+            if (tok.startsWith("`")) {
+                parent.appendChild(element("code", "", tok.slice(1, -1)));
+            } else if (tok.startsWith("**")) {
+                var s = element("strong");
+                appendInline(s, tok.slice(2, -2));
+                parent.appendChild(s);
+            } else if (tok.startsWith("*")) {
+                var e = element("em");
+                appendInline(e, tok.slice(1, -1));
+                parent.appendChild(e);
+            } else if (tok.startsWith("[")) {
+                var lm = tok.match(/^\[([^\]]*)\]\(([^)]*)\)$/);
+                if (lm) {
+                    var a = element("a");
+                    a.href = lm[2];
+                    a.target = "_blank";
+                    a.rel = "noopener noreferrer";
+                    appendInline(a, lm[1]);
+                    parent.appendChild(a);
                 } else {
-                    parent.appendChild(document.createTextNode(token));
+                    parent.appendChild(document.createTextNode(tok));
                 }
+            } else if (tokLower.startsWith("<br")) {
+                parent.appendChild(document.createElement("br"));
+            } else if (tokLower.startsWith("<b>")) {
+                var s = element("strong");
+                appendInline(s, tok.slice(3, -4));
+                parent.appendChild(s);
+            } else if (tokLower.startsWith("<strong>")) {
+                var s = element("strong");
+                appendInline(s, tok.slice(8, -9));
+                parent.appendChild(s);
+            } else if (tokLower.startsWith("<i>")) {
+                var e = element("em");
+                appendInline(e, tok.slice(3, -4));
+                parent.appendChild(e);
+            } else if (tokLower.startsWith("<em>")) {
+                var e = element("em");
+                appendInline(e, tok.slice(4, -5));
+                parent.appendChild(e);
+            } else if (tokLower.startsWith("<u>")) {
+                var u = element("u");
+                appendInline(u, tok.slice(3, -4));
+                parent.appendChild(u);
+            } else if (tokLower.startsWith("<code>")) {
+                parent.appendChild(element("code", "", tok.slice(6, -7)));
             }
-
-            position = pattern.lastIndex;
+            pos = pat.lastIndex;
         }
-
-        if (position < text.length) {
-            parent.appendChild(document.createTextNode(text.slice(position)));
+        if (pos < text.length) {
+            parent.appendChild(document.createTextNode(text.slice(pos)));
         }
     }
 
-    /*
-     * Аналог appendInline для ячеек таблицы: дополнительно превращает
-     * <br>, <br/>, <br /> в реальный перенос строки.
-     */
     function appendCellWithBreaks(parent, text) {
-        var parts = text.split(/<br\s*\/?>/i);
-        for (var i = 0; i < parts.length; i++) {
-            if (i > 0) {
-                parent.appendChild(document.createElement("br"));
-            }
-            appendInline(parent, parts[i]);
-        }
+        appendInline(parent, text);
     }
 
     function tableCells(line) {
@@ -1357,9 +1436,11 @@ gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm</pre>
 
             if (!line.trim()) { i++; continue; }
 
+            // Блоки кода в Markdown (```c)
             var fence = line.match(/^\s*(`{3,}|~{3,})(.*)$/);
             if (fence) {
                 var marker    = fence[1];
+                var lang      = fence[2].trim().toLowerCase();
                 var codeLines = [];
                 i++;
                 while (i < lines.length) {
@@ -1375,7 +1456,15 @@ gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm</pre>
                     i++;
                 }
                 var preNode  = element("pre");
-                var codeNode = element("code", "", codeLines.join("\n"));
+                var codeNode = element("code");
+
+                // Если язык блоков C/C++, подсвечиваем его
+                if (lang === "c" || lang === "cpp") {
+                    codeNode.innerHTML = highlightC(codeLines.join("\n"));
+                } else {
+                    codeNode.textContent = codeLines.join("\n");
+                }
+
                 preNode.appendChild(codeNode);
                 fragment.appendChild(preNode);
                 continue;
@@ -1390,31 +1479,48 @@ gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm</pre>
                 continue;
             }
 
+            // Надежный разбор спойлеров <details>
             if (/^\s*<details/i.test(line)) {
-                var detailsNode  = document.createElement("details");
-                var summaryMatch = line.match(/<summary>(.*?)<\/summary>/i);
-                if (!summaryMatch) {
-                    i++;
-                    if (i < lines.length) {
-                        summaryMatch = lines[i].match(/<summary>(.*?)<\/summary>/i);
-                        if (summaryMatch) i++;
-                    }
+                var det = document.createElement("details");
+                if (/open/i.test(line)) {
+                    det.open = true;
                 }
-                if (summaryMatch) {
-                    var summaryNode = document.createElement("summary");
-                    appendInline(summaryNode, summaryMatch[1]);
-                    detailsNode.appendChild(summaryNode);
+
+                var dc = [];
+                var firstLine = line.replace(/^\s*<details[^>]*>/i, "");
+                if (firstLine.trim()) {
+                    dc.push(firstLine);
                 }
-                var detailsContent = [];
+                i++;
+
                 while (i < lines.length && !/^\s*<\/details/i.test(lines[i])) {
-                    detailsContent.push(lines[i]);
+                    dc.push(lines[i]);
                     i++;
                 }
-                if (i < lines.length) i++;
-                if (detailsContent.length) {
-                    detailsNode.appendChild(renderMarkdown(detailsContent.join("\n")));
+
+                if (i < lines.length) {
+                    var lastLine = lines[i].replace(/<\/details\s*>\s*$/i, "");
+                    if (lastLine.trim()) {
+                        dc.push(lastLine);
+                    }
+                    i++;
                 }
-                fragment.appendChild(detailsNode);
+
+                var detailsContent = dc.join("\n");
+
+                var sm = detailsContent.match(/<summary>([\s\S]*?)<\/summary>/i);
+                if (sm) {
+                    var sn = document.createElement("summary");
+                    appendInline(sn, sm[1].trim());
+                    det.appendChild(sn);
+                    detailsContent = detailsContent.replace(/<summary>[\s\S]*?<\/summary>/i, "");
+                }
+
+                if (detailsContent.trim()) {
+                    det.appendChild(renderMarkdown(detailsContent));
+                }
+
+                fragment.appendChild(det);
                 continue;
             }
 
@@ -1516,6 +1622,10 @@ gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm</pre>
 
         return fragment;
     }
+
+    /* ================================================================
+       CARDS GENERATION & UI
+       ================================================================ */
 
     function createCards() {
         for (var i = 0; i < LEVELS.length; i++) {

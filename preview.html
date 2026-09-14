@@ -20,6 +20,16 @@
             --red:          #ff98aa;
             --radius:       16px;
             --nav-w:        300px;
+
+            /* Цветовая схема подсветки кода Си */
+            --hl-comment:   #6272a4;
+            --hl-string:    #50fa7b;
+            --hl-char:      #f1fa8c;
+            --hl-preproc:   #ff79c6;
+            --hl-keyword:   #ff79c6;
+            --hl-type:      --accent; /* #8be9fd */
+            --hl-number:    #bd93f9;
+            --hl-func:      #8be9fd;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -381,7 +391,7 @@
         }
 
         /* ============================================
-           Rendered Markdown
+           Rendered Markdown & C Syntax Highlight
            ============================================ */
 
         .document h1, .document h2, .document h3,
@@ -421,6 +431,16 @@
             background: transparent;
             color: #dfe8ff;
         }
+
+        /* Классы подсветки кода */
+        .hl-comment { color: var(--hl-comment); font-style: italic; opacity: 0.85; }
+        .hl-string  { color: var(--hl-string); }
+        .hl-char    { color: var(--hl-char); }
+        .hl-preproc { color: var(--hl-preproc); font-weight: bold; }
+        .hl-keyword { color: var(--hl-keyword); font-weight: bold; }
+        .hl-type    { color: var(--accent); font-weight: 600; }
+        .hl-number  { color: var(--hl-number); }
+        .hl-func    { color: var(--yellow); }
 
         .document blockquote {
             margin: 14px 0;
@@ -901,7 +921,14 @@
         } else {
             var pre  = document.createElement("pre");
             var code = document.createElement("code");
-            code.textContent = content;
+
+            // Если открытый файл - исходник на Си, подсвечиваем его
+            if (filename.endsWith(".c") || filename.endsWith(".h")) {
+                code.innerHTML = highlightC(content);
+            } else {
+                code.textContent = content;
+            }
+
             pre.appendChild(code);
             wrap.appendChild(pre);
         }
@@ -1012,6 +1039,57 @@
             ? "Переключить на горизонтальную раскладку"
             : "Переключить на вертикальную раскладку";
     });
+
+    /* ================================================================
+       LIGHTWEIGHT C SYNTAX HIGHLIGHTER
+       ================================================================ */
+
+    function escapeHtml(str) {
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function highlightC(code) {
+        // Регулярные выражения для лексем языка Си
+        var regex = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\])*")|('(?:\\.|[^'\\])*')|(^\s*#[a-zA-Z_]+)|(\b(?:break|case|char|const|continue|default|do|double|else|enum|extern|float|for|goto|if|inline|int|long|register|restrict|return|short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|volatile|while)\b)|(\b(?:size_t|ssize_t|uintptr_t|intptr_t|FILE|NULL|stdin|stdout|stderr|[a-zA-Z0-9_]+_t)\b)|(\b0x[0-9a-fA-F]+\b|\b\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[fFlL]?\b)|(\b[a-zA-Z_][a-zA-Z0-9_]*(?=\s*\())/gm;
+
+        let lastIndex = 0;
+        let html = '';
+
+        code.replace(regex, function(match, comment, string, char, preproc, keyword, type, number, func, index) {
+            // Обычный текст перед найденным токеном экранируем
+            if (index > lastIndex) {
+                html += escapeHtml(code.slice(lastIndex, index));
+            }
+
+            // Оборачиваем токены в соответствующие теги
+            if (comment) {
+                html += '<span class="hl-comment">' + escapeHtml(comment) + '</span>';
+            } else if (string) {
+                html += '<span class="hl-string">' + escapeHtml(string) + '</span>';
+            } else if (char) {
+                html += '<span class="hl-char">' + escapeHtml(char) + '</span>';
+            } else if (preproc) {
+                html += '<span class="hl-preproc">' + escapeHtml(preproc) + '</span>';
+            } else if (keyword) {
+                html += '<span class="hl-keyword">' + escapeHtml(keyword) + '</span>';
+            } else if (type) {
+                html += '<span class="hl-type">' + escapeHtml(type) + '</span>';
+            } else if (number) {
+                html += '<span class="hl-number">' + escapeHtml(number) + '</span>';
+            } else if (func) {
+                html += '<span class="hl-func">' + escapeHtml(func) + '</span>';
+            }
+
+            lastIndex = index + match.length;
+        });
+
+        // Добавляем оставшийся текст в конце
+        if (lastIndex < code.length) {
+            html += escapeHtml(code.slice(lastIndex));
+        }
+
+        return html;
+    }
 
     /* ================================================================
        MARKDOWN RENDERER
@@ -1126,22 +1204,36 @@
             var line = lines[i];
             if (!line.trim()) { i++; continue; }
 
+            // Блоки кода в Markdown (```c)
             var fence = line.match(/^\s*(`{3,}|~{3,})(.*)$/);
             if (fence) {
-                var mk = fence[1], cl = []; i++;
+                var mk = fence[1], cl = [], lang = fence[2].trim().toLowerCase();
+                i++;
                 while (i < lines.length) {
                     var ct = lines[i].trim();
                     if (ct.length >= mk.length && Array.from(ct).every(function (c) { return c === mk[0]; })) { i++; break; }
                     cl.push(lines[i]); i++;
                 }
-                var pre = element("pre"); pre.appendChild(element("code", "", cl.join("\n")));
-                frag.appendChild(pre); continue;
+
+                var pre = element("pre");
+                var codeEl = element("code");
+
+                // Если указан язык C/C++, применяем подсветку синтаксиса
+                if (lang === "c" || lang === "cpp") {
+                    codeEl.innerHTML = highlightC(cl.join("\n"));
+                } else {
+                    codeEl.textContent = cl.join("\n");
+                }
+
+                pre.appendChild(codeEl);
+                frag.appendChild(pre);
+                continue;
             }
 
             var hd = line.match(/^(#{1,6})\s+(.*)$/);
             if (hd) { var h = element("h" + hd[1].length); appendInline(h, hd[2]); frag.appendChild(h); i++; continue; }
 
-            // ОБНОВЛЕННЫЙ БЛОК: Надежный разбор спойлеров <details>
+            // Надежный разбор спойлеров <details>
             if (/^\s*<details/i.test(line)) {
                 var det = document.createElement("details");
                 if (/open/i.test(line)) {
@@ -1149,42 +1241,35 @@
                 }
 
                 var dc = [];
-                // Убираем открывающий тег details из первой строчки, если там есть что-то еще
                 var firstLine = line.replace(/^\s*<details[^>]*>/i, "");
                 if (firstLine.trim()) {
                     dc.push(firstLine);
                 }
                 i++;
 
-                // Собираем все строки до закрывающего </details>
                 while (i < lines.length && !/^\s*<\/details/i.test(lines[i])) {
                     dc.push(lines[i]);
                     i++;
                 }
 
-                // Обрабатываем последнюю строку (удаляем </details>)
                 if (i < lines.length) {
                     var lastLine = lines[i].replace(/<\/details\s*>\s*$/i, "");
                     if (lastLine.trim()) {
                         dc.push(lastLine);
                     }
-                    i++; // Пропускаем строку с </details>
+                    i++;
                 }
 
                 var detailsContent = dc.join("\n");
 
-                // Ищем тег <summary> внутри собранного блока (даже если он перенесен или содержит вложенность)
                 var sm = detailsContent.match(/<summary>([\s\S]*?)<\/summary>/i);
                 if (sm) {
                     var sn = document.createElement("summary");
                     appendInline(sn, sm[1].trim());
                     det.appendChild(sn);
-
-                    // Удаляем блок <summary> из контента, чтобы он не дублировался в тексте
                     detailsContent = detailsContent.replace(/<summary>[\s\S]*?<\/summary>/i, "");
                 }
 
-                // Оставшееся содержимое спойлера рендерим как стандартный Markdown
                 if (detailsContent.trim()) {
                     det.appendChild(renderMarkdown(detailsContent));
                 }
