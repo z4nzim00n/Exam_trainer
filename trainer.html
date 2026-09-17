@@ -1,1435 +1,6472 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="gruvbox">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="color-scheme" content="dark">
     <title>C Practice — генератор заданий</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg:           #0c1019;
-            --panel:        #141b29;
-            --panel-hover:  #1b2536;
-            --border:       #293348;
-            --text:         #eef2ff;
-            --muted:        #9eacc6;
-            --accent:       #a998ff;
-            --green:        #70ddb0;
-            --yellow:       #ffd17b;
-            --red:          #ff98aa;
-            --radius:       20px;
-            --divider:      #4a3f7a;
+            --radius-lg: 12px;
+            --radius-md: 8px;
+            --radius-sm: 6px;
+            --fs-base: 14px;
 
-            --hl-comment:   #6272a4;
-            --hl-string:    #50fa7b;
-            --hl-char:      #f1fa8c;
-            --hl-preproc:   #ff79c6;
-            --hl-keyword:   #ff79c6;
-            --hl-type:      var(--accent);
-            --hl-number:    #bd93f9;
-            --hl-func:      #8be9fd;
+            --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
         }
 
-        * { box-sizing: border-box; }
+        /* ============================================
+           1. GRUVBOX
+           ============================================ */
+        :root[data-theme="gruvbox"] {
+            --bg:           #282828;
+            --panel:        #32302F;
+            --panel-alt:    #3C3836;
+            --panel-hover:  #504945;
+            --border:       #504945;
+            --border-hover: #FABD2F;
+
+            --text:         #EBDBB2;
+            --text-strong:  #FBF1C7;
+            --muted:        #A89984;
+
+            --accent:       #FABD2F;
+            --accent-soft:  rgba(250, 189, 47, 0.15);
+            --green:        #B8BB26;
+            --yellow:       #FABD2F;
+            --red:          #FB4934;
+
+            --glow1:        rgba(250, 189, 47, 0.06);
+            --glow2:        rgba(184, 187, 38, 0.04);
+
+            --hl-comment:   #928374;
+            --hl-string:    #B8BB26;
+            --hl-char:      #D3869B;
+            --hl-preproc:   #83A598;
+            --hl-keyword:   #FB4934;
+            --hl-type:      #FABD2F;
+            --hl-number:    #D3869B;
+            --hl-func:      #B8BB26;
+
+            --code-block-bg: #1D2021;
+            --table-header:  #3C3836;
+
+            --shadow:       0 4px 20px -8px rgba(0, 0, 0, 0.8);
+            --shadow-hover: 0 8px 30px -8px rgba(0, 0, 0, 0.95);
+
+            --yellow-dim:   #8f6a22;
+            --reveal-hover: rgba(250, 189, 47, 0.08);
+
+            --green-dim:    #567021;
+            --done-hover:   rgba(184, 187, 38, 0.08);
+        }
+
+        /* ============================================
+           2. CATPPUCCIN
+           ============================================ */
+        :root[data-theme="catppuccin"] {
+            --bg:           #1e1e2e;
+            --panel:        #181825;
+            --panel-alt:    #313244;
+            --panel-hover:  #45475a;
+            --border:       #313244;
+            --border-hover: #89b4fa;
+
+            --text:         #bac2de;
+            --text-strong:  #cdd6f4;
+            --muted:        #a6adc8;
+
+            --accent:       #89b4fa;
+            --accent-soft:  rgba(137, 180, 250, 0.15);
+            --green:        #a6e3a1;
+            --yellow:       #f9e2af;
+            --red:          #f38ba8;
+
+            --glow1:        rgba(137, 180, 250, 0.08);
+            --glow2:        rgba(166, 227, 161, 0.05);
+
+            --hl-comment:   #6c7086;
+            --hl-string:    #a6e3a1;
+            --hl-char:      #f9e2af;
+            --hl-preproc:   #f38ba8;
+            --hl-keyword:   #cba6f7;
+            --hl-type:      #f9e2af;
+            --hl-number:    #fab387;
+            --hl-func:      #89b4fa;
+
+            --code-block-bg: #11111b;
+            --table-header:  #313244;
+
+            --shadow:       0 4px 20px -8px rgba(0, 0, 0, 0.7);
+            --shadow-hover: 0 8px 30px -8px rgba(0, 0, 0, 0.9);
+
+            --yellow-dim:   #7a6a3a;
+            --reveal-hover: rgba(249, 226, 175, 0.08);
+
+            --green-dim:    #4d6b4b;
+            --done-hover:   rgba(166, 227, 161, 0.08);
+        }
+
+        /* ============================================
+           3. KANAGAWA
+           ============================================ */
+        :root[data-theme="kanagawa"] {
+            --bg:           #1F1F28;
+            --panel:        #2A2A37;
+            --panel-alt:    #363646;
+            --panel-hover:  #54546D;
+            --border:       #363646;
+            --border-hover: #7E9CD8;
+
+            --text:         #DCD7BA;
+            --text-strong:  #F2E9DE;
+            --muted:        #957FB8;
+
+            --accent:       #7FB4CA;
+            --accent-soft:  rgba(127, 180, 202, 0.15);
+            --green:        #98BB6C;
+            --yellow:       #E6C384;
+            --red:          #E82424;
+
+            --glow1:        rgba(126, 156, 216, 0.07);
+            --glow2:        rgba(152, 187, 108, 0.05);
+
+            --hl-comment:   #727169;
+            --hl-string:    #98BB6C;
+            --hl-char:      #E6C384;
+            --hl-preproc:   #FF5D62;
+            --hl-keyword:   #957FB8;
+            --hl-type:      #7AA89F;
+            --hl-number:    #D27E99;
+            --hl-func:      #7E9CD8;
+
+            --code-block-bg: #16161D;
+            --table-header:  #363646;
+
+            --shadow:       0 4px 20px -8px rgba(0, 0, 0, 0.6);
+            --shadow-hover: 0 8px 30px -8px rgba(0, 0, 0, 0.8);
+
+            --yellow-dim:   #5b4e33;
+            --reveal-hover: rgba(230, 195, 132, 0.08);
+
+            --green-dim:    #4a5b35;
+            --done-hover:   rgba(152, 187, 108, 0.08);
+        }
+
+        /* ============================================
+           4. NORD
+           ============================================ */
+        :root[data-theme="nord"] {
+            --bg:           #2E3440;
+            --panel:        #3B4252;
+            --panel-alt:    #434C5E;
+            --panel-hover:  #4C566A;
+            --border:       #434C5E;
+            --border-hover: #5E81AC;
+
+            --text:         #E5E9F0;
+            --text-strong:  #ECEFF4;
+            --muted:        #8FA1B3;
+
+            --accent:       #88C0D0;
+            --accent-soft:  rgba(136, 192, 208, 0.15);
+            --green:        #A3BE8C;
+            --yellow:       #EBCB8B;
+            --red:          #BF616A;
+
+            --glow1:        rgba(94, 129, 172, 0.15);
+            --glow2:        rgba(163, 190, 140, 0.08);
+
+            --hl-comment:   #616E88;
+            --hl-string:    #A3BE8C;
+            --hl-char:      #EBCB8B;
+            --hl-preproc:   #B48EAD;
+            --hl-keyword:   #81A1C1;
+            --hl-type:      #8FBCBB;
+            --hl-number:    #B48EAD;
+            --hl-func:      #88C0D0;
+
+            --code-block-bg: #292E39;
+            --table-header:  #434C5E;
+
+            --shadow:       0 4px 20px -8px rgba(0, 0, 0, 0.5);
+            --shadow-hover: 0 8px 30px -8px rgba(0, 0, 0, 0.7);
+
+            --yellow-dim:   #7a6a3a;
+            --reveal-hover: rgba(235, 203, 139, 0.08);
+
+            --green-dim:    #4d6b3f;
+            --done-hover:   rgba(163, 190, 140, 0.08);
+        }
+
+        /* ============================================
+           5. DRACULA
+           ============================================ */
+        :root[data-theme="dracula"] {
+            --bg:           #282A36;
+            --panel:        #343746;
+            --panel-alt:    #44475A;
+            --panel-hover:  #50536B;
+            --border:       #44475A;
+            --border-hover: #BD93F9;
+
+            --text:         #F8F8F2;
+            --text-strong:  #FFFFFF;
+            --muted:        #A9B1C6;
+
+            --accent:       #BD93F9;
+            --accent-soft:  rgba(189, 147, 249, 0.15);
+            --green:        #50FA7B;
+            --yellow:       #F1FA8C;
+            --red:          #FF5555;
+
+            --glow1:        rgba(189, 147, 249, 0.10);
+            --glow2:        rgba(80, 250, 123, 0.06);
+
+            --hl-comment:   #6272A4;
+            --hl-string:    #F1FA8C;
+            --hl-char:      #F1FA8C;
+            --hl-preproc:   #FF79C6;
+            --hl-keyword:   #FF79C6;
+            --hl-type:      #8BE9FD;
+            --hl-number:    #BD93F9;
+            --hl-func:      #50FA7B;
+
+            --code-block-bg: #21222C;
+            --table-header:  #44475A;
+
+            --shadow:       0 4px 20px -8px rgba(0, 0, 0, 0.7);
+            --shadow-hover: 0 8px 30px -8px rgba(0, 0, 0, 0.85);
+
+            --yellow-dim:   #63663a;
+            --reveal-hover: rgba(241, 250, 140, 0.08);
+
+            --green-dim:    #2f7040;
+            --done-hover:   rgba(80, 250, 123, 0.08);
+        }
+
+        /* ============================================
+           6. GITHUB DARK
+           ============================================ */
+        :root[data-theme="dark"] {
+            --bg:           #0D1117;
+            --panel:        #161B22;
+            --panel-alt:    #1C222C;
+            --panel-hover:  #262C36;
+            --border:       #30363D;
+            --border-hover: #58A6FF;
+
+            --text:         #C9D1D9;
+            --text-strong:  #F0F6FC;
+            --muted:        #8B949E;
+
+            --accent:       #58A6FF;
+            --accent-soft:  rgba(88, 166, 255, 0.15);
+            --green:        #56D364;
+            --yellow:       #E3B341;
+            --red:          #F85149;
+
+            --glow1:        rgba(88, 166, 255, 0.08);
+            --glow2:        rgba(86, 211, 100, 0.05);
+
+            --hl-comment:   #8B949E;
+            --hl-string:    #A5D6FF;
+            --hl-char:      #A5D6FF;
+            --hl-preproc:   #FF7B72;
+            --hl-keyword:   #FF7B72;
+            --hl-type:      #FFA657;
+            --hl-number:    #79C0FF;
+            --hl-func:      #D2A8FF;
+
+            --code-block-bg: #010409;
+            --table-header:  #161B22;
+
+            --shadow:       0 4px 20px -8px rgba(0, 0, 0, 0.8);
+            --shadow-hover: 0 8px 30px -8px rgba(0, 0, 0, 0.95);
+
+            --yellow-dim:   #6b5c30;
+            --reveal-hover: rgba(227, 179, 65, 0.08);
+
+            --green-dim:    #2d6b35;
+            --done-hover:   rgba(86, 211, 100, 0.08);
+        }
+
+        /* ============================================
+           BASE
+           ============================================ */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
 
         body {
-            margin: 0;
             min-height: 100vh;
+
             color: var(--text);
+
             background:
-                    radial-gradient(ellipse at 10% 0%, #28204366, transparent 45%),
-                    radial-gradient(ellipse at 100% 15%, #123f4666, transparent 40%),
+                    radial-gradient(
+                            ellipse at 10% 0%,
+                            var(--glow1),
+                            transparent 45%
+                    ),
+                    radial-gradient(
+                            ellipse at 100% 15%,
+                            var(--glow2),
+                            transparent 40%
+                    ),
                     var(--bg);
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+            font-family: var(--font-main);
+            font-size: var(--fs-base);
             line-height: 1.55;
+
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+
+            transition:
+                    background .3s ease,
+                    color .3s ease;
         }
 
-        button, input { font: inherit; }
-        a { color: var(--accent); }
-
-        code, pre, .timer, .path, .source-path {
-            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+        button,
+        input,
+        select {
+            font: inherit;
         }
 
         button {
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 11px 16px;
-            background: var(--panel);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+
+            background: var(--panel-alt);
             color: var(--text);
+
             cursor: pointer;
-            transition: background .15s, transform .15s;
+            font-size: calc(var(--fs-base) - 2px);
+            font-weight: 500;
+
+            transition:
+                    background .2s,
+                    border-color .2s,
+                    color .2s,
+                    transform .15s,
+                    filter .2s;
         }
 
         button:hover:not(:disabled) {
             background: var(--panel-hover);
-            transform: translateY(-1px);
+            border-color: var(--accent);
         }
 
-        button:disabled { opacity: .45; cursor: not-allowed; }
+        button:active:not(:disabled) {
+            transform: scale(.98);
+        }
 
-        button:focus-visible, input:focus-visible,
-        summary:focus-visible, a:focus-visible {
-            outline: 3px solid var(--accent);
-            outline-offset: 4px;
+        button:disabled {
+            opacity: .42;
+            cursor: not-allowed;
+        }
+
+        button:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
         }
 
         button.primary {
-            color: #171224;
             background: var(--accent);
+            color: var(--bg);
             border-color: var(--accent);
             font-weight: 700;
         }
 
-        button.primary:hover:not(:disabled) { background: #beb0ff; }
+        button.primary:hover:not(:disabled) {
+            background: var(--accent);
+            filter: brightness(1.1);
+        }
 
-        button.reveal { color: var(--yellow); border-color: #6b5c30; }
-        button.reveal:hover:not(:disabled) { background: #2a2418; }
+        button.reveal {
+            color: var(--yellow);
+            border-color: var(--yellow-dim);
+        }
+
+        button.reveal:hover:not(:disabled) {
+            background: var(--reveal-hover);
+            color: var(--yellow);
+            border-color: var(--yellow);
+        }
 
         button.done-btn {
             color: var(--green);
-            border-color: #315849;
+            border-color: var(--green-dim);
+            min-width: 140px;
         }
-        button.done-btn:hover:not(:disabled) { background: #1a2e25; }
 
-        button.file-btn { font-size: 13px; padding: 8px 12px; }
+        button.done-btn:hover:not(:disabled) {
+            background: var(--done-hover);
+            color: var(--green);
+            border-color: var(--green);
+        }
 
-        .container {
-            width: min(1700px, 100%);
+        button.done-btn.final {
+            background: var(--green);
+            color: var(--bg);
+            border-color: var(--green);
+        }
+
+        button.done-btn.final:hover:not(:disabled) {
+            filter: brightness(1.08);
+        }
+
+        .file-btn {
+            padding: 6px 10px;
+            font-size: calc(var(--fs-base) - 3px);
+        }
+
+        code,
+        pre {
+            font-family: var(--font-code);
+        }
+
+        a {
+            color: var(--accent);
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--muted);
+        }
+
+        /* ============================================
+           TOPBAR
+           ============================================ */
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+
+            display: flex;
+            align-items: center;
+
+            gap: 18px;
+
+            min-height: 60px;
+            padding: 10px 20px;
+
+            border-bottom: 1px solid var(--border);
+
+            background:
+                    color-mix(
+                            in srgb,
+                            var(--panel) 94%,
+                            transparent
+                    );
+
+            backdrop-filter: blur(14px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+            flex: 0 0 auto;
+        }
+
+        .brand-mark {
+            width: 30px;
+            height: 30px;
+
+            display: grid;
+            place-items: center;
+
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+
+            background: var(--panel-alt);
+
+            font-size: 16px;
+        }
+
+        .brand-title {
+            color: var(--text-strong);
+
+            font-size: calc(var(--fs-base) + 1px);
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+        .brand-subtitle {
+            margin-top: 2px;
+
+            color: var(--muted);
+
+            font-size: calc(var(--fs-base) - 4px);
+            white-space: nowrap;
+        }
+
+        .topbar-settings {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .topbar-spacer {
+            flex: 1;
+        }
+
+        .topbar-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .topbar-label {
+            color: var(--muted);
+            font-size: calc(var(--fs-base) - 4px);
+        }
+
+        .theme-select {
+            padding: 5px 8px;
+
+            background: var(--panel-alt);
+            color: var(--text);
+
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+
+            font-size: calc(var(--fs-base) - 3px);
+
+            cursor: pointer;
+            outline: none;
+        }
+
+        .theme-select:hover {
+            border-color: var(--accent);
+        }
+
+        .font-slider {
+            width: 100px;
+            height: 4px;
+
+            -webkit-appearance: none;
+            appearance: none;
+
+            background: var(--border);
+            border-radius: 2px;
+
+            outline: none;
+        }
+
+        .font-slider::-webkit-slider-thumb {
+            width: 14px;
+            height: 14px;
+
+            -webkit-appearance: none;
+            appearance: none;
+
+            border-radius: 50%;
+
+            background: var(--accent);
+
+            cursor: pointer;
+        }
+
+        .font-slider::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+
+            border: none;
+            border-radius: 50%;
+
+            background: var(--accent);
+
+            cursor: pointer;
+        }
+
+        /* ============================================
+           MAIN
+           ============================================ */
+
+        .main {
+            width: min(1200px, 100%);
             margin: 0 auto;
-            padding: 36px;
+
+            padding:
+                    28px 24px 50px;
         }
 
-        .header {
+        .hero {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: flex-end;
+
             gap: 24px;
-            margin-bottom: 28px;
+
+            margin-bottom: 20px;
+        }
+
+        .hero-copy {
+            min-width: 0;
         }
 
         .eyebrow {
             margin-bottom: 8px;
+
             color: var(--accent);
+
             text-transform: uppercase;
-            letter-spacing: .16em;
-            font-size: 12px;
-            font-weight: 750;
+            letter-spacing: .14em;
+
+            font-size: calc(var(--fs-base) - 4px);
+            font-weight: 700;
         }
 
-        h1 {
-            margin: 0;
-            font-size: clamp(30px, 4vw, 48px);
-            letter-spacing: -.05em;
-            line-height: 1.15;
+        .hero h1 {
+            color: var(--text-strong);
+
+            font-size: clamp(28px, 4vw, 42px);
+            line-height: 1.1;
+            letter-spacing: -.035em;
         }
 
-        .subtitle {
-            margin: 12px 0 0;
-            max-width: 720px;
+        .hero-subtitle {
+            max-width: 780px;
+
+            margin-top: 10px;
+
             color: var(--muted);
+            font-size: calc(var(--fs-base) - 1px);
         }
 
-        .clock {
-            min-width: 155px;
-            padding: 16px 22px;
+        .timer-box {
+            flex: 0 0 auto;
+
+            min-width: 190px;
+
+            padding: 12px 16px;
+
             border: 1px solid var(--border);
-            border-radius: var(--radius);
-            background: #141b29aa;
-            text-align: center;
+            border-radius: var(--radius-md);
+
+            background: var(--panel);
+
+            text-align: right;
+
+            box-shadow: var(--shadow);
         }
 
-        .clock-label { color: var(--muted); font-size: 12px; }
+        .timer-label {
+            color: var(--muted);
+
+            text-transform: uppercase;
+            letter-spacing: .08em;
+
+            font-size: calc(var(--fs-base) - 5px);
+            font-weight: 700;
+        }
 
         .timer {
             margin-top: 3px;
-            font-size: 27px;
+
+            color: var(--accent);
+
+            font-family: var(--font-code);
+            font-size: calc(var(--fs-base) + 8px);
+
             font-variant-numeric: tabular-nums;
+            font-weight: 600;
         }
+
+        /* ============================================
+           INTRO
+           ============================================ */
+
+        .intro {
+            margin-bottom: 18px;
+
+            padding: 16px 18px;
+
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+
+            background: var(--panel);
+
+            box-shadow: var(--shadow);
+        }
+
+        .intro-title {
+            display: flex;
+            align-items: center;
+
+            gap: 9px;
+
+            margin-bottom: 8px;
+
+            color: var(--text-strong);
+
+            font-size: calc(var(--fs-base) + 1px);
+            font-weight: 700;
+        }
+
+        .intro p {
+            max-width: 900px;
+
+            color: var(--muted);
+
+            font-size: calc(var(--fs-base) - 1px);
+        }
+
+        .intro p + p {
+            margin-top: 6px;
+        }
+
+        .intro code {
+            color: var(--text-strong);
+        }
+
+        /* ============================================
+           TOOLBAR
+           ============================================ */
 
         .toolbar {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 12px;
-            padding: 18px;
-            background: #141b29d9;
+
+            gap: 8px;
+
+            padding: 12px;
+
             border: 1px solid var(--border);
-            border-radius: var(--radius);
+            border-radius: var(--radius-md);
+
+            background: var(--panel);
+
+            box-shadow: var(--shadow);
         }
 
         .checkbox {
             display: inline-flex;
             align-items: center;
-            gap: 9px;
+
+            gap: 8px;
+
             margin-left: auto;
+
             color: var(--muted);
+
+            font-size: calc(var(--fs-base) - 2px);
+
             cursor: pointer;
         }
 
         .checkbox input {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
+
             accent-color: var(--accent);
+
+            cursor: pointer;
         }
 
+        /* ============================================
+           STATUS
+           ============================================ */
+
         .status {
-            margin: 16px 0 8px;
-            padding: 13px 16px;
+            margin: 12px 0 8px;
+
+            padding: 10px 14px;
+
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: var(--radius-md);
+
             color: var(--muted);
-            background: #101723;
+            background: var(--panel);
+
+            font-size: calc(var(--fs-base) - 2px);
+
             overflow-wrap: anywhere;
         }
 
-        .status.success { color: var(--green); border-color: #315849; }
-        .status.error { color: var(--red); border-color: #754454; }
+        .status.success {
+            color: var(--green);
+
+            border-color:
+                    var(--green-dim);
+
+            background:
+                    var(--done-hover);
+        }
+
+        .status.error {
+            color: var(--red);
+
+            border-color:
+                    color-mix(
+                            in srgb,
+                            var(--red) 40%,
+                            transparent
+                    );
+
+            background:
+                    color-mix(
+                            in srgb,
+                            var(--red) 8%,
+                            transparent
+                    );
+        }
 
         .meta {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px 20px;
-            margin-bottom: 22px;
-            padding: 0 3px;
+
+            gap: 6px 20px;
+
+            margin:
+                    12px 2px 24px;
+
             color: var(--muted);
-            font-size: 13px;
+
+            font-size:
+                    calc(var(--fs-base) - 3px);
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 18px;
-            align-items: start;
-        }
+        /* ============================================
+           TASK STACK
+           ============================================ */
 
-        .card {
-            min-width: 0;
-            overflow: hidden;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            background: var(--panel);
-            box-shadow: 0 12px 40px #00000020;
-            transition: border-color 0.25s, box-shadow 0.25s;
-        }
-
-        .card:hover { border-color: #384663; }
-
-        .card.completed {
-            border-color: #315849;
-        }
-
-        .card-header {
-            position: relative;
-            padding: 20px;
-            border-bottom: 2px solid var(--divider);
-            box-shadow:
-                    0 1px 0 0 #a998ff33,
-                    0 4px 12px -6px #a998ff40;
-            background:
-                    linear-gradient(180deg, transparent 0%, #a998ff08 100%);
-        }
-
-        .card.completed .card-header {
-            border-bottom-color: #315849;
-            box-shadow:
-                    0 1px 0 0 #70ddb033,
-                    0 4px 12px -6px #70ddb040;
-            background:
-                    linear-gradient(180deg, transparent 0%, #70ddb008 100%);
-        }
-
-        .card-header::after {
-            content: "";
-            position: absolute;
-            left: 20px;
-            right: 20px;
-            bottom: -2px;
-            height: 2px;
-            background: linear-gradient(
-                    90deg,
-                    transparent 0%,
-                    var(--accent) 20%,
-                    var(--accent) 80%,
-                    transparent 100%
-            );
-            opacity: .55;
-            pointer-events: none;
-        }
-
-        .card.completed .card-header::after {
-            background: linear-gradient(
-                    90deg,
-                    transparent 0%,
-                    var(--green) 20%,
-                    var(--green) 80%,
-                    transparent 100%
-            );
-        }
-
-        .card-top {
+        .task-stack {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
+            flex-direction: column;
         }
 
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            font-size: 12px;
-            font-weight: 750;
-            letter-spacing: .05em;
+        .task-section {
+            display: grid;
+
+            grid-template-columns:
+                110px
+                minmax(0, 1fr);
+
+            border-top:
+                    1px solid var(--border);
+
+            scroll-margin-top: 78px;
+        }
+
+        .task-section:last-child {
+            border-bottom:
+                    1px solid var(--border);
+        }
+
+        .task-section.completed {
+            background:
+                    color-mix(
+                            in srgb,
+                            var(--done-hover) 38%,
+                            transparent
+                    );
+        }
+
+        .task-index {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+
+            padding:
+                    26px
+                    18px
+                    28px
+                    2px;
+
+            border-right:
+                    1px solid var(--border);
+        }
+
+        .task-index-number {
+            color: var(--muted);
+
+            font-family: var(--font-code);
+
+            font-size:
+                    calc(var(--fs-base) + 13px);
+
+            font-weight: 600;
+
+            line-height: 1;
+
+            opacity: .72;
+        }
+
+        .task-index-label {
+            margin-top: 8px;
+
             text-transform: uppercase;
+            letter-spacing: .08em;
+
+            font-size:
+                    calc(var(--fs-base) - 5px);
+
+            font-weight: 700;
         }
 
-        .badge::before {
-            content: "";
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: currentColor;
+        .task-index-label.easy {
+            color: var(--green);
         }
 
-        .easy   .badge { color: var(--green); }
-        .medium .badge { color: var(--yellow); }
-        .hard   .badge { color: var(--red); }
-
-        .extra-badge {
-            padding: 3px 8px;
-            border: 1px solid #53466e;
-            border-radius: 7px;
-            color: #c6b8f5;
-            font-size: 11px;
+        .task-index-label.medium {
+            color: var(--yellow);
         }
 
-        .extra-badge[hidden] { display: none; }
+        .task-index-label.hard {
+            color: var(--red);
+        }
+
+        .task-main {
+            min-width: 0;
+
+            padding:
+                    24px
+                    0
+                    30px
+                    24px;
+        }
+
+        .task-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+
+            gap: 20px;
+        }
+
+        .task-heading {
+            min-width: 0;
+        }
 
         .task-title {
-            margin: 15px 0 9px;
-            font-size: 20px;
+            color: var(--text-strong);
+
+            font-size:
+                    calc(var(--fs-base) + 5px);
+
             line-height: 1.3;
-            letter-spacing: -.025em;
+
+            letter-spacing:
+                    -.025em;
+
+            font-weight: 700;
         }
 
-        .path {
+        .task-path {
+            margin-top: 6px;
+
             color: var(--muted);
-            font-size: 11px;
-            overflow-wrap: anywhere;
+
+            font-family: var(--font-code);
+
+            font-size:
+                    calc(var(--fs-base) - 4px);
+
+            overflow-wrap:
+                    anywhere;
+
+            opacity: .78;
         }
+
+        .extra-badge {
+            display: inline-flex;
+            align-items: center;
+
+            margin-left: 8px;
+            padding: 2px 7px;
+
+            border:
+                    1px solid var(--border);
+
+            border-radius:
+                    var(--radius-sm);
+
+            background:
+                    var(--panel-alt);
+
+            color: var(--muted);
+
+            font-size:
+                    calc(var(--fs-base) - 6px);
+
+            text-transform: uppercase;
+
+            letter-spacing: .04em;
+
+            font-weight: 700;
+
+            vertical-align: middle;
+        }
+
+        .extra-badge[hidden] {
+            display: none;
+        }
+
+        .task-actions {
+            display: flex;
+            flex-wrap: wrap;
+
+            justify-content: flex-end;
+
+            gap: 6px;
+
+            flex: 0 0 auto;
+        }
+
+        /* ============================================
+           SOURCE
+           ============================================ */
 
         .source-row {
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
+
             gap: 8px;
-            margin-top: 8px;
+
+            margin-top: 10px;
+
+            color: var(--muted);
+
+            font-size:
+                    calc(var(--fs-base) - 4px);
         }
 
         .source-label {
-            color: var(--muted);
-            font-size: 11px;
             white-space: nowrap;
         }
 
         .source-path {
             color: var(--accent);
-            font-size: 11px;
+
+            font-family: var(--font-code);
+
             overflow-wrap: anywhere;
         }
 
-        .source-row[hidden] { display: none; }
+        /* ============================================
+           FILES
+           ============================================ */
 
-        .card-actions {
+        .task-files {
             display: flex;
             flex-wrap: wrap;
-            gap: 9px;
+
+            gap: 6px;
+
             margin-top: 16px;
-        }
-
-        .card-files {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 7px;
-            margin-top: 14px;
             padding-top: 14px;
-            border-top: 1px dashed #3a4666;
+
+            border-top:
+                    1px dashed var(--border);
         }
 
-        .card-files-label {
+        .task-files-label {
             width: 100%;
+
+            margin-bottom: 2px;
+
             color: var(--muted);
-            font-size: 11px;
+
             text-transform: uppercase;
             letter-spacing: .08em;
-            margin-bottom: 2px;
+
+            font-size:
+                    calc(var(--fs-base) - 5px);
+
+            font-weight: 700;
         }
 
         .spoiler-hint {
-            margin-top: 10px;
+            margin-top: 16px;
+
             padding: 8px 12px;
-            border: 1px dashed #53466e;
-            border-radius: 10px;
+
+            border:
+                    1px dashed var(--border);
+
+            border-radius:
+                    var(--radius-sm);
+
             color: var(--muted);
-            font-size: 12px;
-            text-align: center;
+
+            background:
+                    var(--accent-soft);
+
+            font-size:
+                    calc(var(--fs-base) - 3px);
         }
 
-        .spoiler-hint[hidden] { display: none; }
+        .spoiler-hint[hidden] {
+            display: none;
+        }
+
+        /* ============================================
+           DOCUMENT
+           ============================================ */
 
         .document {
-            height: min(65vh, 850px);
-            min-height: 360px;
-            overflow: auto;
-            padding: 20px;
-            scrollbar-color: #4c5972 transparent;
-            font-size: 14px;
+            max-width: 920px;
+
+            margin-top: 22px;
+
+            font-size: var(--fs-base);
+
             overflow-wrap: anywhere;
-            transition: height 0.35s ease, min-height 0.35s ease, padding 0.35s ease;
         }
 
         .document.empty {
+            min-height: 240px;
+
             display: grid;
             place-items: center;
+
             text-align: center;
+
             color: var(--muted);
+
+            border-top:
+                    1px solid var(--border);
         }
 
         .document.empty.locked {
-            background: rgba(12, 16, 25, 0.4);
+            background:
+                    color-mix(
+                            in srgb,
+                            var(--bg) 40%,
+                            transparent
+                    );
         }
 
-        /* Свернутая карточка */
         .document.collapsed {
-            height: 0;
-            min-height: 0;
-            padding: 0 20px;
-            overflow: hidden;
+            display: none;
         }
 
-        /* Компактная полоска «Выполнено» */
+        .empty-inner {
+            max-width: 380px;
+
+            padding: 30px 0;
+        }
+
+        .empty-icon {
+            margin-bottom: 12px;
+
+            color: var(--accent);
+
+            font-size: 40px;
+
+            opacity: .7;
+        }
+
+        .empty-icon.locked-animation {
+            color: var(--yellow);
+
+            animation:
+                    pulse-lock
+                    2s infinite alternate;
+        }
+
+        @keyframes pulse-lock {
+            0% {
+                transform: scale(1);
+                opacity: .7;
+            }
+
+            100% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        /* ============================================
+           TASK BOTTOM
+           ============================================ */
+
+        .task-bottom {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            margin-top: 22px;
+            padding-top: 16px;
+
+            border-top:
+                    1px solid var(--border);
+        }
+
+        .task-bottom-hint {
+            margin-right: auto;
+
+            color: var(--muted);
+
+            font-size:
+                    calc(var(--fs-base) - 3px);
+        }
+
+        .task-bottom[hidden] {
+            display: none;
+        }
+
         .completed-bar {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
-            padding: 14px 20px;
-            background: linear-gradient(90deg, #1a2e25, #141b29);
-            border-top: 1px solid #315849;
-            cursor: default;
+
+            gap: 16px;
+
+            margin-top: 22px;
+            padding-top: 14px;
+
+            border-top:
+                    1px solid var(--green-dim);
         }
 
-        .completed-bar[hidden] { display: none; }
+        .completed-bar[hidden] {
+            display: none;
+        }
 
-        .completed-bar-left {
+        .completed-left {
             display: flex;
             align-items: center;
+
             gap: 10px;
+
+            min-width: 0;
         }
 
-        .completed-bar-icon {
+        .completed-icon {
             font-size: 20px;
-            animation: pop-in 0.3s ease;
         }
 
-        @keyframes pop-in {
-            0%   { transform: scale(0); opacity: 0; }
-            60%  { transform: scale(1.2); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .completed-bar-text {
-            font-size: 14px;
-            font-weight: 600;
+        .completed-text {
             color: var(--green);
+
+            font-size:
+                    calc(var(--fs-base) - 2px);
+
+            font-weight: 700;
         }
 
-        .completed-bar-title {
-            font-size: 12px;
+        .completed-title {
             color: var(--muted);
-            margin-left: 4px;
+
+            font-size:
+                    calc(var(--fs-base) - 3px);
+
+            overflow-wrap: anywhere;
         }
 
-        .completed-bar button {
-            font-size: 12px;
-            padding: 6px 12px;
-            border-radius: 8px;
-        }
+        /* ============================================
+           MARKDOWN
+           ============================================ */
 
-        .empty-inner { max-width: 320px; padding: 20px 0; }
-        .empty-icon { margin-bottom: 12px; font-size: 35px; color: var(--accent); }
+        .document h1,
+        .document h2,
+        .document h3,
+        .document h4,
+        .document h5,
+        .document h6 {
+            margin: 1.5em 0 .5em;
 
-        .empty-icon.locked-animation {
-            animation: pulse-lock 2s infinite alternate;
-            color: var(--yellow);
-        }
+            color: var(--text-strong);
 
-        @keyframes pulse-lock {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(1.1); opacity: 1; }
-        }
+            font-weight: 700;
 
-        .document h1, .document h2, .document h3,
-        .document h4, .document h5, .document h6 {
-            margin: 22px 0 10px;
-            font-size: 18px;
             line-height: 1.35;
+
             letter-spacing: -.02em;
         }
 
-        .document h1:first-child, .document h2:first-child { margin-top: 0; }
-        .document h3, .document h4, .document h5, .document h6 { font-size: 15px; }
-        .document p { margin: 10px 0; }
-        .document ul, .document ol { padding-left: 23px; }
-        .document li { margin: 6px 0; }
+        .document h1 {
+            font-size: 1.6em;
 
-        .document code {
-            padding: 2px 5px;
-            border-radius: 5px;
-            background: #080d1680;
-            color: #d4c7ff;
-            font-size: .92em;
+            padding-bottom: .3em;
+
+            border-bottom:
+                    1px solid var(--border);
         }
 
-        .document pre, .commands {
-            padding: 14px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
+        .document h2 {
+            font-size: 1.35em;
+
+            padding-bottom: .3em;
+
+            border-bottom:
+                    1px solid var(--border);
+        }
+
+        .document h3 {
+            font-size: 1.15em;
+        }
+
+        .document h1:first-child,
+        .document h2:first-child {
+            margin-top: 0;
+        }
+
+        .document p {
+            margin: .8em 0;
+        }
+
+        .document ul,
+        .document ol {
+            margin: .8em 0;
+
+            padding-left:
+                    1.5em;
+        }
+
+        .document li {
+            margin: .3em 0;
+        }
+
+        .document strong {
+            color: var(--text-strong);
+
+            font-weight: 700;
+        }
+
+        .document code {
+            padding: .15em .4em;
+
+            border-radius:
+                    var(--radius-sm);
+
+            background:
+                    color-mix(
+                            in srgb,
+                            var(--text) 12%,
+                            transparent
+                    );
+
+            color: var(--text-strong);
+
+            font-family:
+                    var(--font-code);
+
+            font-size: .88em;
+
+            font-weight: 500;
+        }
+
+        .document pre,
+        .commands {
+            margin: 1em 0;
+
+            padding: 1.2em;
+
+            border:
+                    1px solid var(--border);
+
+            border-radius:
+                    var(--radius-md);
+
             overflow: auto;
-            background: #0a101b;
+
+            background:
+                    var(--code-block-bg);
+
+            font-family:
+                    var(--font-code);
+
             line-height: 1.6;
+
             white-space: pre;
         }
 
         .document pre code {
             padding: 0;
+
             background: transparent;
-            color: #dfe8ff;
+
+            border: none;
+
+            color: var(--text);
+
+            font-size: .92em;
+
+            font-weight: normal;
         }
 
-        .hl-comment { color: var(--hl-comment); font-style: italic; opacity: 0.85; }
-        .hl-string  { color: var(--hl-string); }
-        .hl-char    { color: var(--hl-char); }
-        .hl-preproc { color: var(--hl-preproc); font-weight: bold; }
-        .hl-keyword { color: var(--hl-keyword); font-weight: bold; }
-        .hl-type    { color: var(--accent); font-weight: 600; }
-        .hl-number  { color: var(--hl-number); }
-        .hl-func    { color: var(--yellow); }
-
-        .document blockquote {
-            margin: 14px 0;
-            padding: 1px 14px;
-            border-left: 3px solid var(--accent);
-            color: #bbc5d9;
-            background: #a998ff09;
+        .hl-comment {
+            color: var(--hl-comment);
+            font-style: italic;
         }
 
-        .document details {
-            margin: 14px 0;
-            padding: 10px 14px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            background: #141b29;
+        .hl-string {
+            color: var(--hl-string);
         }
 
-        .document details summary {
-            cursor: pointer;
-            color: var(--accent);
+        .hl-char {
+            color: var(--hl-char);
+        }
+
+        .hl-preproc {
+            color: var(--hl-preproc);
             font-weight: 600;
         }
 
-        .document details[open] summary { margin-bottom: 8px; }
+        .hl-keyword {
+            color: var(--hl-keyword);
+            font-weight: 600;
+        }
 
-        .table-wrap { overflow-x: auto; margin: 14px 0; }
+        .hl-type {
+            color: var(--hl-type);
+            font-weight: 500;
+        }
+
+        .hl-number {
+            color: var(--hl-number);
+        }
+
+        .hl-func {
+            color: var(--hl-func);
+        }
+
+        .document blockquote {
+            margin: 1em 0;
+
+            padding: .5em 1em;
+
+            border-left:
+                    3px solid var(--accent);
+
+            border-radius:
+                    0
+                    var(--radius-md)
+                    var(--radius-md)
+                    0;
+
+            color: var(--text);
+
+            background:
+                    var(--accent-soft);
+        }
+
+        .document blockquote p:first-child {
+            margin-top: 0;
+        }
+
+        .document blockquote p:last-child {
+            margin-bottom: 0;
+        }
+
+        .document details {
+            margin: 1em 0;
+
+            padding: .8em 1em;
+
+            border:
+                    1px solid var(--border);
+
+            border-radius:
+                    var(--radius-md);
+
+            background:
+                    var(--panel-alt);
+        }
+
+        .document details summary {
+            color: var(--accent);
+
+            cursor: pointer;
+
+            font-weight: 600;
+        }
+
+        .document details[open] summary {
+            margin-bottom: 8px;
+        }
+
+        .table-wrap {
+            margin: 1em 0;
+
+            overflow-x: auto;
+
+            border:
+                    1px solid var(--border);
+
+            border-radius:
+                    var(--radius-md);
+        }
 
         .document table {
             width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
+
+            border-collapse:
+                    collapse;
+
+            font-size: .95em;
         }
 
-        .document th, .document td {
-            border: 1px solid var(--border);
-            padding: 9px;
+        .document th,
+        .document td {
+            padding: .7em 1em;
+
+            border-bottom:
+                    1px solid var(--border);
+
+            border-right:
+                    1px solid var(--border);
+
             text-align: left;
             vertical-align: top;
         }
 
-        .document th { background: #222c3e; }
-
-        .document hr {
-            border: 0;
-            border-top: 1px solid var(--border);
-            margin: 20px 0;
+        .document th:last-child,
+        .document td:last-child {
+            border-right: none;
         }
 
-        .document img { max-width: 100%; }
+        .document tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .document th {
+            color: var(--text-strong);
+
+            background:
+                    var(--table-header);
+
+            font-weight: 700;
+        }
+
+        .document tbody tr:hover {
+            background:
+                    var(--panel-alt);
+        }
+
+        .document hr {
+            margin: 1.5em 0;
+
+            border: 0;
+
+            border-top:
+                    1px solid var(--border);
+        }
+
+        .document img {
+            max-width: 100%;
+
+            border-radius:
+                    var(--radius-sm);
+        }
 
         .document a {
             color: var(--accent);
-            text-decoration: underline;
-            text-decoration-color: #a998ff44;
+
+            text-decoration:
+                    underline;
+
+            text-decoration-thickness:
+                    1px;
+
+            text-underline-offset:
+                    3px;
         }
 
-        .document a:hover { text-decoration-color: var(--accent); }
+        /* ============================================
+           HELP
+           ============================================ */
 
         .help {
-            margin-top: 24px;
-            padding: 18px 20px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
+            margin-top: 34px;
+
+            padding: 16px 20px;
+
+            border:
+                    1px solid var(--border);
+
+            border-radius:
+                    var(--radius-md);
+
             color: var(--muted);
-            background: #141b2980;
-            font-size: 14px;
+
+            background:
+                    var(--panel);
+
+            font-size:
+                    calc(var(--fs-base) - 2px);
+
+            box-shadow:
+                    var(--shadow);
         }
 
-        .help summary { color: var(--text); cursor: pointer; }
-        .help li { margin: 8px 0; }
+        .help summary {
+            color: var(--text-strong);
+
+            cursor: pointer;
+
+            font-weight: 600;
+        }
+
+        .help li {
+            margin: 6px 0;
+        }
 
         .footer {
-            margin: 24px 0 0;
+            margin:
+                    22px 0 0;
+
             color: var(--muted);
+
             text-align: center;
-            font-size: 12px;
+
+            font-size:
+                    calc(var(--fs-base) - 3px);
+
+            opacity: .7;
         }
 
-        @media (max-width: 1050px) {
-            .container { padding: 22px; }
-            .grid { grid-template-columns: 1fr; }
-            .document { height: auto; max-height: 65vh; min-height: 180px; }
-            .document.collapsed { height: 0; min-height: 0; max-height: 0; }
-        }
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
 
-        @media (max-width: 600px) {
-            .container { padding: 16px; }
-            .header { flex-direction: column; }
-            .clock {
-                width: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
+        @media (max-width: 800px) {
+
+            .topbar {
+                align-items: flex-start;
+
+                flex-wrap: wrap;
+
+                padding:
+                        10px 14px;
             }
-            .timer { margin: 0; }
-            .checkbox { margin-left: 0; width: 100%; }
-            .toolbar > button { flex: 1; }
+
+            .topbar-settings {
+                width: 100%;
+
+                order: 3;
+            }
+
+            .main {
+                padding:
+                        20px
+                        14px
+                        40px;
+            }
+
+            .hero {
+                flex-direction: column;
+
+                align-items: stretch;
+
+                gap: 14px;
+            }
+
+            .timer-box {
+                width: 100%;
+
+                text-align: left;
+            }
+
+            .toolbar {
+                align-items: stretch;
+            }
+
+            .checkbox {
+                width: 100%;
+
+                margin-left: 0;
+
+                padding-top: 4px;
+            }
+
+            .task-section {
+                grid-template-columns:
+                    1fr;
+            }
+
+            .task-index {
+                flex-direction: row;
+
+                align-items: center;
+
+                gap: 10px;
+
+                padding:
+                        14px
+                        0
+                        12px;
+
+                border-right: none;
+
+                border-bottom:
+                        1px solid var(--border);
+            }
+
+            .task-index-number {
+                font-size:
+                        calc(var(--fs-base) + 8px);
+            }
+
+            .task-index-label {
+                margin-top: 0;
+            }
+
+            .task-main {
+                padding:
+                        20px
+                        0
+                        24px;
+            }
+
+            .task-header {
+                flex-direction: column;
+            }
+
+            .task-actions {
+                justify-content:
+                        flex-start;
+            }
+
+            .task-bottom {
+                align-items: stretch;
+
+                flex-direction: column;
+            }
+
+            .task-bottom-hint {
+                margin-right: 0;
+            }
+
+            .task-bottom button {
+                width: 100%;
+            }
+
+            .completed-bar {
+                align-items: flex-start;
+
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 
 <body>
-<main class="container">
-    <header class="header">
-        <div>
-            <div class="eyebrow">C Practice / local trainer</div>
-            <h1>Три задачи. Чистый main.c.</h1>
-            <p class="subtitle">
-                Получи случайный набор, открой редактор и попробуй сам.
-                Условия здесь, рабочие файлы — в Your_tasks.
-            </p>
+
+<div class="app">
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <div class="brand-mark">
+                📚
+            </div>
+
+            <div>
+                <div class="brand-title">
+                    C Practice
+                </div>
+
+                <div class="brand-subtitle">
+                    Local Trainer
+                </div>
+            </div>
+
         </div>
-        <div class="clock">
-            <div class="clock-label">Время текущего набора</div>
-            <div class="timer" id="timer">00:00:00</div>
+
+        <div class="topbar-settings">
+
+            <div class="topbar-control">
+
+                <span class="topbar-label">
+                    Тема
+                </span>
+
+                <select
+                        id="themeSelect"
+                        class="theme-select"
+                >
+                    <option value="gruvbox">☕ Gruvbox</option>
+                    <option value="catppuccin">🐈 Catppuccin</option>
+                    <option value="kanagawa">🌊 Kanagawa</option>
+                    <option value="nord">❄️ Nord</option>
+                    <option value="dracula">🧛 Dracula</option>
+                    <option value="dark">🌙 GitHub Dark</option>
+                </select>
+
+            </div>
+
+            <div class="topbar-control">
+
+                <span class="topbar-label">
+                    <span id="fontVal">16</span>px
+                </span>
+
+                <input
+                        id="fontSlider"
+                        class="font-slider"
+                        type="range"
+                        min="12"
+                        max="26"
+                        value="16"
+                        step="1"
+                        title="Размер интерфейса"
+                >
+
+            </div>
+
         </div>
+
+        <div class="topbar-spacer"></div>
+
     </header>
 
-    <section class="toolbar" aria-label="Управление тренировкой">
-        <button id="chooseButton" type="button">Выбрать папку проекта</button>
-        <button id="generateButton" class="primary" type="button" disabled>Новый набор</button>
-        <button id="pauseButton" type="button" disabled>Пауза</button>
-        <label class="checkbox">
-            <input id="extraCheckbox" type="checkbox" checked>
-            Включать дополнительные задания
-        </label>
-    </section>
+    <main class="main">
 
-    <div id="status" class="status" role="status" aria-live="polite">
-        Выбери корень проекта — папку, внутри которой находится tasks.
-    </div>
+        <section class="hero">
 
-    <div class="meta">
-        <span id="catalogInfo">Каталог не подключён</span>
-        <span id="attemptInfo">Набор ещё не создан</span>
-    </div>
+            <div class="hero-copy">
 
-    <section class="grid" id="cards" aria-label="Задания"></section>
+                <div class="eyebrow">
+                    C Practice / Random Training
+                </div>
 
-    <details class="help">
-        <summary>Как пользоваться и что сохраняется</summary>
-        <ol>
-            <li>Нажми «Выбрать папку проекта» и разреши доступ.
-                Нужен корень репозитория, не сама папка tasks.</li>
-            <li>Нажми «Новый набор». Страница выберет три задания и
-                создаст отдельную попытку в Your_tasks.</li>
-            <li>В каждой рабочей папке будут копия README.md и пустой
-                main.c. Эталон, теория и тесты не копируются.</li>
-            <li>Открой созданный main.c в редакторе.
-                Компиляция и проверка — через терминал.</li>
-            <li>Кнопки файлов задания открывают исходные материалы
-                в новых вкладках. Если какого-то файла нет — кнопка
-                неактивна и подписана «(нет)».</li>
-        </ol>
-        <p>Всё работает локально. Страница не отправляет файлы в сеть.
-            После перезагрузки нужно снова выбрать папку.</p>
-        <pre class="commands"># Из рабочей папки задания:
+                <h1>
+                    Три задачи. Сверху вниз.
+                </h1>
+
+                <p class="hero-subtitle">
+                    Получай случайный набор и проходи его
+                    последовательно: от лёгкого задания
+                    к среднему, затем к сложному.
+                </p>
+
+            </div>
+
+            <div class="timer-box">
+
+                <div class="timer-label">
+                    Время текущего набора
+                </div>
+
+                <div
+                        class="timer"
+                        id="timer"
+                >
+                    00:00:00
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="intro">
+
+            <div class="intro-title">
+                👋 Сначала подключи проект
+            </div>
+
+            <p>
+                Нажми <strong>«Выбрать папку проекта»</strong>
+                и укажи корень своего репозитория —
+                папку, внутри которой находится
+                <code>tasks</code>.
+            </p>
+
+            <p>
+                Тренажёру это нужно, чтобы читать задания
+                с твоего компьютера и создавать рабочие копии.
+                После создания набора появится
+                <code>Your_tasks</code>, внутри которой будет
+                текущая попытка с тремя заданиями
+                и пустыми <code>main.c</code>.
+            </p>
+
+            <p>
+                Всё происходит локально:
+                файлы заданий не отправляются на сервер.
+            </p>
+
+        </section>
+
+        <section
+                class="toolbar"
+                aria-label="Управление тренировкой"
+        >
+
+            <button
+                    id="chooseButton"
+                    type="button"
+            >
+                📁 Выбрать папку проекта
+            </button>
+
+            <button
+                    id="generateButton"
+                    class="primary"
+                    type="button"
+                    disabled
+            >
+                ✨ Новый набор
+            </button>
+
+            <button
+                    id="pauseButton"
+                    type="button"
+                    disabled
+            >
+                ⏸ Пауза
+            </button>
+
+            <label class="checkbox">
+
+                <input
+                        id="extraCheckbox"
+                        type="checkbox"
+                        checked
+                >
+
+                Включать дополнительные задания
+
+            </label>
+
+        </section>
+
+        <div
+                id="status"
+                class="status"
+                role="status"
+                aria-live="polite"
+        >
+            Выбери корень проекта —
+            папку, внутри которой находится
+            <code>tasks</code>.
+        </div>
+
+        <div class="meta">
+
+            <span id="catalogInfo">
+                Каталог не подключён
+            </span>
+
+            <span id="attemptInfo">
+                Набор ещё не создан
+            </span>
+
+        </div>
+
+        <section
+                class="task-stack"
+                id="cards"
+                aria-label="Задания"
+        ></section>
+
+        <details class="help">
+
+            <summary>
+                Как пользоваться и что сохраняется
+            </summary>
+
+            <ol>
+
+                <li>
+                    Нажми «Выбрать папку проекта»
+                    и выбери корень репозитория,
+                    а не саму папку <code>tasks</code>.
+                </li>
+
+                <li>
+                    Нажми «Новый набор».
+                    Тренажёр выберет три задания:
+                    лёгкое, среднее и сложное.
+                </li>
+
+                <li>
+                    В корне проекта создастся
+                    <code>Your_tasks</code>,
+                    внутри — отдельная папка
+                    текущей попытки.
+                </li>
+
+                <li>
+                    Для каждого задания создастся
+                    рабочая папка с копией
+                    <code>README.md</code>
+                    и пустым <code>main.c</code>.
+                </li>
+
+                <li>
+                    Первое задание открыто сразу.
+                    Второе и третье закрыты до завершения
+                    предыдущего.
+                </li>
+
+                <li>
+                    После «✅ Решено» текущее задание
+                    сворачивается, а следующее
+                    открывается автоматически.
+                </li>
+
+                <li>
+                    Пока задание закрыто или уже решено,
+                    заменить его нельзя.
+                </li>
+
+            </ol>
+
+            <pre class="commands"># Из рабочей папки задания:
 gcc -Wall -Wextra -Werror -std=c11 main.c -o main
 ./main
 
 # С математическими функциями:
 gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm</pre>
-    </details>
 
-    <p class="footer">
-        Не запоминай билет. Разбирайся, почему работает решение.
-    </p>
-</main>
+        </details>
+
+        <p class="footer">
+            Не запоминай билет.
+            Разбирайся, почему работает решение.
+        </p>
+
+    </main>
+
+</div>
 
 <script>
     "use strict";
 
+    /* ============================================
+   DATA
+   ============================================ */
+
     const TASKS = [
-        { path: "01_basics/01_fix_int_keyword",            title: "Исправление INT",                level: "easy" },
-        { path: "01_basics/02_fix_declaration_separator",   title: "Разделитель в объявлении",        level: "easy" },
-        { path: "01_basics/03_fix_declaration_syntax",      title: "Ошибка в объявлении переменных",  level: "easy" },
-        { path: "01_basics/04_fix_multiple_declaration",    title: "Повторный тип после запятой",     level: "easy" },
-        { path: "01_basics/05_fix_missing_type",            title: "Отсутствующий тип переменной",    level: "easy" },
-        { path: "01_basics/06_fix_double_initialization",   title: "Инициализация double",            level: "easy" },
-        { path: "02_input_output/01_zero_padding",          title: "Ведущие нули",                    level: "easy" },
-        { path: "02_input_output/02_fix_output_width",      title: "Исправление ширины вывода",       level: "easy" },
-        { path: "02_input_output/03_groot",                 title: "Я есть Грут!",                    level: "easy" },
-        { path: "02_input_output/04_windows_path",          title: "Путь к Блокноту",                 level: "easy" },
-        { path: "02_input_output/05_print_205",             title: "Вывод числа 205",                 level: "easy" },
-        { path: "03_expressions/01_sphere_mass",            title: "Масса шара",                      level: "medium" },
-        { path: "03_expressions/02_radians_to_degrees",     title: "Перевод радиан в градусы",        level: "medium" },
-        { path: "03_expressions/03_swap_edge_digits",       title: "Перестановка крайних цифр",       level: "medium" },
-        { path: "03_expressions/04_strictly_between",       title: "Число строго между двумя числами",level: "medium" },
-        { path: "03_expressions/05_boolean_expression",     title: "Логическое выражение",            level: "medium" },
-        { path: "04_loops/01_sequence_max",                 title: "Поиск наибольшего",               level: "medium" },
-        { path: "04_loops/02_max_digit",                    title: "Наибольшая цифра",                level: "medium" },
-        { path: "04_loops/03_odd_digits_product",           title: "Произведение нечётных цифр",      level: "medium" },
-        { path: "04_loops/04_reverse_number_extra",         title: "Разворот числа",                  level: "medium" },
-        { path: "04_loops/05_unpaired_number_extra",        title: "Число без пары",                  level: "medium" },
-        { path: "05_dynamic_arrays/01_dot_product",         title: "Скалярное произведение",          level: "hard" },
-        { path: "05_dynamic_arrays/02_alternate_ends",      title: "Чередование первого и последнего",level: "hard" },
-        { path: "05_dynamic_arrays/03_remove_duplicates",   title: "Удаление повторов",               level: "hard" },
-        { path: "05_dynamic_arrays/04_reverse_sequence",    title: "Реверс последовательности",       level: "hard" },
-        { path: "06_strings/01_string_length_extra",        title: "Длина строки",                    level: "medium" },
-        { path: "06_strings/02_count_letters_digits_extra", title: "Подсчёт букв и цифр",             level: "medium" },
-        { path: "06_strings/03_to_lower_extra",             title: "Перевод в нижний регистр",        level: "medium" },
-        { path: "06_strings/04_to_upper_extra",             title: "Перевод в верхний регистр",        level: "medium" },
-        { path: "06_strings/05_remove_digits_extra",        title: "Удаление цифр",                   level: "medium" },
-        { path: "06_strings/06_count_words_extra",          title: "Подсчёт слов",                    level: "medium" },
-        { path: "06_strings/07_trim_spaces",                title: "Удаление лишних пробелов",        level: "medium" },
-        { path: "06_strings/08_reverse_string_extra",       title: "Разворот строки",                 level: "medium" },
-        { path: "06_strings/09_palindrome_extra",           title: "Палиндром (точный)",              level: "medium" },
-        { path: "06_strings/10_compare_strings_extra",      title: "Сравнение строк",                 level: "medium" },
-        { path: "06_strings/11_caesar_cipher_extra",        title: "Шифр Цезаря",                     level: "medium" },
-        { path: "06_strings/12_remove_last_substring",      title: "Удаление последней подстроки",    level: "hard" },
-        { path: "06_strings/13_palindrome",                 title: "Проверка на палиндром (экзамен)", level: "medium" },
-        { path: "06_strings/14_trim_whitespace",            title: "Удаление пробелов и табуляций",   level: "medium" },
-        { path: "07_matrices/01_matrix_addition_extra",     title: "Сложение квадратных матриц",      level: "medium" },
-        { path: "07_matrices/02_matrix_multiplication",     title: "Умножение квадратных матриц",     level: "hard" },
-        { path: "07_matrices/03_swap_rows",                 title: "Перестановка строк",              level: "hard" },
-        { path: "07_matrices/04_rotate_clockwise",          title: "Поворот матрицы",                 level: "hard" },
-        { path: "07_matrices/05_spiral_clockwise",          title: "Спираль по часовой стрелке",      level: "hard" },
-        { path: "07_matrices/06_spiral_squares",            title: "Квадраты чисел по спирали",       level: "hard" },
-        { path: "08_structures/01_students_above_average",  title: "Студенты выше среднего балла",    level: "hard" },
-        { path: "08_structures/02_students_sort_by_rate",   title: "Сортировка студентов по баллам",  level: "hard" },
-        { path: "08_structures/03_best_student_extra",      title: "Студент с наивысшим баллом",      level: "medium" },
-        { path: "08_structures/04_shopping_cart_extra",     title: "Товары в корзине",                level: "medium" },
-        { path: "08_structures/05_books_sort_extra",        title: "Книги: сортировка по году",       level: "hard" }
+        {path:"01_basics/01_fix_int_keyword",title:"Исправление INT",level:"easy"},
+        {path:"01_basics/02_fix_declaration_separator",title:"Разделитель в объявлении",level:"easy"},
+        {path:"01_basics/03_fix_declaration_syntax",title:"Ошибка в объявлении переменных",level:"easy"},
+        {path:"01_basics/04_fix_multiple_declaration",title:"Повторный тип после запятой",level:"easy"},
+        {path:"01_basics/05_fix_missing_type",title:"Отсутствующий тип переменной",level:"easy"},
+        {path:"01_basics/06_fix_double_initialization",title:"Инициализация double",level:"easy"},
+
+        {path:"02_input_output/01_zero_padding",title:"Ведущие нули",level:"easy"},
+        {path:"02_input_output/02_fix_output_width",title:"Исправление ширины вывода",level:"easy"},
+        {path:"02_input_output/03_groot",title:"Я есть Грут!",level:"easy"},
+        {path:"02_input_output/04_windows_path",title:"Путь к Блокноту",level:"easy"},
+        {path:"02_input_output/05_print_205",title:"Вывод числа 205",level:"easy"},
+
+        {path:"03_expressions/01_sphere_mass",title:"Масса шара",level:"medium"},
+        {path:"03_expressions/02_radians_to_degrees",title:"Перевод радиан в градусы",level:"medium"},
+        {path:"03_expressions/03_swap_edge_digits",title:"Перестановка крайних цифр",level:"medium"},
+        {path:"03_expressions/04_strictly_between",title:"Число строго между двумя числами",level:"medium"},
+        {path:"03_expressions/05_boolean_expression",title:"Логическое выражение",level:"medium"},
+
+        {path:"04_loops/01_sequence_max",title:"Поиск наибольшего",level:"medium"},
+        {path:"04_loops/02_max_digit",title:"Наибольшая цифра",level:"medium"},
+        {path:"04_loops/03_odd_digits_product",title:"Произведение нечётных цифр",level:"medium"},
+        {path:"04_loops/04_reverse_number_extra",title:"Разворот числа",level:"medium"},
+        {path:"04_loops/05_unpaired_number_extra",title:"Число без пары",level:"medium"},
+
+        {path:"05_dynamic_arrays/01_dot_product",title:"Скалярное произведение",level:"hard"},
+        {path:"05_dynamic_arrays/02_alternate_ends",title:"Чередование первого и последнего",level:"hard"},
+        {path:"05_dynamic_arrays/03_remove_duplicates",title:"Удаление повторов",level:"hard"},
+        {path:"05_dynamic_arrays/04_reverse_sequence",title:"Реверс последовательности",level:"hard"},
+
+        {path:"06_strings/01_string_length_extra",title:"Длина строки",level:"medium"},
+        {path:"06_strings/02_count_letters_digits_extra",title:"Подсчёт букв и цифр",level:"medium"},
+        {path:"06_strings/03_to_lower_extra",title:"Перевод в нижний регистр",level:"medium"},
+        {path:"06_strings/04_to_upper_extra",title:"Перевод в верхний регистр",level:"medium"},
+        {path:"06_strings/05_remove_digits_extra",title:"Удаление цифр",level:"medium"},
+        {path:"06_strings/06_count_words_extra",title:"Подсчёт слов",level:"medium"},
+        {path:"06_strings/07_trim_spaces",title:"Удаление лишних пробелов",level:"medium"},
+        {path:"06_strings/08_reverse_string_extra",title:"Разворот строки",level:"medium"},
+        {path:"06_strings/09_palindrome_extra",title:"Палиндром (точный)",level:"medium"},
+        {path:"06_strings/10_compare_strings_extra",title:"Сравнение строк",level:"medium"},
+        {path:"06_strings/11_caesar_cipher_extra",title:"Шифр Цезаря",level:"medium"},
+        {path:"06_strings/12_remove_last_substring",title:"Удаление последней подстроки",level:"hard"},
+        {path:"06_strings/13_palindrome",title:"Проверка на палиндром (экзамен)",level:"medium"},
+        {path:"06_strings/14_trim_whitespace",title:"Удаление пробелов и табуляций",level:"medium"},
+
+        {path:"07_matrices/01_matrix_addition_extra",title:"Сложение квадратных матриц",level:"medium"},
+        {path:"07_matrices/02_matrix_multiplication",title:"Умножение квадратных матриц",level:"hard"},
+        {path:"07_matrices/03_swap_rows",title:"Перестановка строк",level:"hard"},
+        {path:"07_matrices/04_rotate_clockwise",title:"Поворот матрицы",level:"hard"},
+        {path:"07_matrices/05_spiral_clockwise",title:"Спираль по часовой стрелке",level:"hard"},
+        {path:"07_matrices/06_spiral_squares",title:"Квадраты чисел по спирали",level:"hard"},
+
+        {path:"08_structures/01_students_above_average",title:"Студенты выше среднего балла",level:"hard"},
+        {path:"08_structures/02_students_sort_by_rate",title:"Сортировка студентов по баллам",level:"hard"},
+        {path:"08_structures/03_best_student_extra",title:"Студент с наивысшим баллом",level:"medium"},
+        {path:"08_structures/04_shopping_cart_extra",title:"Товары в корзине",level:"medium"},
+        {path:"08_structures/05_books_sort_extra",title:"Книги: сортировка по году",level:"hard"}
     ];
 
     const LEVELS = [
-        { id: "easy",   label: "Лёгкое" },
-        { id: "medium", label: "Среднее" },
-        { id: "hard",   label: "Сложное" }
+        {id:"easy",label:"Лёгкое",number:"01"},
+        {id:"medium",label:"Среднее",number:"02"},
+        {id:"hard",label:"Сложное",number:"03"}
     ];
 
     const PATH_ALIASES = {
-        "03_expressions/05_boolean_expression":   "03_expressions/05_boolean_expressio",
-        "05_dynamic_arrays/03_remove_duplicates": "05_dynamic_arrays/03_remove_duplicate",
-        "07_matrices/06_spiral_squares":          "07_matrices/06_spiral_square"
+        "03_expressions/05_boolean_expression":
+            "03_expressions/05_boolean_expressio",
+
+        "05_dynamic_arrays/03_remove_duplicates":
+            "05_dynamic_arrays/03_remove_duplicate",
+
+        "07_matrices/06_spiral_squares":
+            "07_matrices/06_spiral_square"
     };
 
     const FILE_BUTTONS = [
-        { key: "readme",    filename: "README.md",              label: "📋 Условие",          tabTitle: "Условие",              reveal: false },
-        { key: "theory",    filename: "theory.md",              label: "💡 Теория",            tabTitle: "Теория",               reveal: true },
-        { key: "tests",     filename: "tests.md",               label: "🧪 Тесты",            tabTitle: "Тесты",                reveal: false },
-        { key: "solution",  filename: "solution.c",             label: "✅ Решение",           tabTitle: "Решение",              reveal: true },
-        { key: "commented", filename: "solution_commented.c",   label: "💬 С комментариями",  tabTitle: "Решение с комментариями", reveal: true }
+        {
+            key:"readme",
+            filename:"README.md",
+            label:"📋 Условие",
+            tabTitle:"Условие",
+            reveal:false
+        },
+
+        {
+            key:"theory",
+            filename:"theory.md",
+            label:"💡 Теория",
+            tabTitle:"Теория",
+            reveal:true
+        },
+
+        {
+            key:"tests",
+            filename:"tests.md",
+            label:"🧪 Тесты",
+            tabTitle:"Тесты",
+            reveal:false
+        },
+
+        {
+            key:"solution",
+            filename:"solution.c",
+            label:"✅ Решение",
+            tabTitle:"Решение",
+            reveal:true
+        },
+
+        {
+            key:"commented",
+            filename:"solution_commented.c",
+            label:"💬 С комментариями",
+            tabTitle:"Решение с комментариями",
+            reveal:true
+        }
     ];
 
+    /* ============================================
+   UI
+   ============================================ */
+
     const ui = {
-        choose:   document.getElementById("chooseButton"),
-        generate: document.getElementById("generateButton"),
-        pause:    document.getElementById("pauseButton"),
-        extra:    document.getElementById("extraCheckbox"),
-        status:   document.getElementById("status"),
-        catalog:  document.getElementById("catalogInfo"),
-        attempt:  document.getElementById("attemptInfo"),
-        timer:    document.getElementById("timer"),
-        cards:    document.getElementById("cards")
+        choose:
+            document.getElementById("chooseButton"),
+
+        generate:
+            document.getElementById("generateButton"),
+
+        pause:
+            document.getElementById("pauseButton"),
+
+        extra:
+            document.getElementById("extraCheckbox"),
+
+        status:
+            document.getElementById("status"),
+
+        catalog:
+            document.getElementById("catalogInfo"),
+
+        attempt:
+            document.getElementById("attemptInfo"),
+
+        timer:
+            document.getElementById("timer"),
+
+        cards:
+            document.getElementById("cards")
     };
 
     const state = {
-        root:      null,
-        tasksDir:  null,
-        available: [],
-        missing:   [],
-        busy:      false,
-        attempt:   null,
-        current:   { easy: null, medium: null, hard: null },
-        seen:      { easy: new Set(), medium: new Set(), hard: new Set() },
-        timer:     { running: false, startedAt: 0, elapsed: 0 },
-        locked:    { easy: false, medium: true, hard: true },
-        completed: { easy: false, medium: false, hard: false }
+        root:null,
+        tasksDir:null,
+
+        available:[],
+        missing:[],
+
+        busy:false,
+        attempt:null,
+
+        current:{
+            easy:null,
+            medium:null,
+            hard:null
+        },
+
+        seen:{
+            easy:new Set(),
+            medium:new Set(),
+            hard:new Set()
+        },
+
+        timer:{
+            running:false,
+            startedAt:0,
+            elapsed:0
+        },
+
+        locked:{
+            easy:true,
+            medium:true,
+            hard:true
+        },
+
+        completed:{
+            easy:false,
+            medium:false,
+            hard:false
+        }
     };
 
     const cardUI = {};
 
-    function el(tag, className, text) {
-        const node = document.createElement(tag);
-        if (className) node.className = className;
-        if (text !== undefined) node.textContent = text;
+    /* ============================================
+   HELPERS
+   ============================================ */
+
+    function el(tag,className,text) {
+        const node=document.createElement(tag);
+
+        if(className) {
+            node.className=className;
+        }
+
+        if(text!==undefined) {
+            node.textContent=text;
+        }
+
         return node;
     }
 
-    function setStatus(message, kind) {
-        ui.status.className = "status" + (kind ? " " + kind : "");
-        ui.status.textContent = message;
+    function setStatus(message,kind) {
+        ui.status.className=
+            "status"+
+            (
+                kind
+                    ? " "+kind
+                    : ""
+            );
+
+        ui.status.textContent=message;
     }
 
-    function extraEnabled() { return ui.extra.checked; }
+    function extraEnabled() {
+        return ui.extra.checked;
+    }
 
     function poolFor(level) {
-        return state.available.filter(function (task) {
-            return task.level === level && (extraEnabled() || !task.extra);
+        return state.available.filter(function(task) {
+            return (
+                task.level===level &&
+                (
+                    extraEnabled() ||
+                    !task.extra
+                )
+            );
         });
     }
 
+    /* ============================================
+   CONTROLS
+   ============================================ */
+
     function refreshControls() {
-        ui.choose.disabled   = state.busy;
-        ui.extra.disabled    = state.busy;
-        ui.pause.disabled    = !state.attempt;
-        ui.pause.textContent = state.timer.running ? "Пауза" : "Продолжить";
 
-        ui.generate.disabled = state.busy
-            || !state.root
-            || LEVELS.some(function (level) { return poolFor(level.id).length === 0; });
+        ui.choose.disabled=
+            state.busy;
 
-        for (var i = 0; i < LEVELS.length; i++) {
-            var levelId   = LEVELS[i].id;
-            var card      = cardUI[levelId];
-            var current   = state.current[levelId];
-            var hasTask   = !!current;
-            var isLocked  = state.locked[levelId];
-            var isDone    = state.completed[levelId];
+        ui.extra.disabled=
+            state.busy;
 
-            card.skip.disabled = state.busy || !hasTask || isDone;
-            card.doneBtn.disabled = !hasTask || isLocked;
+        ui.pause.disabled=
+            !state.attempt;
 
-            if (isDone) {
-                card.doneBtn.textContent = "↩️ Вернуть";
-                card.doneBtn.className = "file-btn";
-            } else {
-                card.doneBtn.textContent = "✅ Решено";
-                card.doneBtn.className = "file-btn done-btn";
-            }
+        ui.pause.textContent=
+            state.timer.running
+                ? "⏸ Пауза"
+                : "▶ Продолжить";
 
-            for (var j = 0; j < FILE_BUTTONS.length; j++) {
-                var cfg = FILE_BUTTONS[j];
-                var btn = card.fileButtons[cfg.key];
-
-                if (!hasTask || isLocked || isDone) {
-                    btn.disabled = true;
-                    btn.title = isLocked ? "Сначала откройте задание" : "";
-                    btn.textContent = cfg.label;
-                } else {
-                    var exists = current.task.availableFiles
-                        && current.task.availableFiles[cfg.key];
-
-                    btn.disabled = !exists;
-                    btn.title = exists ? "" : "Файл отсутствует в этом задании";
-                    btn.textContent = exists ? cfg.label : cfg.label + " (нет)";
-                }
-            }
-
-            card.source.disabled = !hasTask || isLocked || isDone;
-        }
-
-        if (state.root) {
-            var parts = LEVELS.map(function (level) {
-                return level.label.toLowerCase() + ": " + poolFor(level.id).length;
+        ui.generate.disabled=
+            state.busy ||
+            !state.root ||
+            LEVELS.some(function(level) {
+                return (
+                    poolFor(level.id).length===0
+                );
             });
-            ui.catalog.textContent =
-                "Найдено " + state.available.length + "/" + TASKS.length
-                + " · " + parts.join(" · ");
-        } else {
-            ui.catalog.textContent = "Каталог не подключён";
+
+
+        for(
+            var i=0;
+            i<LEVELS.length;
+            i++
+        ) {
+
+            var levelId=
+                LEVELS[i].id;
+
+            var card=
+                cardUI[levelId];
+
+            var current=
+                state.current[levelId];
+
+            var hasTask=
+                !!current;
+
+            var locked=
+                state.locked[levelId];
+
+            var done=
+                state.completed[levelId];
+
+
+            /* Закрытое задание заменить нельзя */
+
+            card.skip.disabled=
+                state.busy ||
+                !hasTask ||
+                locked ||
+                done;
+
+
+            /* Решено — повторно нажать нельзя */
+
+            card.doneButton.disabled=
+                !hasTask ||
+                locked ||
+                done;
+
+
+            for(
+                var j=0;
+                j<FILE_BUTTONS.length;
+                j++
+            ) {
+
+                var cfg=
+                    FILE_BUTTONS[j];
+
+                var button=
+                    card.fileButtons[cfg.key];
+
+                var exists=
+                    hasTask &&
+                    current.task.availableFiles &&
+                    current.task.availableFiles[cfg.key];
+
+
+                button.disabled=
+                    !hasTask ||
+                    locked ||
+                    done ||
+                    !exists;
+
+
+                if(locked) {
+                    button.title=
+                        "Сначала решите предыдущее задание";
+                }
+                else if(!exists) {
+                    button.title=
+                        "Файл отсутствует в этом задании: "+
+                        cfg.filename;
+                }
+                else {
+                    button.title="";
+                }
+
+
+                button.textContent=
+                    exists
+                        ? cfg.label
+                        : cfg.label+
+                        (hasTask ? " (нет)" : "");
+
+            }
+
         }
+
+
+        if(state.root) {
+
+            var parts=
+                LEVELS.map(function(level) {
+                    return (
+                        level.label.toLowerCase()+
+                        ": "+
+                        poolFor(level.id).length
+                    );
+                });
+
+
+            ui.catalog.textContent=
+                "Найдено "+
+                state.available.length+
+                "/"+
+                TASKS.length+
+                " · "+
+                parts.join(" · ");
+
+        }
+        else {
+
+            ui.catalog.textContent=
+                "Каталог не подключён";
+
+        }
+
     }
+
+    /* ============================================
+   OPERATIONS
+   ============================================ */
 
     async function runOperation(operation) {
-        if (state.busy) return;
-        state.busy = true;
+
+        if(state.busy) {
+            return;
+        }
+
+        state.busy=true;
+
         refreshControls();
+
         try {
             await operation();
-        } catch (error) {
+        }
+        catch(error) {
+
             console.error(error);
-            if (error.name === "AbortError") {
-                setStatus("Действие отменено.");
-            } else {
-                setStatus((error.message || "Ошибка.") + " Старые попытки не изменялись.", "error");
+
+            if(error.name==="AbortError") {
+
+                setStatus(
+                    "Действие отменено."
+                );
+
             }
-        } finally {
-            state.busy = false;
+            else {
+
+                setStatus(
+                    (
+                        error.message||
+                        "Ошибка."
+                    )+
+                    " Старые попытки не изменялись.",
+                    "error"
+                );
+
+            }
+
+        }
+        finally {
+
+            state.busy=false;
+
             refreshControls();
+
         }
     }
 
+    /* ============================================
+   TIMER
+   ============================================ */
+
     function elapsedMilliseconds() {
-        return state.timer.elapsed + (state.timer.running ? Date.now() - state.timer.startedAt : 0);
+
+        return (
+            state.timer.elapsed+
+            (
+                state.timer.running
+                    ? Date.now()-
+                    state.timer.startedAt
+                    : 0
+            )
+        );
     }
 
     function updateTimer() {
-        var total = Math.floor(elapsedMilliseconds() / 1000);
-        ui.timer.textContent = [
-            Math.floor(total / 3600),
-            Math.floor(total / 60) % 60,
-            total % 60
-        ].map(function (v) { return String(v).padStart(2, "0"); }).join(":");
+
+        var total=
+            Math.floor(
+                elapsedMilliseconds()/1000
+            );
+
+        ui.timer.textContent=
+            [
+                Math.floor(total/3600),
+                Math.floor(total/60)%60,
+                total%60
+            ]
+                .map(function(value) {
+                    return String(value)
+                        .padStart(2,"0");
+                })
+                .join(":");
     }
 
     function resetTimer(start) {
-        state.timer.elapsed = 0;
-        state.timer.startedAt = Date.now();
-        state.timer.running = !!start;
+
+        state.timer.elapsed=0;
+
+        state.timer.startedAt=
+            Date.now();
+
+        state.timer.running=
+            !!start;
+
         updateTimer();
     }
 
     function toggleTimer() {
-        if (!state.attempt) return;
-        if (state.timer.running) {
-            state.timer.elapsed += Date.now() - state.timer.startedAt;
-            state.timer.running = false;
-        } else {
-            state.timer.startedAt = Date.now();
-            state.timer.running = true;
+
+        if(!state.attempt) {
+            return;
         }
+
+        if(state.timer.running) {
+
+            state.timer.elapsed+=
+                Date.now()-
+                state.timer.startedAt;
+
+            state.timer.running=false;
+
+        }
+        else {
+
+            state.timer.startedAt=
+                Date.now();
+
+            state.timer.running=true;
+
+        }
+
         updateTimer();
+
         refreshControls();
     }
 
-    setInterval(updateTimer, 500);
+    setInterval(
+        updateTimer,
+        500
+    );
 
-    async function getNestedDirectory(parent, path) {
-        var dir = parent;
-        var parts = path.split("/").filter(Boolean);
-        for (var i = 0; i < parts.length; i++) dir = await dir.getDirectoryHandle(parts[i]);
+    /* ============================================
+   FILE SYSTEM
+   ============================================ */
+
+    async function getNestedDirectory(
+        parent,
+        path
+    ) {
+
+        var dir=
+            parent;
+
+        var parts=
+            path
+                .split("/")
+                .filter(Boolean);
+
+
+        for(
+            var i=0;
+            i<parts.length;
+            i++
+        ) {
+
+            dir=
+                await dir.getDirectoryHandle(
+                    parts[i]
+                );
+
+        }
+
+
         return dir;
     }
 
-    async function resolveTaskDirectory(tasksDir, task) {
-        var candidates = [task.path];
-        if (task.path.endsWith("_extra")) candidates.push(task.path.replace(/_extra$/, "__extra"));
-        if (PATH_ALIASES[task.path]) candidates.push(PATH_ALIASES[task.path]);
+    async function resolveTaskDirectory(
+        tasksDir,
+        task
+    ) {
 
-        for (var i = 0; i < candidates.length; i++) {
-            try {
-                var dir = await getNestedDirectory(tasksDir, candidates[i]);
-                var readme = await dir.getFileHandle("README.md");
-                var avail = { readme: true };
-                for (var f = 0; f < FILE_BUTTONS.length; f++) {
-                    var fn = FILE_BUTTONS[f].filename;
-                    if (fn === "README.md") continue;
-                    try { await dir.getFileHandle(fn); avail[FILE_BUTTONS[f].key] = true; }
-                    catch (e) { if (e.name === "NotFoundError") avail[FILE_BUTTONS[f].key] = false; else throw e; }
-                }
-                return {
-                    path: task.path, title: task.title, level: task.level,
-                    actualPath: candidates[i], directory: dir, readme: readme,
-                    extra: task.path.endsWith("_extra"), availableFiles: avail
-                };
-            } catch (e) {
-                if (e.name !== "NotFoundError" && e.name !== "TypeMismatchError") throw e;
-            }
+        var candidates=[
+            task.path
+        ];
+
+
+        if(
+            task.path.endsWith("_extra")
+        ) {
+
+            candidates.push(
+                task.path.replace(
+                    /_extra$/,
+                    "__extra"
+                )
+            );
+
         }
+
+
+        if(
+            PATH_ALIASES[task.path]
+        ) {
+
+            candidates.push(
+                PATH_ALIASES[
+                    task.path
+                    ]
+            );
+
+        }
+
+
+        for(
+            var i=0;
+            i<candidates.length;
+            i++
+        ) {
+
+            try {
+
+                var dir=
+                    await getNestedDirectory(
+                        tasksDir,
+                        candidates[i]
+                    );
+
+
+                var readme=
+                    await dir.getFileHandle(
+                        "README.md"
+                    );
+
+
+                var availableFiles={
+                    readme:true
+                };
+
+
+                for(
+                    var f=0;
+                    f<FILE_BUTTONS.length;
+                    f++
+                ) {
+
+                    var cfg=
+                        FILE_BUTTONS[f];
+
+
+                    if(
+                        cfg.filename==="README.md"
+                    ) {
+                        continue;
+                    }
+
+
+                    try {
+
+                        await dir.getFileHandle(
+                            cfg.filename
+                        );
+
+                        availableFiles[
+                            cfg.key
+                            ]=true;
+
+                    }
+                    catch(e) {
+
+                        if(
+                            e.name==="NotFoundError"
+                        ) {
+
+                            availableFiles[
+                                cfg.key
+                                ]=false;
+
+                        }
+                        else {
+
+                            throw e;
+
+                        }
+
+                    }
+
+                }
+
+
+                return {
+
+                    path:
+                    task.path,
+
+                    title:
+                    task.title,
+
+                    level:
+                    task.level,
+
+                    actualPath:
+                        candidates[i],
+
+                    directory:
+                    dir,
+
+                    readme:
+                    readme,
+
+                    extra:
+                        task.path.endsWith(
+                            "_extra"
+                        ),
+
+                    availableFiles:
+                    availableFiles
+
+                };
+
+            }
+            catch(e) {
+
+                if(
+                    e.name!=="NotFoundError" &&
+                    e.name!=="TypeMismatchError"
+                ) {
+
+                    throw e;
+
+                }
+
+            }
+
+        }
+
+
         return null;
     }
 
     async function ensureWritePermission() {
-        if (!state.root) throw new Error("Сначала выбери папку проекта.");
-        var opt = { mode: "readwrite" };
-        if (await state.root.queryPermission(opt) === "granted") return;
-        if (await state.root.requestPermission(opt) !== "granted")
-            throw new Error("Для сохранения нужно разрешение на запись.");
-    }
 
-    async function writeFile(dir, name, content) {
-        var h = await dir.getFileHandle(name, { create: true });
-        var w = await h.createWritable();
-        try { await w.write(content); await w.close(); }
-        catch (e) { try { await w.abort(); } catch (_) {} throw e; }
-    }
+        if(!state.root) {
 
-    function uniqueSuffix() {
-        var v = new Uint32Array(2); crypto.getRandomValues(v);
-        return Array.from(v, function (x) { return x.toString(16).padStart(8, "0"); }).join("");
-    }
+            throw new Error(
+                "Сначала выбери папку проекта."
+            );
 
-    async function createUniqueDirectory(parent, prefix) {
-        for (var a = 0; a < 10; a++) {
-            var name = prefix + "_" + uniqueSuffix();
-            try { await parent.getDirectoryHandle(name); continue; }
-            catch (e) { if (e.name === "TypeMismatchError") continue; if (e.name !== "NotFoundError") throw e; }
-            return { name: name, directory: await parent.getDirectoryHandle(name, { create: true }) };
-        }
-        throw new Error("Не удалось создать уникальную папку.");
-    }
-
-    function timestamp() {
-        var d = new Date(), p = function (v) { return String(v).padStart(2, "0"); };
-        return [d.getFullYear(), p(d.getMonth()+1), p(d.getDate())].join("-")
-            + "_" + [p(d.getHours()), p(d.getMinutes()), p(d.getSeconds())].join("-");
-    }
-
-    async function readTaskReadme(task) {
-        var f = await task.readme.getFile(), md = await f.text();
-        if (!md.trim()) throw new Error("README.md пустой: tasks/" + task.actualPath);
-        return md;
-    }
-
-    async function readFileFromTask(task, filename) {
-        try { var h = await task.directory.getFileHandle(filename); var f = await h.getFile(); return await f.text(); }
-        catch (e) { if (e.name === "NotFoundError") throw new Error("Файл " + filename + " не найден в tasks/" + task.actualPath); throw e; }
-    }
-
-    async function saveSelection(attempt, level, task, markdown) {
-        var ld = await attempt.directory.getDirectoryHandle(level, { create: true });
-        var leaf = task.path.split("/").pop();
-        var sel = await createUniqueDirectory(ld, leaf);
-        await writeFile(sel.directory, "README.md", markdown);
-        await writeFile(sel.directory, "main.c", "");
-        return { task: task, markdown: markdown, directory: sel.directory,
-            relativePath: "Your_tasks/" + attempt.name + "/" + level + "/" + sel.name };
-    }
-
-    async function chooseProject() {
-        if (!window.isSecureContext || typeof window.showDirectoryPicker !== "function")
-            throw new Error("Этот браузер не поддерживает доступ к папкам. Используй Chrome или Edge.");
-        var root = await window.showDirectoryPicker({ id: "c-practice-project", mode: "readwrite" });
-        var td;
-        try { td = await root.getDirectoryHandle("tasks"); }
-        catch (e) { if (e.name === "NotFoundError") throw new Error("В выбранной папке нет tasks."); throw e; }
-        setStatus("Читаю каталог заданий…");
-        var avail = [], miss = [];
-        for (var i = 0; i < TASKS.length; i++) {
-            var r = await resolveTaskDirectory(td, TASKS[i]);
-            if (r) avail.push(r); else miss.push(TASKS[i].path);
-        }
-        if (!avail.length) throw new Error("Не найдено ни одного задания с README.md.");
-        state.root = root; state.tasksDir = td; state.available = avail; state.missing = miss; state.attempt = null;
-        state.locked.easy = false; state.locked.medium = true; state.locked.hard = true;
-        state.completed.easy = false; state.completed.medium = false; state.completed.hard = false;
-        for (var j = 0; j < LEVELS.length; j++) {
-            state.current[LEVELS[j].id] = null; state.seen[LEVELS[j].id].clear(); renderCard(LEVELS[j].id);
-        }
-        resetTimer();
-        ui.attempt.textContent = "Набор ещё не создан";
-        setStatus(miss.length
-            ? "Подключён проект «" + root.name + "». Не найдены " + miss.length + " задания: " + miss.join(", ")
-            : "Проект «" + root.name + "» подключён. Все 50 заданий найдены.", miss.length ? undefined : "success");
-    }
-
-    function randomItem(items) { return items[Math.floor(Math.random() * items.length)]; }
-
-    function chooseCandidate(level) {
-        var cp = state.current[level] ? state.current[level].task.path : null;
-        var pool = poolFor(level);
-        var unseen = pool.filter(function (t) { return t.path !== cp && !state.seen[level].has(t.path); });
-        if (unseen.length) return { task: randomItem(unseen), restart: false };
-        var alt = pool.filter(function (t) { return t.path !== cp; });
-        if (!alt.length) {
-            if (!cp && pool.length) return { task: randomItem(pool), restart: false };
-            throw new Error("Нет другого задания. Включи дополнительные упражнения.");
-        }
-        var lbl = LEVELS.find(function (l) { return l.id === level; }).label;
-        if (!confirm("Категория «" + lbl + "»: все задания уже выпадали. Начать новый круг?")) return null;
-        return { task: randomItem(alt), restart: true };
-    }
-
-    function commitCandidate(level, cand, sel) {
-        if (cand.restart) state.seen[level].clear();
-        state.seen[level].add(cand.task.path);
-        state.current[level] = sel;
-    }
-
-    async function generateSet() {
-        if (!state.root) throw new Error("Сначала выбери папку проекта.");
-        await ensureWritePermission();
-        var planned = [];
-        for (var i = 0; i < LEVELS.length; i++) {
-            var c = chooseCandidate(LEVELS[i].id);
-            if (!c) { setStatus("Создание набора отменено."); return; }
-            planned.push({ level: LEVELS[i].id, candidate: c, markdown: null });
-        }
-        setStatus("Читаю условия и создаю рабочие файлы…");
-        for (var j = 0; j < planned.length; j++) planned[j].markdown = await readTaskReadme(planned[j].candidate.task);
-        var output = await state.root.getDirectoryHandle("Your_tasks", { create: true });
-        var attempt = await createUniqueDirectory(output, "attempt_" + timestamp());
-        var saved = [];
-        for (var k = 0; k < planned.length; k++) {
-            saved.push({ level: planned[k].level, candidate: planned[k].candidate,
-                selection: await saveSelection(attempt, planned[k].level, planned[k].candidate.task, planned[k].markdown) });
-        }
-        state.attempt = attempt;
-        state.locked.easy = false; state.locked.medium = true; state.locked.hard = true;
-        state.completed.easy = false; state.completed.medium = false; state.completed.hard = false;
-        for (var m = 0; m < saved.length; m++) {
-            commitCandidate(saved[m].level, saved[m].candidate, saved[m].selection);
-            renderCard(saved[m].level);
-        }
-        resetTimer(true);
-        ui.attempt.textContent = "Попытка: " + attempt.name;
-        setStatus("Три задания сохранены в Your_tasks/" + attempt.name + ". Таймер запущен.", "success");
-    }
-
-    async function skipTask(level) {
-        if (!state.attempt || !state.current[level]) return;
-        await ensureWritePermission();
-        var c = chooseCandidate(level); if (!c) { setStatus("Замена отменена."); return; }
-        setStatus("Подбираю замену…");
-        var md = await readTaskReadme(c.task);
-        var sel = await saveSelection(state.attempt, level, c.task, md);
-        state.locked[level] = false; state.completed[level] = false;
-        commitCandidate(level, c, sel); renderCard(level);
-        setStatus("Замена сохранена: " + sel.relativePath, "success");
-    }
-
-    async function openFileInTab(level, filename, tabTitle) {
-        var sel = state.current[level]; if (!sel) return;
-        var content;
-        try { content = await readFileFromTask(sel.task, filename); }
-        catch (e) { setStatus(e.message, "error"); return; }
-        var tab = window.open("about:blank", "_blank");
-        if (!tab) { setStatus("Браузер заблокировал вкладку. Разреши всплывающие окна.", "error"); return; }
-        tab.opener = null;
-        var doc = tab.document, isMd = filename.endsWith(".md");
-        doc.documentElement.lang = "ru";
-        doc.title = tabTitle + " — " + sel.task.title;
-        var mc = doc.createElement("meta"); mc.setAttribute("charset", "UTF-8");
-        var mv = doc.createElement("meta"); mv.name = "viewport"; mv.content = "width=device-width, initial-scale=1";
-        var style = doc.createElement("style");
-        style.textContent = document.querySelector("style").textContent
-            + "\nbody { padding: 20px; }\n.standalone { max-width: 960px; margin: 0 auto; height: auto; min-height: 0; overflow: visible; padding: 28px; background: var(--panel); border: 1px solid var(--border); border-radius: 16px; }\n";
-        doc.head.append(mc, mv, style);
-        var main = doc.createElement("main"); main.className = "document standalone";
-        if (isMd) { main.appendChild(doc.importNode(renderMarkdown(content), true)); }
-        else {
-            var pre = doc.createElement("pre"), code = doc.createElement("code");
-            if (filename.endsWith(".c") || filename.endsWith(".h")) code.innerHTML = highlightC(content);
-            else code.textContent = content;
-            pre.appendChild(code); main.appendChild(pre);
-        }
-        doc.body.replaceChildren(main);
-    }
-
-    function toggleSource(level) { cardUI[level].sourceRow.hidden = !cardUI[level].sourceRow.hidden; }
-
-    function toggleCompleted(level) {
-        state.completed[level] = !state.completed[level];
-        renderCard(level);
-        refreshControls();
-    }
-
-    /* ================================================================
-       C SYNTAX HIGHLIGHTER
-       ================================================================ */
-
-    function escapeHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function highlightC(code) {
-        var rx = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\])*")|('(?:\\.|[^'\\])*')|(^\s*#[a-zA-Z_]+)|(\b(?:break|case|char|const|continue|default|do|double|else|enum|extern|float|for|goto|if|inline|int|long|register|restrict|return|short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|volatile|while)\b)|(\b(?:size_t|ssize_t|uintptr_t|intptr_t|FILE|NULL|stdin|stdout|stderr|[a-zA-Z0-9_]+_t)\b)|(\b0x[0-9a-fA-F]+\b|\b\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[fFlL]?\b)|(\b[a-zA-Z_][a-zA-Z0-9_]*(?=\s*\())/gm;
-        var li = 0, html = '';
-        code.replace(rx, function(m, cm, st, ch, pp, kw, ty, nu, fn, idx) {
-            if (idx > li) html += escapeHtml(code.slice(li, idx));
-            if (cm)      html += '<span class="hl-comment">' + escapeHtml(cm) + '</span>';
-            else if (st) html += '<span class="hl-string">'  + escapeHtml(st) + '</span>';
-            else if (ch) html += '<span class="hl-char">'    + escapeHtml(ch) + '</span>';
-            else if (pp) html += '<span class="hl-preproc">' + escapeHtml(pp) + '</span>';
-            else if (kw) html += '<span class="hl-keyword">' + escapeHtml(kw) + '</span>';
-            else if (ty) html += '<span class="hl-type">'    + escapeHtml(ty) + '</span>';
-            else if (nu) html += '<span class="hl-number">'  + escapeHtml(nu) + '</span>';
-            else if (fn) html += '<span class="hl-func">'    + escapeHtml(fn) + '</span>';
-            li = idx + m.length;
-        });
-        if (li < code.length) html += escapeHtml(code.slice(li));
-        return html;
-    }
-
-    /* ================================================================
-       MARKDOWN PARSER
-       ================================================================ */
-
-    function appendInline(parent, text) {
-        var pat = /(`[^`\n]+`|\*\*[^*\n]+\*\*|\*[^*\n]+\*|\[[^\]]*\]\([^)]*\)|<br\s*\/?>|<b>.*?<\/b>|<strong>.*?<\/strong>|<i>.*?<\/i>|<em>.*?<\/em>|<u>.*?<\/u>|<code>.*?<\/code>)/gi;
-        var pos = 0, m;
-        while ((m = pat.exec(text)) !== null) {
-            if (m.index > pos) parent.appendChild(document.createTextNode(text.slice(pos, m.index)));
-            var tok = m[0], tl = tok.toLowerCase();
-            if      (tok.startsWith("`"))       parent.appendChild(el("code","",tok.slice(1,-1)));
-            else if (tok.startsWith("**"))    { var s=el("strong"); appendInline(s,tok.slice(2,-2)); parent.appendChild(s); }
-            else if (tok.startsWith("*"))     { var e=el("em");     appendInline(e,tok.slice(1,-1)); parent.appendChild(e); }
-            else if (tok.startsWith("["))      { var lm=tok.match(/^\[([^\]]*)\]\(([^)]*)\)$/);
-                if(lm){var a=el("a");a.href=lm[2];a.target="_blank";a.rel="noopener noreferrer";appendInline(a,lm[1]);parent.appendChild(a);}
-                else parent.appendChild(document.createTextNode(tok)); }
-            else if (tl.startsWith("<br"))       parent.appendChild(document.createElement("br"));
-            else if (tl.startsWith("<b>"))      { var s=el("strong"); appendInline(s,tok.slice(3,-4)); parent.appendChild(s); }
-            else if (tl.startsWith("<strong>")) { var s=el("strong"); appendInline(s,tok.slice(8,-9)); parent.appendChild(s); }
-            else if (tl.startsWith("<i>"))      { var e=el("em");     appendInline(e,tok.slice(3,-4)); parent.appendChild(e); }
-            else if (tl.startsWith("<em>"))     { var e=el("em");     appendInline(e,tok.slice(4,-5)); parent.appendChild(e); }
-            else if (tl.startsWith("<u>"))      { var u=el("u");      appendInline(u,tok.slice(3,-4)); parent.appendChild(u); }
-            else if (tl.startsWith("<code>"))     parent.appendChild(el("code","",tok.slice(6,-7)));
-            pos = pat.lastIndex;
-        }
-        if (pos < text.length) parent.appendChild(document.createTextNode(text.slice(pos)));
-    }
-
-    function appendCellWithBreaks(p,t) { appendInline(p,t); }
-
-    function tableCells(line) {
-        var v = line.trim().replace(/\\\|/g,"\u0001");
-        if(v.startsWith("|"))v=v.slice(1); if(v.endsWith("|"))v=v.slice(0,-1);
-        return v.split("|").map(function(c){return c.trim().replace(/\u0001/g,"|");});
-    }
-
-    function isTableDivider(l) {
-        if(!l||!l.includes("|"))return false; var c=tableCells(l);
-        return c.length>0&&c.every(function(x){return /^:?-{3,}:?$/.test(x);});
-    }
-
-    function isBlockStart(lines,idx) {
-        if(idx>=lines.length)return true; var l=lines[idx];
-        return /^\s*$/.test(l)||/^\s*(`{3,}|~{3,})/.test(l)||/^#{1,6}\s+/.test(l)||/^\s*>/.test(l)
-            ||/^\s*[-+*]\s+/.test(l)||/^\s*\d+[.)]\s+/.test(l)||/^\s*([-*_])(?:\s*\1){2,}\s*$/.test(l)
-            ||/^\s*<details/i.test(l)||/^\s*<\/details/i.test(l)||(l.includes("|")&&isTableDivider(lines[idx+1]));
-    }
-
-    function renderMarkdown(md) {
-        var frag = document.createDocumentFragment(), lines = md.replace(/\r\n?/g,"\n").split("\n"), i = 0;
-        while (i < lines.length) {
-            var line = lines[i];
-            if (!line.trim()) { i++; continue; }
-
-            var fence = line.match(/^\s*(`{3,}|~{3,})(.*)$/);
-            if (fence) {
-                var mk=fence[1],lang=fence[2].trim().toLowerCase(),cl=[]; i++;
-                while(i<lines.length){var ct=lines[i].trim();
-                    if(ct.length>=mk.length&&Array.from(ct).every(function(c){return c===mk[0];})){i++;break;}
-                    cl.push(lines[i]);i++;}
-                var pre=el("pre"),code=el("code");
-                if(lang==="c"||lang==="cpp")code.innerHTML=highlightC(cl.join("\n"));else code.textContent=cl.join("\n");
-                pre.appendChild(code);frag.appendChild(pre);continue;
-            }
-
-            var hd=line.match(/^(#{1,6})\s+(.*)$/);
-            if(hd){var h=el("h"+hd[1].length);appendInline(h,hd[2]);frag.appendChild(h);i++;continue;}
-
-            if(/^\s*<details/i.test(line)){
-                var det=document.createElement("details");if(/open/i.test(line))det.open=true;
-                var dc=[],fl=line.replace(/^\s*<details[^>]*>/i,"");if(fl.trim())dc.push(fl);i++;
-                while(i<lines.length&&!/^\s*<\/details/i.test(lines[i])){dc.push(lines[i]);i++;}
-                if(i<lines.length){var ll=lines[i].replace(/<\/details\s*>\s*$/i,"");if(ll.trim())dc.push(ll);i++;}
-                var dtc=dc.join("\n"),sm=dtc.match(/<summary>([\s\S]*?)<\/summary>/i);
-                if(sm){var sn=document.createElement("summary");appendInline(sn,sm[1].trim());det.appendChild(sn);
-                    dtc=dtc.replace(/<summary>[\s\S]*?<\/summary>/i,"");}
-                if(dtc.trim())det.appendChild(renderMarkdown(dtc));frag.appendChild(det);continue;
-            }
-
-            if(line.includes("|")&&isTableDivider(lines[i+1])){
-                var w=el("div","table-wrap"),tbl=el("table"),thd=el("thead"),hr=el("tr"),hc=tableCells(line);
-                for(var hi=0;hi<hc.length;hi++){var th=el("th");appendCellWithBreaks(th,hc[hi]);hr.appendChild(th);}
-                thd.appendChild(hr);tbl.appendChild(thd);i+=2;var tb=el("tbody");
-                while(i<lines.length&&lines[i].trim()&&lines[i].includes("|")){
-                    var dr=el("tr"),dc2=tableCells(lines[i]);
-                    for(var di=0;di<dc2.length;di++){var td=el("td");if(dc2[di])appendCellWithBreaks(td,dc2[di]);dr.appendChild(td);}
-                    tb.appendChild(dr);i++;}
-                tbl.appendChild(tb);w.appendChild(tbl);frag.appendChild(w);continue;
-            }
-
-            if(/^\s*>/.test(line)){
-                var ql=[];while(i<lines.length&&/^\s*>/.test(lines[i])){ql.push(lines[i].replace(/^\s*>\s?/,""));i++;}
-                var bq=el("blockquote");bq.appendChild(renderMarkdown(ql.join("\n")));frag.appendChild(bq);continue;
-            }
-
-            if(/^\s*([-*_])(?:\s*\1){2,}\s*$/.test(line)){frag.appendChild(el("hr"));i++;continue;}
-
-            var uo=/^\s*[-+*]\s+/.test(line),od=/^\s*\d+[.)]\s+/.test(line);
-            if(uo||od){var list=el(od?"ol":"ul"),ip=od?/^\s*\d+[.)]\s+(.*)$/:/ ^\s*[-+*]\s+(.*)$/;
-                // fix: regex without space
-                ip=od?/^\s*\d+[.)]\s+(.*)$/:/ ^\s*[-+*]\s+(.*)$/;
-                ip=od?/^\s*\d+[.)]\s+(.*)$/:(/^\s*[-+*]\s+(.*)$/);
-                while(i<lines.length){var im=lines[i].match(ip);if(!im)break;
-                    var lt=[im[1]];i++;while(i<lines.length&&lines[i].trim()&&!ip.test(lines[i])&&!isBlockStart(lines,i)){lt.push(lines[i].trim());i++;}
-                    var li2=el("li");appendInline(li2,lt.join(" "));list.appendChild(li2);}
-                frag.appendChild(list);continue;
-            }
-
-            var pl=[line];i++;
-            while(i<lines.length&&!isBlockStart(lines,i)){pl.push(lines[i]);i++;}
-            var p=el("p");appendInline(p,pl.join("\n"));frag.appendChild(p);
-        }
-        return frag;
-    }
-
-    /* ================================================================
-       CARDS
-       ================================================================ */
-
-    function createCards() {
-        for (var i = 0; i < LEVELS.length; i++) {
-            var level = LEVELS[i];
-            var card = el("article", "card " + level.id);
-            var header = el("div", "card-header");
-            var top = el("div", "card-top");
-            var badge = el("span", "badge", level.label);
-            var extraBadge = el("span", "extra-badge", "EXTRA"); extraBadge.hidden = true;
-            top.append(badge, extraBadge);
-
-            var title = el("h2", "task-title", "Ждёт своего часа");
-            var path = el("div", "path", "Рабочая папка появится после создания набора");
-            var sourceRow = el("div", "source-row"); sourceRow.hidden = true;
-            var srcLabel = el("span", "source-label", "📂 Исходная папка:");
-            var srcPath = el("span", "source-path", ""); sourceRow.append(srcLabel, srcPath);
-            var spoilerHint = el("div", "spoiler-hint", "💡 Попробуй сначала решить сам, прежде чем смотреть теорию или решение");
-            spoilerHint.hidden = true;
-
-            var actions = el("div", "card-actions");
-            var skipBtn = el("button", "file-btn", "🔄 Заменить"); skipBtn.type = "button"; skipBtn.disabled = true;
-            (function(lid){skipBtn.addEventListener("click",function(){runOperation(function(){return skipTask(lid);});});})(level.id);
-
-            var sourceBtn = el("button", "file-btn", "📂 Источник"); sourceBtn.type = "button"; sourceBtn.disabled = true;
-            (function(lid){sourceBtn.addEventListener("click",function(){toggleSource(lid);});})(level.id);
-
-            var doneBtn = el("button", "file-btn done-btn", "✅ Решено"); doneBtn.type = "button"; doneBtn.disabled = true;
-            (function(lid){doneBtn.addEventListener("click",function(){toggleCompleted(lid);});})(level.id);
-
-            actions.append(skipBtn, sourceBtn, doneBtn);
-
-            var fileSection = el("div", "card-files");
-            var fileLabel = el("div", "card-files-label", "Файлы задания"); fileSection.appendChild(fileLabel);
-            var fileButtons = {};
-            for (var j = 0; j < FILE_BUTTONS.length; j++) {
-                var cfg = FILE_BUTTONS[j];
-                var btn = el("button", "file-btn" + (cfg.reveal ? " reveal" : ""), cfg.label); btn.type = "button"; btn.disabled = true;
-                (function(lid,c,hint){btn.addEventListener("click",function(){if(c.reveal)hint.hidden=true;openFileInTab(lid,c.filename,c.tabTitle);});})(level.id,cfg,spoilerHint);
-                fileButtons[cfg.key] = btn; fileSection.appendChild(btn);
-            }
-
-            header.append(top, title, path, sourceRow, spoilerHint, actions, fileSection);
-
-            var documentBody = el("div", "document empty");
-
-            // Полоска «Выполнено» (по умолчанию скрыта)
-            var completedBar = el("div", "completed-bar"); completedBar.hidden = true;
-            var cbLeft = el("div", "completed-bar-left");
-            var cbIcon = el("span", "completed-bar-icon", "✅");
-            var cbText = el("span", "completed-bar-text", "Задание выполнено");
-            var cbTitle = el("span", "completed-bar-title", "");
-            cbLeft.append(cbIcon, cbText, cbTitle);
-            var cbShowBtn = el("button", "", "👁️ Показать условие"); cbShowBtn.type = "button";
-            (function(lid){cbShowBtn.addEventListener("click",function(){toggleCompleted(lid);});})(level.id);
-            completedBar.append(cbLeft, cbShowBtn);
-
-            card.append(header, documentBody, completedBar);
-            ui.cards.appendChild(card);
-
-            cardUI[level.id] = {
-                card: card, title: title, extra: extraBadge, path: path,
-                sourceRow: sourceRow, srcPath: srcPath, spoilerHint: spoilerHint,
-                skip: skipBtn, source: sourceBtn, doneBtn: doneBtn,
-                fileButtons: fileButtons, document: documentBody,
-                completedBar: completedBar, cbTitle: cbTitle
-            };
-            renderCard(level.id);
-        }
-    }
-
-    function renderCard(level) {
-        var c = cardUI[level], sel = state.current[level];
-        var isLocked = state.locked[level], isDone = state.completed[level];
-
-        c.document.replaceChildren(); c.document.scrollTop = 0;
-
-        // Класс completed на карточку
-        c.card.classList.toggle("completed", isDone && !!sel);
-
-        if (!sel) {
-            c.title.textContent = "Ждёт своего часа"; c.extra.hidden = true;
-            c.path.textContent = "Рабочая папка появится после создания набора";
-            c.sourceRow.hidden = true; c.spoilerHint.hidden = true; c.srcPath.textContent = "";
-            c.document.className = "document empty"; c.completedBar.hidden = true;
-            var inner = el("div","empty-inner");
-            inner.append(el("div","empty-icon","{ }"),el("p","","Выбери папку проекта и нажми «Новый набор»."));
-            c.document.appendChild(inner); return;
         }
 
-        // Заблокировано
-        if (isLocked) {
-            c.title.textContent = "Задание скрыто"; c.extra.hidden = true;
-            c.path.textContent = "Папка создана: " + sel.relativePath;
-            c.sourceRow.hidden = true; c.spoilerHint.hidden = true; c.srcPath.textContent = "";
-            c.document.className = "document empty locked"; c.completedBar.hidden = true;
-            var inner = el("div","empty-inner");
-            var icon = el("div","empty-icon locked-animation","🔒");
-            var mt = el("h3","","Дорогу осилит идущий"); mt.style.marginTop="10px"; mt.style.marginBottom="8px";
-            var prevName = level === "medium" ? "Лёгкое" : "Среднее";
-            var msg = el("p","","Рекомендуем сначала решить " + prevName + " задание. Нажмите «Открыть», когда будете готовы!");
-            msg.style.cssText = "font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.45";
-            var ub = el("button","primary","🔓 Открыть задание"); ub.type = "button";
-            (function(lvl){ub.addEventListener("click",function(){state.locked[lvl]=false;renderCard(lvl);refreshControls();});})(level);
-            inner.append(icon,mt,msg,ub); c.document.appendChild(inner); return;
-        }
+        var options={
+            mode:
+                "readwrite"
+        };
 
-        // Свёрнуто (выполнено)
-        if (isDone) {
-            c.title.textContent = sel.task.title; c.extra.hidden = !sel.task.extra;
-            c.path.textContent = sel.relativePath;
-            c.sourceRow.hidden = true; c.srcPath.textContent = "tasks/" + sel.task.actualPath + "/";
-            c.spoilerHint.hidden = true;
-            c.document.className = "document collapsed";
-            c.completedBar.hidden = false;
-            c.cbTitle.textContent = " — " + sel.task.title;
+
+        if(
+            await state.root.queryPermission(
+                options
+            )==="granted"
+        ) {
             return;
         }
 
-        // Обычный рендер
-        c.title.textContent = sel.task.title; c.extra.hidden = !sel.task.extra;
-        c.path.textContent = sel.relativePath;
-        c.sourceRow.hidden = true; c.srcPath.textContent = "tasks/" + sel.task.actualPath + "/";
-        c.spoilerHint.hidden = false; c.completedBar.hidden = true;
-        c.document.className = "document";
-        c.document.appendChild(renderMarkdown(sel.markdown));
+
+        if(
+            await state.root.requestPermission(
+                options
+            )!=="granted"
+        ) {
+
+            throw new Error(
+                "Для сохранения нужно разрешение на запись."
+            );
+
+        }
+
     }
 
-    createCards();
-    refreshControls();
+    async function writeFile(
+        dir,
+        name,
+        content
+    ) {
 
-    ui.choose.addEventListener("click", function () { runOperation(chooseProject); });
-    ui.generate.addEventListener("click", function () { runOperation(generateSet); });
-    ui.pause.addEventListener("click", toggleTimer);
-    ui.extra.addEventListener("change", function () {
+        var handle=
+            await dir.getFileHandle(
+                name,
+                {
+                    create:true
+                }
+            );
+
+
+        var writable=
+            await handle.createWritable();
+
+
+        try {
+
+            await writable.write(
+                content
+            );
+
+            await writable.close();
+
+        }
+        catch(e) {
+
+            try {
+                await writable.abort();
+            }
+            catch(_) {}
+
+            throw e;
+
+        }
+
+    }
+
+    function uniqueSuffix() {
+
+        var values=
+            new Uint32Array(2);
+
+
+        crypto.getRandomValues(
+            values
+        );
+
+
+        return Array.from(
+            values,
+            function(value) {
+
+                return value
+                    .toString(16)
+                    .padStart(
+                        8,
+                        "0"
+                    );
+
+            }
+        ).join("");
+
+    }
+
+    async function createUniqueDirectory(
+        parent,
+        prefix
+    ) {
+
+        for(
+            var i=0;
+            i<10;
+            i++
+        ) {
+
+            var name=
+                prefix+
+                "_"+
+                uniqueSuffix();
+
+
+            try {
+
+                await parent.getDirectoryHandle(
+                    name
+                );
+
+                continue;
+
+            }
+            catch(e) {
+
+                if(
+                    e.name===
+                    "TypeMismatchError"
+                ) {
+                    continue;
+                }
+
+
+                if(
+                    e.name!==
+                    "NotFoundError"
+                ) {
+                    throw e;
+                }
+
+            }
+
+
+            return {
+
+                name:
+                name,
+
+                directory:
+                    await parent.getDirectoryHandle(
+                        name,
+                        {
+                            create:true
+                        }
+                    )
+
+            };
+
+        }
+
+
+        throw new Error(
+            "Не удалось создать уникальную папку."
+        );
+
+    }
+
+    function timestamp() {
+
+        var d=
+            new Date();
+
+
+        var p=
+            function(value) {
+
+                return String(
+                    value
+                ).padStart(
+                    2,
+                    "0"
+                );
+
+            };
+
+
+        return [
+
+                d.getFullYear(),
+
+                p(
+                    d.getMonth()+1
+                ),
+
+                p(
+                    d.getDate()
+                )
+
+            ].join("-")+
+            "_"+
+            [
+
+                p(
+                    d.getHours()
+                ),
+
+                p(
+                    d.getMinutes()
+                ),
+
+                p(
+                    d.getSeconds()
+                )
+
+            ].join("-");
+
+    }
+
+    async function readTaskReadme(
+        task
+    ) {
+
+        var file=
+            await task.readme.getFile();
+
+
+        var markdown=
+            await file.text();
+
+
+        if(!markdown.trim()) {
+
+            throw new Error(
+                "README.md пустой: tasks/"+
+                task.actualPath
+            );
+
+        }
+
+
+        return markdown;
+
+    }
+
+    async function readFileFromTask(
+        task,
+        filename
+    ) {
+
+        try {
+
+            var handle=
+                await task.directory
+                    .getFileHandle(
+                        filename
+                    );
+
+
+            var file=
+                await handle.getFile();
+
+
+            return await file.text();
+
+        }
+        catch(e) {
+
+            if(
+                e.name==="NotFoundError"
+            ) {
+
+                throw new Error(
+                    "Файл "+
+                    filename+
+                    " не найден в tasks/"+
+                    task.actualPath
+                );
+
+            }
+
+
+            throw e;
+
+        }
+
+    }
+
+    async function saveSelection(
+        attempt,
+        level,
+        task,
+        markdown
+    ) {
+
+        var levelDir=
+            await attempt.directory
+                .getDirectoryHandle(
+                    level,
+                    {
+                        create:true
+                    }
+                );
+
+
+        var leaf=
+            task.path
+                .split("/")
+                .pop();
+
+
+        var selection=
+            await createUniqueDirectory(
+                levelDir,
+                leaf
+            );
+
+
+        await writeFile(
+            selection.directory,
+            "README.md",
+            markdown
+        );
+
+
+        await writeFile(
+            selection.directory,
+            "main.c",
+            ""
+        );
+
+
+        return {
+
+            task:
+            task,
+
+            markdown:
+            markdown,
+
+            directory:
+            selection.directory,
+
+            relativePath:
+                "Your_tasks/"+
+                attempt.name+
+                "/"+
+                level+
+                "/"+
+                selection.name
+
+        };
+
+    }
+
+    async function chooseProject() {
+
+        if(
+            !window.isSecureContext ||
+            typeof window.showDirectoryPicker!==
+            "function"
+        ) {
+
+            throw new Error(
+                "Этот браузер не поддерживает доступ к папкам. Используй Chrome или Edge."
+            );
+
+        }
+
+
+        var root=
+            await window.showDirectoryPicker({
+                id:
+                    "c-practice-project",
+
+                mode:
+                    "readwrite"
+            });
+
+
+        var tasksDir;
+
+
+        try {
+
+            tasksDir=
+                await root.getDirectoryHandle(
+                    "tasks"
+                );
+
+        }
+        catch(e) {
+
+            if(
+                e.name==="NotFoundError"
+            ) {
+
+                throw new Error(
+                    "В выбранной папке нет tasks."
+                );
+
+            }
+
+
+            throw e;
+
+        }
+
+
+        setStatus(
+            "Читаю каталог заданий…"
+        );
+
+
+        var available=[];
+        var missing=[];
+
+
+        for(
+            var i=0;
+            i<TASKS.length;
+            i++
+        ) {
+
+            var result=
+                await resolveTaskDirectory(
+                    tasksDir,
+                    TASKS[i]
+                );
+
+
+            if(result) {
+
+                available.push(
+                    result
+                );
+
+            }
+            else {
+
+                missing.push(
+                    TASKS[i].path
+                );
+
+            }
+
+        }
+
+
+        if(!available.length) {
+
+            throw new Error(
+                "Не найдено ни одного задания с README.md."
+            );
+
+        }
+
+
+        state.root=
+            root;
+
+        state.tasksDir=
+            tasksDir;
+
+        state.available=
+            available;
+
+        state.missing=
+            missing;
+
+        state.attempt=
+            null;
+
+
+        state.locked.easy=
+            true;
+
+        state.locked.medium=
+            true;
+
+        state.locked.hard=
+            true;
+
+
+        state.completed.easy=
+            false;
+
+        state.completed.medium=
+            false;
+
+        state.completed.hard=
+            false;
+
+
+        for(
+            var j=0;
+            j<LEVELS.length;
+            j++
+        ) {
+
+            var level=
+                LEVELS[j].id;
+
+
+            state.current[level]=
+                null;
+
+
+            state.seen[level].clear();
+
+
+            renderCard(
+                level
+            );
+
+        }
+
+
+        resetTimer(
+            false
+        );
+
+
+        ui.attempt.textContent=
+            "Набор ещё не создан";
+
+
+        setStatus(
+
+            missing.length
+
+                ?
+
+                "Подключён проект «"+
+                root.name+
+                "». Не найдены "+
+                missing.length+
+                " задания: "+
+                missing.join(", ")
+
+                :
+
+                "Проект «"+
+                root.name+
+                "» подключён. Все "+
+                TASKS.length+
+                " заданий найдены.",
+
+            missing.length
+                ? undefined
+                : "success"
+
+        );
+
+    }
+
+    /* ============================================
+   RANDOMIZATION
+   ============================================ */
+
+    function randomItem(items) {
+
+        return items[
+            Math.floor(
+                Math.random()*
+                items.length
+            )
+            ];
+
+    }
+
+    function chooseCandidate(level) {
+
+        var currentPath=
+            state.current[level]
+                ? state.current[level].task.path
+                : null;
+
+
+        var pool=
+            poolFor(level);
+
+
+        var unseen=
+            pool.filter(
+                function(task) {
+
+                    return (
+                        task.path!==
+                        currentPath &&
+
+                        !state.seen[level]
+                            .has(
+                                task.path
+                            )
+                    );
+
+                }
+            );
+
+
+        if(unseen.length) {
+
+            return {
+
+                task:
+                    randomItem(
+                        unseen
+                    ),
+
+                restart:
+                    false
+
+            };
+
+        }
+
+
+        var alternative=
+            pool.filter(
+                function(task) {
+
+                    return (
+                        task.path!==
+                        currentPath
+                    );
+
+                }
+            );
+
+
+        if(!alternative.length) {
+
+            if(
+                !currentPath &&
+                pool.length
+            ) {
+
+                return {
+
+                    task:
+                        randomItem(
+                            pool
+                        ),
+
+                    restart:
+                        false
+
+                };
+
+            }
+
+
+            throw new Error(
+                "Нет другого задания. Включи дополнительные упражнения."
+            );
+
+        }
+
+
+        var levelLabel=
+            LEVELS.find(
+                function(item) {
+                    return item.id===level;
+                }
+            ).label;
+
+
+        if(
+            !confirm(
+                "Категория «"+
+                levelLabel+
+                "»: все задания уже выпадали. Начать новый круг?"
+            )
+        ) {
+
+            return null;
+
+        }
+
+
+        return {
+
+            task:
+                randomItem(
+                    alternative
+                ),
+
+            restart:
+                true
+
+        };
+
+    }
+
+    function commitCandidate(
+        level,
+        candidate,
+        selection
+    ) {
+
+        if(candidate.restart) {
+            state.seen[level].clear();
+        }
+
+
+        state.seen[level].add(
+            candidate.task.path
+        );
+
+
+        state.current[level]=
+            selection;
+
+    }
+
+    async function generateSet() {
+
+        if(!state.root) {
+
+            throw new Error(
+                "Сначала выбери папку проекта."
+            );
+
+        }
+
+
+        await ensureWritePermission();
+
+
+        var planned=[];
+
+
+        for(
+            var i=0;
+            i<LEVELS.length;
+            i++
+        ) {
+
+            var candidate=
+                chooseCandidate(
+                    LEVELS[i].id
+                );
+
+
+            if(!candidate) {
+
+                setStatus(
+                    "Создание набора отменено."
+                );
+
+                return;
+
+            }
+
+
+            planned.push({
+
+                level:
+                LEVELS[i].id,
+
+                candidate:
+                candidate,
+
+                markdown:
+                    null
+
+            });
+
+        }
+
+
+        setStatus(
+            "Читаю условия и создаю рабочие файлы…"
+        );
+
+
+        for(
+            var j=0;
+            j<planned.length;
+            j++
+        ) {
+
+            planned[j].markdown=
+                await readTaskReadme(
+                    planned[j]
+                        .candidate
+                        .task
+                );
+
+        }
+
+
+        var output=
+            await state.root.getDirectoryHandle(
+                "Your_tasks",
+                {
+                    create:true
+                }
+            );
+
+
+        var attempt=
+            await createUniqueDirectory(
+                output,
+                "attempt_"+
+                timestamp()
+            );
+
+
+        var saved=[];
+
+
+        for(
+            var k=0;
+            k<planned.length;
+            k++
+        ) {
+
+            saved.push({
+
+                level:
+                planned[k].level,
+
+                candidate:
+                planned[k].candidate,
+
+                selection:
+                    await saveSelection(
+                        attempt,
+                        planned[k].level,
+                        planned[k].candidate.task,
+                        planned[k].markdown
+                    )
+
+            });
+
+        }
+
+
+        state.attempt=
+            attempt;
+
+
+        state.locked.easy=
+            false;
+
+        state.locked.medium=
+            true;
+
+        state.locked.hard=
+            true;
+
+
+        state.completed.easy=
+            false;
+
+        state.completed.medium=
+            false;
+
+        state.completed.hard=
+            false;
+
+
+        for(
+            var m=0;
+            m<saved.length;
+            m++
+        ) {
+
+            commitCandidate(
+                saved[m].level,
+                saved[m].candidate,
+                saved[m].selection
+            );
+
+
+            renderCard(
+                saved[m].level
+            );
+
+        }
+
+
+        resetTimer(
+            true
+        );
+
+
+        ui.attempt.textContent=
+            "Попытка: "+
+            attempt.name;
+
+
+        setStatus(
+            "Три задания сохранены в Your_tasks/"+
+            attempt.name+
+            ". Таймер запущен.",
+            "success"
+        );
+
+
+        setTimeout(
+            function() {
+
+                cardUI.easy.card
+                    .scrollIntoView({
+                        behavior:"smooth",
+                        block:"start"
+                    });
+
+            },
+            100
+        );
+
+    }
+
+    /* ============================================
+   SKIP
+   ============================================ */
+
+    async function skipTask(level) {
+
+        if(
+            !state.attempt ||
+            !state.current[level] ||
+            state.locked[level] ||
+            state.completed[level]
+        ) {
+            return;
+        }
+
+
+        await ensureWritePermission();
+
+
+        var candidate=
+            chooseCandidate(level);
+
+
+        if(!candidate) {
+
+            setStatus(
+                "Замена отменена."
+            );
+
+            return;
+
+        }
+
+
+        setStatus(
+            "Подбираю замену…"
+        );
+
+
+        var markdown=
+            await readTaskReadme(
+                candidate.task
+            );
+
+
+        var selection=
+            await saveSelection(
+                state.attempt,
+                level,
+                candidate.task,
+                markdown
+            );
+
+
+        state.completed[level]=
+            false;
+
+
+        commitCandidate(
+            level,
+            candidate,
+            selection
+        );
+
+
+        renderCard(
+            level
+        );
+
+
         refreshControls();
-        setStatus(extraEnabled()
-            ? "Дополнительные задания включены для следующих выборов."
-            : "Дополнительные задания исключены из следующих выборов.");
-    });
 
-    if (!window.isSecureContext || typeof window.showDirectoryPicker !== "function")
-        setStatus("Доступ к папкам недоступен. Открой страницу в Chrome/Edge.", "error");
+
+        setStatus(
+            "Замена сохранена: "+
+            selection.relativePath,
+            "success"
+        );
+
+    }
+
+    /* ============================================
+   HIGHLIGHTER
+   ============================================ */
+
+    function escapeHtml(value) {
+
+        return value
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            );
+
+    }
+
+    function highlightC(code) {
+
+        var regex=
+            /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\])*")|('(?:\\.|[^'\\])*')|(^\s*#[a-zA-Z_]+)|(\b(?:break|case|char|const|continue|default|do|double|else|enum|extern|float|for|goto|if|inline|int|long|register|restrict|return|short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|volatile|while)\b)|(\b(?:size_t|ssize_t|uintptr_t|intptr_t|FILE|NULL|stdin|stdout|stderr|[a-zA-Z0-9_]+_t)\b)|(\b0x[0-9a-fA-F]+\b|\b\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[fFlL]?\b)|(\b[a-zA-Z_][a-zA-Z0-9_]*(?=\s*\())/gm;
+
+
+        var last=0;
+        var html="";
+
+
+        code.replace(
+            regex,
+            function(
+                match,
+                comment,
+                string,
+                character,
+                preproc,
+                keyword,
+                type,
+                number,
+                func,
+                index
+            ) {
+
+                if(
+                    index>last
+                ) {
+
+                    html+=
+                        escapeHtml(
+                            code.slice(
+                                last,
+                                index
+                            )
+                        );
+
+                }
+
+
+                if(comment) {
+
+                    html+=
+                        '<span class="hl-comment">'+
+                        escapeHtml(comment)+
+                        "</span>";
+
+                }
+                else if(string) {
+
+                    html+=
+                        '<span class="hl-string">'+
+                        escapeHtml(string)+
+                        "</span>";
+
+                }
+                else if(character) {
+
+                    html+=
+                        '<span class="hl-char">'+
+                        escapeHtml(character)+
+                        "</span>";
+
+                }
+                else if(preproc) {
+
+                    html+=
+                        '<span class="hl-preproc">'+
+                        escapeHtml(preproc)+
+                        "</span>";
+
+                }
+                else if(keyword) {
+
+                    html+=
+                        '<span class="hl-keyword">'+
+                        escapeHtml(keyword)+
+                        "</span>";
+
+                }
+                else if(type) {
+
+                    html+=
+                        '<span class="hl-type">'+
+                        escapeHtml(type)+
+                        "</span>";
+
+                }
+                else if(number) {
+
+                    html+=
+                        '<span class="hl-number">'+
+                        escapeHtml(number)+
+                        "</span>";
+
+                }
+                else if(func) {
+
+                    html+=
+                        '<span class="hl-func">'+
+                        escapeHtml(func)+
+                        "</span>";
+
+                }
+
+
+                last=
+                    index+
+                    match.length;
+
+            }
+        );
+
+
+        if(
+            last<code.length
+        ) {
+
+            html+=
+                escapeHtml(
+                    code.slice(last)
+                );
+
+        }
+
+
+        return html;
+
+    }
+
+    /* ============================================
+   MARKDOWN
+   ============================================ */
+
+    function element(
+        tag,
+        className
+    ) {
+
+        var node=
+            document.createElement(
+                tag
+            );
+
+
+        if(className) {
+            node.className=
+                className;
+        }
+
+
+        return node;
+
+    }
+
+    function appendInline(
+        parent,
+        text
+    ) {
+
+        var pattern=
+            /(`[^`\n]+`|\*\*[^*\n]+\*\*|\*[^*\n]+\*|\[[^\]]*\]\([^)]+\)|<br\s*\/?>|<b>.*?<\/b>|<strong>.*?<\/strong>|<i>.*?<\/i>|<em>.*?<\/em>|<u>.*?<\/u>|<code>.*?<\/code>)/gi;
+
+
+        var pos=0;
+        var match;
+
+
+        while(
+            (match=
+                pattern.exec(text))!==null
+            ) {
+
+            if(
+                match.index>pos
+            ) {
+
+                parent.appendChild(
+                    document.createTextNode(
+                        text.slice(
+                            pos,
+                            match.index
+                        )
+                    )
+                );
+
+            }
+
+
+            var token=
+                match[0];
+
+            var lower=
+                token.toLowerCase();
+
+
+            if(
+                token.startsWith("`")
+            ) {
+
+                var code=
+                    element(
+                        "code"
+                    );
+
+
+                code.textContent=
+                    token.slice(
+                        1,
+                        -1
+                    );
+
+
+                parent.appendChild(
+                    code
+                );
+
+            }
+            else if(
+                token.startsWith("**")
+            ) {
+
+                var strong=
+                    element(
+                        "strong"
+                    );
+
+
+                appendInline(
+                    strong,
+                    token.slice(
+                        2,
+                        -2
+                    )
+                );
+
+
+                parent.appendChild(
+                    strong
+                );
+
+            }
+            else if(
+                token.startsWith("*")
+            ) {
+
+                var italic=
+                    element(
+                        "em"
+                    );
+
+
+                appendInline(
+                    italic,
+                    token.slice(
+                        1,
+                        -1
+                    )
+                );
+
+
+                parent.appendChild(
+                    italic
+                );
+
+            }
+            else if(
+                token.startsWith("[")
+            ) {
+
+                var linkMatch=
+                    token.match(
+                        /^\[([^\]]*)\]\(([^)]*)\)$/
+                    );
+
+
+                if(linkMatch) {
+
+                    var link=
+                        element(
+                            "a"
+                        );
+
+
+                    link.href=
+                        linkMatch[2];
+
+                    link.target=
+                        "_blank";
+
+                    link.rel=
+                        "noopener noreferrer";
+
+
+                    appendInline(
+                        link,
+                        linkMatch[1]
+                    );
+
+
+                    parent.appendChild(
+                        link
+                    );
+
+                }
+
+            }
+            else if(
+                lower.startsWith("<br")
+            ) {
+
+                parent.appendChild(
+                    document.createElement(
+                        "br"
+                    )
+                );
+
+            }
+            else if(
+                lower.startsWith("<b>") ||
+                lower.startsWith("<strong>")
+            ) {
+
+                var bold=
+                    element(
+                        "strong"
+                    );
+
+
+                appendInline(
+                    bold,
+                    token.replace(
+                        /^<[^>]+>|<\/[^>]+>$/g,
+                        ""
+                    )
+                );
+
+
+                parent.appendChild(
+                    bold
+                );
+
+            }
+            else if(
+                lower.startsWith("<i>") ||
+                lower.startsWith("<em>")
+            ) {
+
+                var em=
+                    element(
+                        "em"
+                    );
+
+
+                appendInline(
+                    em,
+                    token.replace(
+                        /^<[^>]+>|<\/[^>]+>$/g,
+                        ""
+                    )
+                );
+
+
+                parent.appendChild(
+                    em
+                );
+
+            }
+            else if(
+                lower.startsWith("<u>")
+            ) {
+
+                var underline=
+                    element(
+                        "u"
+                    );
+
+
+                appendInline(
+                    underline,
+                    token.replace(
+                        /^<[^>]+>|<\/[^>]+>$/g,
+                        ""
+                    )
+                );
+
+
+                parent.appendChild(
+                    underline
+                );
+
+            }
+            else if(
+                lower.startsWith("<code>")
+            ) {
+
+                var inlineCode=
+                    element(
+                        "code"
+                    );
+
+
+                inlineCode.textContent=
+                    token.replace(
+                        /^<code>|<\/code>$/gi,
+                        ""
+                    );
+
+
+                parent.appendChild(
+                    inlineCode
+                );
+
+            }
+
+
+            pos=
+                pattern.lastIndex;
+
+        }
+
+
+        if(
+            pos<text.length
+        ) {
+
+            parent.appendChild(
+                document.createTextNode(
+                    text.slice(
+                        pos
+                    )
+                )
+            );
+
+        }
+
+    }
+
+    function tableCells(line) {
+
+        var value=
+            line
+                .trim()
+                .replace(
+                    /\\\|/g,
+                    "\u0001"
+                );
+
+
+        if(
+            value.startsWith("|")
+        ) {
+
+            value=
+                value.slice(1);
+
+        }
+
+
+        if(
+            value.endsWith("|")
+        ) {
+
+            value=
+                value.slice(
+                    0,
+                    -1
+                );
+
+        }
+
+
+        return value
+            .split("|")
+            .map(
+                function(cell) {
+
+                    return cell
+                        .trim()
+                        .replace(
+                            /\u0001/g,
+                            "|"
+                        );
+
+                }
+            );
+
+    }
+
+    function isTableDivider(line) {
+
+        if(
+            !line ||
+            !line.includes("|")
+        ) {
+
+            return false;
+
+        }
+
+
+        var cells=
+            tableCells(
+                line
+            );
+
+
+        return (
+            cells.length>0 &&
+            cells.every(
+                function(cell) {
+
+                    return /^:?-{3,}:?$/.test(
+                        cell
+                    );
+
+                }
+            )
+        );
+
+    }
+
+    function isBlockStart(
+        lines,
+        index
+    ) {
+
+        if(
+            index>=
+            lines.length
+        ) {
+
+            return true;
+
+        }
+
+
+        var line=
+            lines[index];
+
+
+        return (
+
+            /^\s*$/.test(
+                line
+            ) ||
+
+            /^\s*(`{3,}|~{3,})/.test(
+                line
+            ) ||
+
+            /^#{1,6}\s+/.test(
+                line
+            ) ||
+
+            /^\s*>/.test(
+                line
+            ) ||
+
+            /^\s*[-+*]\s+/.test(
+                line
+            ) ||
+
+            /^\s*\d+[.)]\s+/.test(
+                line
+            ) ||
+
+            /^\s*([-*_])(?:\s*\1){2,}\s*$/.test(
+                line
+            ) ||
+
+            /^\s*<details/i.test(
+                line
+            ) ||
+
+            /^\s*<\/details/i.test(
+                line
+            ) ||
+
+            (
+                line.includes("|") &&
+                isTableDivider(
+                    lines[index+1]
+                )
+            )
+
+        );
+
+    }
+
+    function renderMarkdown(
+        markdown
+    ) {
+
+        var fragment=
+            document.createDocumentFragment();
+
+
+        var lines=
+            markdown
+                .replace(
+                    /\r\n?/g,
+                    "\n"
+                )
+                .split("\n");
+
+
+        var i=0;
+
+
+        while(
+            i<lines.length
+            ) {
+
+            var line=
+                lines[i];
+
+
+            if(
+                !line.trim()
+            ) {
+
+                i++;
+
+                continue;
+
+            }
+
+
+            var fenced=
+                line.match(
+                    /^\s*(`{3,}|~{3,})(.*)$/
+                );
+
+
+            if(fenced) {
+
+                var marker=
+                    fenced[1];
+
+                var language=
+                    fenced[2]
+                        .trim()
+                        .toLowerCase();
+
+                var codeLines=[];
+
+
+                i++;
+
+
+                while(
+                    i<lines.length
+                    ) {
+
+                    if(
+                        lines[i]
+                            .trim()
+                            .startsWith(
+                                marker
+                            )
+                    ) {
+
+                        i++;
+
+                        break;
+
+                    }
+
+
+                    codeLines.push(
+                        lines[i]
+                    );
+
+
+                    i++;
+
+                }
+
+
+                var pre=
+                    element(
+                        "pre"
+                    );
+
+
+                var code=
+                    element(
+                        "code"
+                    );
+
+
+                if(
+                    language==="c" ||
+                    language==="cpp"
+                ) {
+
+                    code.innerHTML=
+                        highlightC(
+                            codeLines.join(
+                                "\n"
+                            )
+                        );
+
+                }
+                else {
+
+                    code.textContent=
+                        codeLines.join(
+                            "\n"
+                        );
+
+                }
+
+
+                pre.appendChild(
+                    code
+                );
+
+
+                fragment.appendChild(
+                    pre
+                );
+
+
+                continue;
+
+            }
+
+
+            var heading=
+                line.match(
+                    /^(#{1,6})\s+(.*)$/
+                );
+
+
+            if(heading) {
+
+                var h=
+                    element(
+                        "h"+
+                        heading[1].length
+                    );
+
+
+                appendInline(
+                    h,
+                    heading[2]
+                );
+
+
+                fragment.appendChild(
+                    h
+                );
+
+
+                i++;
+
+
+                continue;
+
+            }
+
+
+            if(
+                /^\s*<details/i.test(
+                    line
+                )
+            ) {
+
+                var details=
+                    document.createElement(
+                        "details"
+                    );
+
+
+                details.open=
+                    /open/i.test(
+                        line
+                    );
+
+
+                var content=[];
+
+
+                var first=
+                    line
+                        .replace(
+                            /^\s*<details[^>]*>/i,
+                            ""
+                        )
+                        .trim();
+
+
+                if(first) {
+
+                    content.push(
+                        first
+                    );
+
+                }
+
+
+                i++;
+
+
+                while(
+                    i<lines.length &&
+                    !/^\s*<\/details/i.test(
+                        lines[i]
+                    )
+                    ) {
+
+                    content.push(
+                        lines[i]
+                    );
+
+
+                    i++;
+
+                }
+
+
+                if(
+                    i<lines.length
+                ) {
+
+                    var endLine=
+                        lines[i].replace(
+                            /<\/details\s*>\s*$/i,
+                            ""
+                        );
+
+
+                    if(
+                        endLine.trim()
+                    ) {
+
+                        content.push(
+                            endLine
+                        );
+
+                    }
+
+
+                    i++;
+
+                }
+
+
+                var detailsText=
+                    content.join(
+                        "\n"
+                    );
+
+
+                var summaryMatch=
+                    detailsText.match(
+                        /<summary>([\s\S]*?)<\/summary>/i
+                    );
+
+
+                if(summaryMatch) {
+
+                    var summary=
+                        document.createElement(
+                            "summary"
+                        );
+
+
+                    appendInline(
+                        summary,
+                        summaryMatch[1]
+                            .trim()
+                    );
+
+
+                    details.appendChild(
+                        summary
+                    );
+
+
+                    detailsText=
+                        detailsText.replace(
+                            /<summary>[\s\S]*?<\/summary>/i,
+                            ""
+                        );
+
+                }
+
+
+                if(
+                    detailsText.trim()
+                ) {
+
+                    details.appendChild(
+                        renderMarkdown(
+                            detailsText
+                        )
+                    );
+
+                }
+
+
+                fragment.appendChild(
+                    details
+                );
+
+
+                continue;
+
+            }
+
+
+            if(
+                line.includes("|") &&
+                isTableDivider(
+                    lines[i+1]
+                )
+            ) {
+
+                var wrap=
+                    element(
+                        "div",
+                        "table-wrap"
+                    );
+
+
+                var table=
+                    element(
+                        "table"
+                    );
+
+
+                var thead=
+                    element(
+                        "thead"
+                    );
+
+
+                var row=
+                    element(
+                        "tr"
+                    );
+
+
+                var headers=
+                    tableCells(
+                        line
+                    );
+
+
+                for(
+                    var hi=0;
+                    hi<headers.length;
+                    hi++
+                ) {
+
+                    var th=
+                        element(
+                            "th"
+                        );
+
+
+                    appendInline(
+                        th,
+                        headers[hi]
+                    );
+
+
+                    row.appendChild(
+                        th
+                    );
+
+                }
+
+
+                thead.appendChild(
+                    row
+                );
+
+
+                table.appendChild(
+                    thead
+                );
+
+
+                i+=2;
+
+
+                var tbody=
+                    element(
+                        "tbody"
+                    );
+
+
+                while(
+                    i<lines.length &&
+                    lines[i].trim() &&
+                    lines[i].includes("|")
+                    ) {
+
+                    var tableRow=
+                        element(
+                            "tr"
+                        );
+
+
+                    var cells=
+                        tableCells(
+                            lines[i]
+                        );
+
+
+                    for(
+                        var ci=0;
+                        ci<cells.length;
+                        ci++
+                    ) {
+
+                        var td=
+                            element(
+                                "td"
+                            );
+
+
+                        if(
+                            cells[ci]
+                        ) {
+
+                            appendInline(
+                                td,
+                                cells[ci]
+                            );
+
+                        }
+
+
+                        tableRow.appendChild(
+                            td
+                        );
+
+                    }
+
+
+                    tbody.appendChild(
+                        tableRow
+                    );
+
+
+                    i++;
+
+                }
+
+
+                table.appendChild(
+                    tbody
+                );
+
+
+                wrap.appendChild(
+                    table
+                );
+
+
+                fragment.appendChild(
+                    wrap
+                );
+
+
+                continue;
+
+            }
+
+
+            if(
+                /^\s*>/.test(
+                    line
+                )
+            ) {
+
+                var quote=[];
+
+
+                while(
+                    i<lines.length &&
+                    /^\s*>/.test(
+                        lines[i]
+                    )
+                    ) {
+
+                    quote.push(
+                        lines[i].replace(
+                            /^\s*>\s?/,
+                            ""
+                        )
+                    );
+
+
+                    i++;
+
+                }
+
+
+                var blockquote=
+                    element(
+                        "blockquote"
+                    );
+
+
+                blockquote.appendChild(
+                    renderMarkdown(
+                        quote.join(
+                            "\n"
+                        )
+                    )
+                );
+
+
+                fragment.appendChild(
+                    blockquote
+                );
+
+
+                continue;
+
+            }
+
+
+            if(
+                /^\s*([-*_])(?:\s*\1){2,}\s*$/.test(
+                    line
+                )
+            ) {
+
+                fragment.appendChild(
+                    element(
+                        "hr"
+                    )
+                );
+
+
+                i++;
+
+
+                continue;
+
+            }
+
+
+            var unordered=
+                /^\s*[-+*]\s+/.test(
+                    line
+                );
+
+
+            var ordered=
+                /^\s*\d+[.)]\s+/.test(
+                    line
+                );
+
+
+            if(
+                unordered ||
+                ordered
+            ) {
+
+                var list=
+                    element(
+                        ordered
+                            ? "ol"
+                            : "ul"
+                    );
+
+
+                var itemPattern=
+                    ordered
+                        ? /^\s*\d+[.)]\s+(.*)$/
+                        : /^\s*[-+*]\s+(.*)$/;
+
+
+                while(
+                    i<lines.length
+                    ) {
+
+                    var itemMatch=
+                        lines[i].match(
+                            itemPattern
+                        );
+
+
+                    if(
+                        !itemMatch
+                    ) {
+
+                        break;
+
+                    }
+
+
+                    var itemLines=[
+                        itemMatch[1]
+                    ];
+
+
+                    i++;
+
+
+                    while(
+                        i<lines.length &&
+                        lines[i].trim() &&
+                        !itemPattern.test(
+                            lines[i]
+                        ) &&
+                        !isBlockStart(
+                            lines,
+                            i
+                        )
+                        ) {
+
+                        itemLines.push(
+                            lines[i].trim()
+                        );
+
+
+                        i++;
+
+                    }
+
+
+                    var li=
+                        element(
+                            "li"
+                        );
+
+
+                    appendInline(
+                        li,
+                        itemLines.join(" ")
+                    );
+
+
+                    list.appendChild(
+                        li
+                    );
+
+                }
+
+
+                fragment.appendChild(
+                    list
+                );
+
+
+                continue;
+
+            }
+
+
+            var paragraphLines=[
+                line
+            ];
+
+
+            i++;
+
+
+            while(
+                i<lines.length &&
+                !isBlockStart(
+                    lines,
+                    i
+                )
+                ) {
+
+                paragraphLines.push(
+                    lines[i]
+                );
+
+
+                i++;
+
+            }
+
+
+            var paragraph=
+                element(
+                    "p"
+                );
+
+
+            appendInline(
+                paragraph,
+                paragraphLines.join(
+                    "\n"
+                )
+            );
+
+
+            fragment.appendChild(
+                paragraph
+            );
+
+        }
+
+
+        return fragment;
+
+    }
+
+    /* ============================================
+   CARDS
+   ============================================ */
+
+    function createCards() {
+
+        for(
+            var i=0;
+            i<LEVELS.length;
+            i++
+        ) {
+
+            var level=
+                LEVELS[i];
+
+
+            var section=
+                el(
+                    "article",
+                    "task-section "+
+                    level.id
+                );
+
+
+            var index=
+                el(
+                    "div",
+                    "task-index"
+                );
+
+
+            var indexNumber=
+                el(
+                    "div",
+                    "task-index-number",
+                    level.number
+                );
+
+
+            var indexLabel=
+                el(
+                    "div",
+                    "task-index-label "+
+                    level.id,
+                    level.label
+                );
+
+
+            index.append(
+                indexNumber,
+                indexLabel
+            );
+
+
+            var main=
+                el(
+                    "div",
+                    "task-main"
+                );
+
+
+            var header=
+                el(
+                    "div",
+                    "task-header"
+                );
+
+
+            var heading=
+                el(
+                    "div",
+                    "task-heading"
+                );
+
+
+            var title=
+                el(
+                    "h2",
+                    "task-title",
+                    "Ждёт своего часа"
+                );
+
+
+            var extra=
+                el(
+                    "span",
+                    "extra-badge",
+                    "EXTRA"
+                );
+
+
+            extra.hidden=true;
+
+
+            var path=
+                el(
+                    "div",
+                    "task-path",
+                    "Рабочая папка появится после создания набора"
+                );
+
+
+            var sourceRow=
+                el(
+                    "div",
+                    "source-row"
+                );
+
+
+            var sourceLabel=
+                el(
+                    "span",
+                    "source-label",
+                    "📂 Источник:"
+                );
+
+
+            var sourcePath=
+                el(
+                    "span",
+                    "source-path",
+                    ""
+                );
+
+
+            sourceRow.append(
+                sourceLabel,
+                sourcePath
+            );
+
+
+            heading.append(
+                title,
+                extra,
+                path,
+                sourceRow
+            );
+
+
+            var actions=
+                el(
+                    "div",
+                    "task-actions"
+                );
+
+
+            var skip=
+                el(
+                    "button",
+                    "file-btn",
+                    "🔄 Заменить"
+                );
+
+
+            skip.type=
+                "button";
+
+            skip.disabled=
+                true;
+
+
+            (function(levelId) {
+
+                skip.addEventListener(
+                    "click",
+                    function() {
+
+                        runOperation(
+                            function() {
+                                return skipTask(
+                                    levelId
+                                );
+                            }
+                        );
+
+                    }
+                );
+
+            })(level.id);
+
+
+            actions.append(
+                skip
+            );
+
+
+            header.append(
+                heading,
+                actions
+            );
+
+
+            var spoiler=
+                el(
+                    "div",
+                    "spoiler-hint",
+                    "💡 Попробуй сначала решить сам, прежде чем смотреть теорию или решение"
+                );
+
+
+            spoiler.hidden=
+                true;
+
+
+            var files=
+                el(
+                    "div",
+                    "task-files"
+                );
+
+
+            files.appendChild(
+                el(
+                    "div",
+                    "task-files-label",
+                    "Файлы задания"
+                )
+            );
+
+
+            var fileButtons={};
+
+
+            for(
+                var j=0;
+                j<FILE_BUTTONS.length;
+                j++
+            ) {
+
+                var cfg=
+                    FILE_BUTTONS[j];
+
+
+                var button=
+                    el(
+                        "button",
+                        "file-btn"+
+                        (
+                            cfg.reveal
+                                ? " reveal"
+                                : ""
+                        ),
+                        cfg.label
+                    );
+
+
+                button.type=
+                    "button";
+
+
+                button.disabled=
+                    true;
+
+
+                (function(
+                    levelId,
+                    config,
+                    hint,
+                    btn
+                ) {
+
+                    btn.addEventListener(
+                        "click",
+                        function() {
+
+                            if(
+                                config.reveal
+                            ) {
+
+                                hint.hidden=
+                                    true;
+
+                            }
+
+
+                            openFileInTab(
+                                levelId,
+                                config.filename,
+                                config.tabTitle
+                            );
+
+                        }
+                    );
+
+                })(
+                    level.id,
+                    cfg,
+                    spoiler,
+                    button
+                );
+
+
+                fileButtons[
+                    cfg.key
+                    ]=
+                    button;
+
+
+                files.appendChild(
+                    button
+                );
+
+            }
+
+
+            var documentBody=
+                el(
+                    "div",
+                    "document empty"
+                );
+
+
+            var taskBottom=
+                el(
+                    "div",
+                    "task-bottom"
+                );
+
+
+            var bottomHint=
+                el(
+                    "div",
+                    "task-bottom-hint",
+                    "Когда закончишь — отметь задание выполненным."
+                );
+
+
+            var doneButton=
+                el(
+                    "button",
+                    "done-btn",
+                    "✅ Решено"
+                );
+
+
+            doneButton.type=
+                "button";
+
+
+            doneButton.disabled=
+                true;
+
+
+            (function(levelId) {
+
+                doneButton.addEventListener(
+                    "click",
+                    function() {
+
+                        completeTask(
+                            levelId
+                        );
+
+                    }
+                );
+
+            })(level.id);
+
+
+            taskBottom.append(
+                bottomHint,
+                doneButton
+            );
+
+
+            var completedBar=
+                el(
+                    "div",
+                    "completed-bar"
+                );
+
+
+            completedBar.hidden=
+                true;
+
+
+            var completedLeft=
+                el(
+                    "div",
+                    "completed-left"
+                );
+
+
+            var completedIcon=
+                el(
+                    "span",
+                    "completed-icon",
+                    "✅"
+                );
+
+
+            var completedText=
+                el(
+                    "span",
+                    "completed-text",
+                    "Задание выполнено"
+                );
+
+
+            var completedTitle=
+                el(
+                    "span",
+                    "completed-title",
+                    ""
+                );
+
+
+            completedLeft.append(
+                completedIcon,
+                completedText,
+                completedTitle
+            );
+
+
+            completedBar.append(
+                completedLeft
+            );
+
+
+            main.append(
+                header,
+                spoiler,
+                files,
+                documentBody,
+                taskBottom,
+                completedBar
+            );
+
+
+            section.append(
+                index,
+                main
+            );
+
+
+            ui.cards.appendChild(
+                section
+            );
+
+
+            cardUI[level.id]={
+
+                card:
+                section,
+
+                title:
+                title,
+
+                extra:
+                extra,
+
+                path:
+                path,
+
+                sourcePath:
+                sourcePath,
+
+                skip:
+                skip,
+
+                fileButtons:
+                fileButtons,
+
+                spoilerHint:
+                spoiler,
+
+                document:
+                documentBody,
+
+                taskBottom:
+                taskBottom,
+
+                taskBottomHint:
+                bottomHint,
+
+                doneButton:
+                doneButton,
+
+                completedBar:
+                completedBar,
+
+                completedTitle:
+                completedTitle
+
+            };
+
+
+            renderCard(
+                level.id
+            );
+
+        }
+
+    }
+
+    /* ============================================
+   RENDER
+   ============================================ */
+
+    function renderCard(
+        level
+    ) {
+
+        var card=
+            cardUI[level];
+
+
+        var selection=
+            state.current[level];
+
+
+        var locked=
+            state.locked[level];
+
+
+        var done=
+            state.completed[level];
+
+
+        card.document.replaceChildren();
+
+
+        card.card.classList.toggle(
+            "completed",
+            done &&
+            !!selection
+        );
+
+
+        /* NO TASK */
+
+        if(!selection) {
+
+            card.title.textContent=
+                "Ждёт своего часа";
+
+
+            card.extra.hidden=
+                true;
+
+
+            card.path.textContent=
+                "Рабочая папка появится после создания набора";
+
+
+            card.sourcePath.textContent=
+                "";
+
+
+            card.spoilerHint.hidden=
+                true;
+
+
+            card.taskBottom.hidden=
+                true;
+
+
+            card.completedBar.hidden=
+                true;
+
+
+            card.document.className=
+                "document empty";
+
+
+            var empty=
+                el(
+                    "div",
+                    "empty-inner"
+                );
+
+
+            empty.append(
+
+                el(
+                    "div",
+                    "empty-icon",
+                    "{ }"
+                ),
+
+                el(
+                    "p",
+                    "",
+                    "Выбери папку проекта и нажми «Новый набор»."
+                )
+
+            );
+
+
+            card.document.appendChild(
+                empty
+            );
+
+
+            return;
+
+        }
+
+
+        /* LOCKED */
+
+        if(locked) {
+
+            card.title.textContent=
+                "Задание скрыто";
+
+
+            card.extra.hidden=
+                true;
+
+
+            card.path.textContent=
+                "Папка создана: "+
+                selection.relativePath;
+
+
+            card.sourcePath.textContent=
+                "tasks/"+
+                selection.task.actualPath+
+                "/";
+
+
+            card.spoilerHint.hidden=
+                true;
+
+
+            card.taskBottom.hidden=
+                true;
+
+
+            card.completedBar.hidden=
+                true;
+
+
+            card.document.className=
+                "document empty locked";
+
+
+            var lockedInner=
+                el(
+                    "div",
+                    "empty-inner"
+                );
+
+
+            var lockIcon=
+                el(
+                    "div",
+                    "empty-icon locked-animation",
+                    "🔒"
+                );
+
+
+            var lockTitle=
+                el(
+                    "h3",
+                    "",
+                    "Задание пока закрыто"
+                );
+
+
+            lockTitle.style.margin=
+                "10px 0 8px";
+
+
+            var previous=
+                level==="medium"
+                    ? "лёгкое"
+                    : "среднее";
+
+
+            var lockText=
+                el(
+                    "p",
+                    "",
+                    "Сначала реши "+
+                    previous+
+                    " задание. Следующее откроется автоматически."
+                );
+
+
+            lockText.style.cssText=
+                "font-size:calc(var(--fs-base) - 3px);"+
+                "color:var(--muted);"+
+                "line-height:1.45;";
+
+
+            lockedInner.append(
+                lockIcon,
+                lockTitle,
+                lockText
+            );
+
+
+            card.document.appendChild(
+                lockedInner
+            );
+
+
+            return;
+
+        }
+
+
+        /* ACTIVE */
+
+        card.title.textContent=
+            selection.task.title;
+
+
+        card.extra.hidden=
+            !selection.task.extra;
+
+
+        card.path.textContent=
+            selection.relativePath;
+
+
+        card.sourcePath.textContent=
+            "tasks/"+
+            selection.task.actualPath+
+            "/";
+
+
+        /* COMPLETED */
+
+        if(done) {
+
+            card.spoilerHint.hidden=
+                true;
+
+
+            card.document.className=
+                "document collapsed";
+
+
+            card.taskBottom.hidden=
+                true;
+
+
+            card.completedBar.hidden=
+                false;
+
+
+            card.completedTitle.textContent=
+                " — "+
+                selection.task.title;
+
+
+            return;
+
+        }
+
+
+        /* OPEN */
+
+        card.spoilerHint.hidden=
+            false;
+
+
+        card.taskBottom.hidden=
+            false;
+
+
+        card.completedBar.hidden=
+            true;
+
+
+        card.document.className=
+            "document";
+
+
+        card.document.appendChild(
+            renderMarkdown(
+                selection.markdown
+            )
+        );
+
+    }
+
+    /* ============================================
+   COMPLETION FLOW
+   ============================================ */
+
+    function completeTask(
+        level
+    ) {
+
+        if(
+            !state.current[level] ||
+            state.locked[level] ||
+            state.completed[level]
+        ) {
+            return;
+        }
+
+
+        state.completed[level]=
+            true;
+
+
+        renderCard(
+            level
+        );
+
+
+        refreshControls();
+
+
+        var index=
+            LEVELS.findIndex(
+                function(item) {
+                    return item.id===level;
+                }
+            );
+
+
+        var nextLevel=
+            (
+                index>=0 &&
+                index<LEVELS.length-1
+            )
+                ? LEVELS[index+1].id
+                : null;
+
+
+        if(nextLevel) {
+
+            state.locked[nextLevel]=
+                false;
+
+
+            renderCard(
+                nextLevel
+            );
+
+
+            refreshControls();
+
+
+            setStatus(
+                "Задание выполнено. Следующее задание открыто.",
+                "success"
+            );
+
+
+            setTimeout(
+                function() {
+
+                    cardUI[nextLevel].card
+                        .scrollIntoView({
+                            behavior:
+                                "smooth",
+
+                            block:
+                                "start"
+                        });
+
+                },
+                120
+            );
+
+        }
+        else {
+
+            setStatus(
+                "Все три задания выполнены. Отличная работа!",
+                "success"
+            );
+
+        }
+
+    }
+
+    /* ============================================
+   OPEN FILE IN NEW TAB
+   ============================================ */
+
+    async function openFileInTab(
+        level,
+        filename,
+        tabTitle
+    ) {
+
+        var selection=
+            state.current[level];
+
+
+        if(!selection) {
+            return;
+        }
+
+
+        var content;
+
+
+        try {
+
+            content=
+                await readFileFromTask(
+                    selection.task,
+                    filename
+                );
+
+        }
+        catch(e) {
+
+            setStatus(
+                e.message,
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        var tab=
+            window.open(
+                "about:blank",
+                "_blank"
+            );
+
+
+        if(!tab) {
+
+            setStatus(
+                "Браузер заблокировал вкладку. Разреши всплывающие окна.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        tab.opener=
+            null;
+
+
+        var isMarkdown=
+            filename.endsWith(
+                ".md"
+            );
+
+
+        var savedTheme=
+            localStorage.getItem(
+                "c-practice-theme"
+            ) ||
+            "gruvbox";
+
+
+        var savedFont=
+            localStorage.getItem(
+                "c-practice-font"
+            ) ||
+            "16";
+
+
+        var contentHtml;
+
+
+        if(isMarkdown) {
+
+            var wrap=
+                document.createElement(
+                    "div"
+                );
+
+
+            wrap.appendChild(
+                renderMarkdown(
+                    content
+                )
+            );
+
+
+            contentHtml=
+                wrap.innerHTML;
+
+        }
+        else {
+
+            var isCode=
+                filename.endsWith(".c") ||
+                filename.endsWith(".h");
+
+
+            contentHtml=
+                "<pre><code>"+
+                (
+                    isCode
+                        ? highlightC(
+                            content
+                        )
+                        : escapeHtml(
+                            content
+                        )
+                )+
+                "</code></pre>";
+
+        }
+
+
+        var styles=
+            document
+                .querySelector("style")
+                .textContent;
+
+
+        var pageHTML=
+
+            "<!DOCTYPE html>"+
+            "<html lang=\"ru\" data-theme=\""+
+            savedTheme+
+            "\">"+
+
+            "<head>"+
+
+            "<meta charset=\"UTF-8\">"+
+
+            "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"+
+
+            "<title>"+
+            escapeHtml(
+                tabTitle+
+                " — "+
+                selection.task.title
+            )+
+            "</title>"+
+
+            "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">"+
+            "<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>"+
+            "<link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap\" rel=\"stylesheet\">"+
+
+            "<style>"+
+            styles+
+
+            "body{padding:40px 20px;overflow-y:auto}"+
+
+            ".tab-wrap{max-width:900px;margin:0 auto}"+
+
+            ".tab-header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--border);flex-wrap:wrap}"+
+
+            ".tab-title{font-size:calc(var(--fs-base) + 8px);font-weight:700;color:var(--text-strong)}"+
+
+            ".tab-title-sub{font-size:calc(var(--fs-base) - 1px);color:var(--muted);margin-top:4px}"+
+
+            ".tab-settings{display:flex;align-items:center;gap:14px}"+
+
+            ".document{max-width:900px!important;margin-top:0!important}"+
+
+            "</style>"+
+
+            "</head>"+
+
+            "<body>"+
+
+            "<div class=\"tab-wrap\">"+
+
+            "<div class=\"tab-header\">"+
+
+            "<div>"+
+
+            "<div class=\"tab-title\">"+
+            escapeHtml(
+                tabTitle
+            )+
+            "</div>"+
+
+            "<div class=\"tab-title-sub\">"+
+            escapeHtml(
+                selection.task.title
+            )+
+            "</div>"+
+
+            "</div>"+
+
+            "<div class=\"tab-settings\">"+
+
+            "<select id=\"tabTheme\" class=\"theme-select\">"+
+            "<option value=\"gruvbox\">☕ Gruvbox</option>"+
+            "<option value=\"catppuccin\">🐈 Catppuccin</option>"+
+            "<option value=\"kanagawa\">🌊 Kanagawa</option>"+
+            "<option value=\"nord\">❄️ Nord</option>"+
+            "<option value=\"dracula\">🧛 Dracula</option>"+
+            "<option value=\"dark\">🌙 GitHub Dark</option>"+
+            "</select>"+
+
+            "<input id=\"tabFont\" class=\"font-slider\" type=\"range\" min=\"12\" max=\"26\" step=\"1\" value=\""+
+            savedFont+
+            "\">"+
+
+            "<span><span id=\"tabFontValue\">"+
+            savedFont+
+            "</span>px</span>"+
+
+            "</div>"+
+
+            "</div>"+
+
+            "<main class=\"document\">"+
+            contentHtml+
+            "</main>"+
+
+            "</div>"+
+
+            "<script>"+
+
+            "(function(){"+
+
+            "var root=document.documentElement;"+
+
+            "root.style.setProperty('--fs-base','"+
+            savedFont+
+            "px');"+
+
+            "var theme=document.getElementById('tabTheme');"+
+
+            "var font=document.getElementById('tabFont');"+
+
+            "var value=document.getElementById('tabFontValue');"+
+
+            "theme.value=root.getAttribute('data-theme');"+
+
+            "theme.addEventListener('change',function(){root.setAttribute('data-theme',this.value);try{localStorage.setItem('c-practice-theme',this.value)}catch(e){}});"+
+
+            "font.addEventListener('input',function(){root.style.setProperty('--fs-base',this.value+'px');value.textContent=this.value;try{localStorage.setItem('c-practice-font',this.value)}catch(e){}});"+
+
+            "})();"+
+
+            "<\/script>"+
+
+"</body>"+
+
+"</html>";
+
+
+tab.document.open();
+
+tab.document.write(
+pageHTML
+);
+
+tab.document.close();
+
+}
+
+/* ============================================
+SETTINGS
+============================================ */
+
+function initSettings() {
+
+var theme=
+document.getElementById(
+"themeSelect"
+);
+
+
+var font=
+document.getElementById(
+"fontSlider"
+);
+
+
+var value=
+document.getElementById(
+"fontVal"
+);
+
+
+function setTheme(name) {
+
+document.documentElement
+.setAttribute(
+"data-theme",
+name
+);
+
+
+theme.value=
+name;
+
+
+try {
+
+localStorage.setItem(
+"c-practice-theme",
+name
+);
+
+}
+catch(e) {}
+
+}
+
+
+function setFont(size) {
+
+document.documentElement.style
+.setProperty(
+"--fs-base",
+size+
+"px"
+);
+
+
+font.value=
+size;
+
+
+value.textContent=
+size;
+
+
+try {
+
+localStorage.setItem(
+"c-practice-font",
+size
+);
+
+}
+catch(e) {}
+
+}
+
+
+setTheme(
+localStorage.getItem(
+"c-practice-theme"
+) ||
+"gruvbox"
+);
+
+
+setFont(
+localStorage.getItem(
+"c-practice-font"
+) ||
+"16"
+);
+
+
+theme.addEventListener(
+"change",
+function() {
+setTheme(
+this.value
+);
+}
+);
+
+
+font.addEventListener(
+"input",
+function() {
+setFont(
+this.value
+);
+}
+);
+
+}
+
+/* ============================================
+INIT
+============================================ */
+
+createCards();
+
+initSettings();
+
+refreshControls();
+
+
+ui.choose.addEventListener(
+"click",
+function() {
+runOperation(
+chooseProject
+);
+}
+);
+
+
+ui.generate.addEventListener(
+"click",
+function() {
+runOperation(
+generateSet
+);
+}
+);
+
+
+ui.pause.addEventListener(
+"click",
+toggleTimer
+);
+
+
+ui.extra.addEventListener(
+"change",
+function() {
+
+refreshControls();
+
+
+setStatus(
+extraEnabled()
+? "Дополнительные задания включены для следующих выборов."
+: "Дополнительные задания исключены из следующих выборов."
+);
+
+}
+);
+
+
+if(
+!window.isSecureContext ||
+typeof window.showDirectoryPicker!==
+"function"
+) {
+
+setStatus(
+"Доступ к папкам недоступен. Открой страницу в Chrome или Edge.",
+"error"
+);
+
+}
 </script>
+
 </body>
 </html>

@@ -1,197 +1,457 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="gruvbox">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="color-scheme" content="dark">
-    <title>C Practice — обзор заданий</title>
+    <title>C Practice — IDE</title>
+
+    <!-- ПОДКЛЮЧАЕМ МЕГА-ИДЕАЛЬНЫЕ ШРИФТЫ: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
+        /* ============================================
+           GLOBAL VARS & SETTINGS
+           ============================================ */
         :root {
-            --bg:           #0c1019;
-            --panel:        #141b29;
-            --panel-hover:  #1b2536;
-            --border:       #293348;
-            --text:         #eef2ff;
-            --muted:        #9eacc6;
-            --accent:       #a998ff;
-            --green:        #70ddb0;
-            --yellow:       #ffd17b;
-            --red:          #ff98aa;
-            --radius:       16px;
-            --nav-w:        300px;
+            --radius-lg: 12px;
+            --radius-md: 8px;
+            --radius-sm: 6px;
+            --nav-w: 320px;
 
-            /* Цветовая схема подсветки кода Си */
-            --hl-comment:   #6272a4;
-            --hl-string:    #50fa7b;
-            --hl-char:      #f1fa8c;
-            --hl-preproc:   #ff79c6;
-            --hl-keyword:   #ff79c6;
-            --hl-type:      --accent; /* #8be9fd */
-            --hl-number:    #bd93f9;
-            --hl-func:      #8be9fd;
+            /* БАЗОВЫЙ РАЗМЕР ШРИФТА (16px - золотой стандарт) */
+            --fs-base: 14px;
+
+            /* МЕГА ШРИФТЫ */
+            --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
         }
 
+        /* ============================================
+           1. GRUVBOX (DEFAULT) — Тёплая ретро-палитра
+           ============================================ */
+        :root[data-theme="gruvbox"] {
+            --bg:           #282828;
+            --panel:        #32302F;
+            --panel-alt:    #3C3836;
+            --panel-hover:  #504945;
+            --border:       #504945;
+            --border-hover: #FABD2F;
+
+            --text:         #EBDBB2;
+            --text-strong:  #FBF1C7;
+            --muted:        #A89984;
+
+            --accent:       #FABD2F;
+            --accent-soft:  rgba(250, 189, 47, 0.15);
+            --green:        #B8BB26;
+            --yellow:       #FABD2F;
+            --red:          #FB4934;
+
+            --glow1:        rgba(250, 189, 47, 0.06);
+            --glow2:        rgba(184, 187, 38, 0.04);
+
+            --hl-comment:   #928374;
+            --hl-string:    #B8BB26;
+            --hl-char:      #D3869B;
+            --hl-preproc:   #83A598;
+            --hl-keyword:   #FB4934;
+            --hl-type:      #FABD2F;
+            --hl-number:    #D3869B;
+            --hl-func:      #B8BB26;
+
+            --code-block-bg:  #1D2021;
+            --table-header:   #3C3836;
+
+            --shadow:         0 4px 20px -8px rgba(0, 0, 0, 0.8);
+            --shadow-hover:   0 8px 30px -8px rgba(0, 0, 0, 0.95);
+            --yellow-dim:     #8f6a22;
+            --reveal-hover:   rgba(250, 189, 47, 0.08);
+        }
+
+        /* ============================================
+           2. CATPPUCCIN MOCHA
+           ============================================ */
+        :root[data-theme="catppuccin"] {
+            --bg:           #1e1e2e;
+            --panel:        #181825;
+            --panel-alt:    #313244;
+            --panel-hover:  #45475a;
+            --border:       #313244;
+            --border-hover: #89b4fa;
+            --text:         #bac2de;
+            --text-strong:  #cdd6f4;
+            --muted:        #a6adc8;
+            --accent:       #89b4fa;
+            --accent-soft:  rgba(137, 180, 250, 0.15);
+            --green:        #a6e3a1;
+            --yellow:       #f9e2af;
+            --red:          #f38ba8;
+            --glow1:        rgba(137, 180, 250, 0.08);
+            --glow2:        rgba(166, 227, 161, 0.05);
+            --hl-comment:   #6c7086; --hl-string: #a6e3a1; --hl-char: #f9e2af; --hl-preproc: #f38ba8; --hl-keyword: #cba6f7; --hl-type: #f9e2af; --hl-number: #fab387; --hl-func: #89b4fa;
+            --code-block-bg:  #11111b;
+            --table-header:   #313244;
+            --shadow: 0 4px 20px -8px rgba(0,0,0,0.7); --shadow-hover: 0 8px 30px -8px rgba(0,0,0,0.9); --yellow-dim: #7a6a3a; --reveal-hover: rgba(249,226,175,0.08);
+        }
+
+        /* ============================================
+           3. KANAGAWA
+           ============================================ */
+        :root[data-theme="kanagawa"] {
+            --bg:           #1F1F28;
+            --panel:        #2A2A37;
+            --panel-alt:    #363646;
+            --panel-hover:  #54546D;
+            --border:       #363646;
+            --border-hover: #7E9CD8;
+            --text:         #DCD7BA;
+            --text-strong:  #F2E9DE;
+            --muted:        #957FB8;
+            --accent:       #7FB4CA;
+            --accent-soft:  rgba(127, 180, 202, 0.15);
+            --green:        #98BB6C;
+            --yellow:       #E6C384;
+            --red:          #E82424;
+            --glow1:        rgba(126, 156, 216, 0.07);
+            --glow2:        rgba(152, 187, 108, 0.05);
+            --hl-comment:   #727169; --hl-string: #98BB6C; --hl-char: #E6C384; --hl-preproc: #FF5D62; --hl-keyword: #957FB8; --hl-type: #7AA89F; --hl-number: #D27E99; --hl-func: #7E9CD8;
+            --code-block-bg:  #16161D;
+            --table-header:   #363646;
+            --shadow: 0 4px 20px -8px rgba(0,0,0,0.6); --shadow-hover: 0 8px 30px -8px rgba(0,0,0,0.8); --yellow-dim: #5b4e33; --reveal-hover: rgba(230,195,132,0.08);
+        }
+
+        /* ============================================
+           4. NORD
+           ============================================ */
+        :root[data-theme="nord"] {
+            --bg:           #2E3440;
+            --panel:        #3B4252;
+            --panel-alt:    #434C5E;
+            --panel-hover:  #4C566A;
+            --border:       #434C5E;
+            --border-hover: #5E81AC;
+            --text:         #E5E9F0;
+            --text-strong:  #ECEFF4;
+            --muted:        #8FA1B3;
+            --accent:       #88C0D0;
+            --accent-soft:  rgba(136, 192, 208, 0.15);
+            --green:        #A3BE8C;
+            --yellow:       #EBCB8B;
+            --red:          #BF616A;
+            --glow1:        rgba(94, 129, 172, 0.15);
+            --glow2:        rgba(163, 190, 140, 0.08);
+            --hl-comment:   #616E88; --hl-string: #A3BE8C; --hl-char: #EBCB8B; --hl-preproc: #B48EAD; --hl-keyword: #81A1C1; --hl-type: #8FBCBB; --hl-number: #B48EAD; --hl-func: #88C0D0;
+            --code-block-bg:  #292E39;
+            --table-header:   #434C5E;
+            --shadow: 0 4px 20px -8px rgba(0,0,0,0.5); --shadow-hover: 0 8px 30px -8px rgba(0,0,0,0.7); --yellow-dim: #7a6a3a; --reveal-hover: rgba(235,203,139,0.08);
+        }
+
+        /* ============================================
+           5. DRACULA
+           ============================================ */
+        :root[data-theme="dracula"] {
+            --bg:           #282A36;
+            --panel:        #343746;
+            --panel-alt:    #44475A;
+            --panel-hover:  #50536B;
+            --border:       #44475A;
+            --border-hover: #BD93F9;
+            --text:         #F8F8F2;
+            --text-strong:  #FFFFFF;
+            --muted:        #A9B1C6;
+            --accent:       #BD93F9;
+            --accent-soft:  rgba(189, 147, 249, 0.15);
+            --green:        #50FA7B;
+            --yellow:       #F1FA8C;
+            --red:          #FF5555;
+            --glow1:        rgba(189, 147, 249, 0.10);
+            --glow2:        rgba(80, 250, 123, 0.06);
+            --hl-comment:   #6272A4; --hl-string: #F1FA8C; --hl-char: #F1FA8C; --hl-preproc: #FF79C6; --hl-keyword: #FF79C6; --hl-type: #8BE9FD; --hl-number: #BD93F9; --hl-func: #50FA7B;
+            --code-block-bg:  #21222C;
+            --table-header:   #44475A;
+            --shadow: 0 4px 20px -8px rgba(0,0,0,0.7); --shadow-hover: 0 8px 30px -8px rgba(0,0,0,0.85); --yellow-dim: #63663a; --reveal-hover: rgba(241,250,140,0.08);
+        }
+
+        /* ============================================
+           6. GITHUB DARK
+           ============================================ */
+        :root[data-theme="dark"] {
+            --bg:           #0D1117;
+            --panel:        #161B22;
+            --panel-alt:    #1C222C;
+            --panel-hover:  #262C36;
+            --border:       #30363D;
+            --border-hover: #58A6FF;
+            --text:         #C9D1D9;
+            --text-strong:  #F0F6FC;
+            --muted:        #8B949E;
+            --accent:       #58A6FF;
+            --accent-soft:  rgba(88, 166, 255, 0.15);
+            --green:        #56D364;
+            --yellow:       #E3B341;
+            --red:          #F85149;
+            --glow1:        rgba(88, 166, 255, 0.08);
+            --glow2:        rgba(86, 211, 100, 0.05);
+            --hl-comment:   #8B949E; --hl-string: #A5D6FF; --hl-char: #A5D6FF; --hl-preproc: #FF7B72; --hl-keyword: #FF7B72; --hl-type: #FFA657; --hl-number: #79C0FF; --hl-func: #D2A8FF;
+            --code-block-bg:  #010409;
+            --table-header:   #161B22;
+            --shadow: 0 4px 20px -8px rgba(0,0,0,0.8); --shadow-hover: 0 8px 30px -8px rgba(0,0,0,0.95); --yellow-dim: #6b5c30; --reveal-hover: rgba(227,179,65,0.08);
+        }
+
+        /* ============================================
+           BASE STYLES
+           ============================================ */
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             height: 100vh;
             color: var(--text);
             background:
-                    radial-gradient(ellipse at 10% 0%, #28204366, transparent 45%),
-                    radial-gradient(ellipse at 100% 15%, #123f4666, transparent 40%),
+                    radial-gradient(ellipse at 10% 0%, var(--glow1), transparent 45%),
+                    radial-gradient(ellipse at 100% 15%, var(--glow2), transparent 40%),
                     var(--bg);
-            font-family: system-ui, -apple-system, BlinkMacSystemFont,
-            "Segoe UI", sans-serif;
+            font-family: var(--font-main);
+            font-size: var(--fs-base);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
             line-height: 1.55;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
-        button, input { font: inherit; }
+        button, input, select { font: inherit; }
         a { color: var(--accent); }
+        code, pre { font-family: var(--font-code); }
 
-        code, pre {
-            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-        }
-
-        /* ============================================
-           App layout: nav | content-area
-           ============================================ */
-
-        .app {
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
         /* ============================================
-           Navigation sidebar
+           Layout & Nav
            ============================================ */
+        .app { display: flex; height: 100vh; overflow: hidden; }
 
         .nav {
+            /* Фиксируем ширину для идеального скрытия/показа */
             width: var(--nav-w);
-            min-width: 220px;
-            max-width: 400px;
+            min-width: var(--nav-w);
+            max-width: var(--nav-w);
+
             border-right: 1px solid var(--border);
             background: var(--panel);
             display: flex;
             flex-direction: column;
             overflow: hidden;
             flex-shrink: 0;
+            z-index: 10;
+
+            /* Анимация скрытия */
+            margin-left: 0;
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Класс скрытия левой панели */
+        .nav.collapsed {
+            margin-left: calc(-1 * var(--nav-w)); /* Идеальный сдвиг влево на ширину панели */
         }
 
         .nav-header {
             padding: 16px;
             border-bottom: 1px solid var(--border);
+            background: var(--panel);
+        }
+
+        .nav-header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            gap: 8px;
         }
 
         .nav-header h1 {
-            font-size: 16px;
-            letter-spacing: -.03em;
-            margin-bottom: 10px;
+            font-size: calc(var(--fs-base) + 1px);
+            letter-spacing: -.02em;
+            color: var(--text-strong);
         }
 
         .nav-btn {
             width: 100%;
             border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 9px 12px;
-            background: var(--panel-hover);
+            border-radius: var(--radius-md);
+            padding: 10px 12px;
+            background: var(--panel-alt);
             color: var(--text);
             cursor: pointer;
-            font-size: 13px;
-            transition: background .15s;
+            font-size: calc(var(--fs-base) - 2px);
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .nav-btn:hover { background: var(--panel-hover); border-color: var(--accent); }
+
+        .settings-bar {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(0,0,0,0.15);
         }
 
-        .nav-btn:hover { background: #243044; }
+        .settings-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: calc(var(--fs-base) - 3px);
+            color: var(--muted);
+        }
+
+        .theme-select {
+            background: var(--panel-alt);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 4px 8px;
+            font-size: calc(var(--fs-base) - 3px);
+            cursor: pointer;
+            outline: none;
+        }
+        .theme-select:hover { border-color: var(--accent); }
+
+        .font-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            outline: none;
+        }
+        .font-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .font-slider::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            border: none;
+        }
+        .font-slider::-webkit-slider-thumb:hover { transform: scale(1.3); }
 
         .nav-status {
-            padding: 6px 16px;
-            font-size: 11px;
+            padding: 8px 16px;
+            font-size: calc(var(--fs-base) - 4px);
             color: var(--muted);
             border-bottom: 1px solid var(--border);
         }
-
         .nav-status.error { color: var(--red); }
 
+        /* Дерево файлов */
         .tree {
             flex: 1;
             overflow-y: auto;
-            padding: 8px 0;
-            scrollbar-color: #4c5972 transparent;
+            padding: 12px 8px;
         }
 
-        /* ---- Tree items ---- */
+        .tree-empty-state {
+            padding: 16px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            text-align: left;
+        }
+        .tree-empty-card {
+            background: var(--panel-alt);
+            border: 1px dashed var(--border);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            font-size: calc(var(--fs-base) - 3px);
+            line-height: 1.55;
+            color: var(--muted);
+        }
+        .tree-empty-card strong {
+            color: var(--text-strong);
+        }
+        .tree-empty-card p { margin-bottom: 8px; }
+        .tree-empty-card p:last-child { margin-bottom: 0; }
 
-        .tree-section { margin-bottom: 2px; }
+        .tree-section { margin-bottom: 4px; }
 
         .tree-section-title {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 7px 16px;
-            font-size: 11px;
+            padding: 8px 12px;
+            font-size: calc(var(--fs-base) - 4px);
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: .08em;
             color: var(--accent);
             cursor: pointer;
             user-select: none;
+            border-radius: var(--radius-sm);
         }
-
-        .tree-section-title:hover { background: #1b253622; }
-
+        .tree-section-title:hover { background: var(--panel-alt); }
         .tree-section-title::before {
-            content: "▶";
-            font-size: 8px;
-            transition: transform .15s;
+            content: "▶"; font-size: 8px; transition: transform .15s; color: var(--muted);
         }
-
-        .tree-section.open > .tree-section-title::before {
-            transform: rotate(90deg);
-        }
-
+        .tree-section.open > .tree-section-title::before { transform: rotate(90deg); }
         .tree-section-body { display: none; }
-        .tree-section.open > .tree-section-body { display: block; }
+        .tree-section.open > .tree-section-body { display: block; padding-top: 2px; }
 
         .tree-task {
+            position: relative;
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 16px 6px 32px;
-            font-size: 12px;
+            gap: 8px;
+            padding: 7px 12px 7px 24px;
+            margin-bottom: 2px;
+            font-size: calc(var(--fs-base) - 2px);
             color: var(--muted);
             cursor: pointer;
             user-select: none;
-            transition: background .1s, color .1s;
+            border-radius: var(--radius-sm);
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
         }
-
-        .tree-task:hover {
-            background: var(--panel-hover);
-            color: var(--text);
-        }
-
+        .tree-task:hover { background: var(--panel-alt); color: var(--text); }
         .tree-task.active {
-            background: #a998ff18;
+            background: var(--accent-soft);
             color: var(--accent);
+            font-weight: 500;
+            border-left-color: var(--accent);
         }
-
-        .tree-task-icon { font-size: 13px; }
+        .tree-task-icon { opacity: 0.7; }
+        .tree-task.active .tree-task-icon { opacity: 1; }
 
         .tree-badge {
             margin-left: auto;
-            padding: 1px 5px;
-            border: 1px solid #53466e;
-            border-radius: 5px;
-            color: #c6b8f5;
-            font-size: 9px;
+            padding: 1px 6px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--muted);
+            background: var(--panel-alt);
+            font-size: calc(var(--fs-base) - 6px);
             text-transform: uppercase;
-            flex-shrink: 0;
+            font-weight: 600;
         }
 
         /* ============================================
-           Content area
+           Content area & Taskbar
            ============================================ */
-
         .content-area {
             flex: 1;
             display: flex;
@@ -200,323 +460,264 @@
             min-width: 0;
         }
 
-        /* ---- Task toolbar ---- */
-
         .task-bar {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 10px 16px;
+            padding: 12px 20px;
             border-bottom: 1px solid var(--border);
             background: var(--panel);
             flex-wrap: wrap;
-            min-height: 50px;
+            min-height: 56px;
+        }
+
+        /* Кнопка скрытия меню */
+        .sidebar-toggle-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            color: var(--muted);
+            border: 1px solid transparent;
+            border-radius: var(--radius-sm);
+            padding: 6px 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-right: 4px;
+            flex-shrink: 0; /* Чтобы не сжималась */
+        }
+        .sidebar-toggle-btn:hover {
+            background: var(--panel-hover);
+            color: var(--text-strong);
+        }
+        .sidebar-toggle-btn:active {
+            transform: scale(0.95);
         }
 
         .task-bar-title {
-            font-size: 14px;
+            font-size: var(--fs-base);
             font-weight: 700;
             margin-right: auto;
+            color: var(--text-strong);
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-
         .task-bar-btn {
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 6px 10px;
-            background: var(--panel-hover);
+            border-radius: var(--radius-sm);
+            padding: 6px 12px;
+            background: var(--panel-alt);
             color: var(--muted);
             cursor: pointer;
-            font-size: 12px;
-            transition: background .1s, color .1s;
+            font-size: calc(var(--fs-base) - 3px);
+            font-weight: 500;
+            transition: all 0.2s;
             white-space: nowrap;
         }
-
-        .task-bar-btn:hover { background: #243044; color: var(--text); }
-        .task-bar-btn.active { color: var(--accent); border-color: var(--accent); }
-        .task-bar-btn:disabled { opacity: .35; cursor: not-allowed; }
-
-        .task-bar-btn.reveal { color: var(--yellow); border-color: #6b5c30; }
-        .task-bar-btn.reveal:hover { background: #2a2418; color: var(--yellow); }
-        .task-bar-btn.reveal.active { border-color: var(--yellow); }
+        .task-bar-btn:hover { background: var(--panel-hover); color: var(--text); }
+        .task-bar-btn.active { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+        .task-bar-btn.reveal { color: var(--yellow); border-color: var(--yellow-dim); }
+        .task-bar-btn.reveal:hover { background: var(--reveal-hover); color: var(--yellow); }
+        .task-bar-btn.reveal.active { border-color: var(--yellow); background: var(--reveal-hover); }
 
         .layout-toggle {
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: var(--radius-sm);
             padding: 6px 10px;
-            background: var(--panel-hover);
+            background: var(--panel-alt);
             color: var(--muted);
             cursor: pointer;
-            font-size: 14px;
-            transition: background .1s;
+            font-size: calc(var(--fs-base) - 1px);
         }
+        .layout-toggle:hover { background: var(--panel-hover); color: var(--text); }
 
-        .layout-toggle:hover { background: #243044; color: var(--text); }
-
-        /* ---- Split panels (Modern Card Layout) ---- */
-
-        .panels {
+        /* ============================================
+           Resizable Panels
+           ============================================ */
+        .panels-container {
             flex: 1;
             display: flex;
-            gap: 16px;
             padding: 16px;
             overflow: hidden;
-            min-height: 0;
-            background: rgba(8, 11, 19, 0.4);
+            background: rgba(0,0,0, 0.15);
         }
-
-        .panels.vertical {
-            flex-direction: column;
-        }
+        .panels-container.vertical { flex-direction: column; }
 
         .panel {
-            flex: 1;
-            overflow-y: auto;
-            padding: 24px 28px;
-            scrollbar-color: #4c5972 transparent;
-            min-height: 0;
-            min-width: 0;
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
-            transition: border-color 0.25s ease, box-shadow 0.25s ease;
-        }
-
-        .panel:hover {
-            border-color: #384663;
-            box-shadow: 0 12px 40px -10px rgba(0, 0, 0, 0.85);
-        }
-
-        .panel-topbar {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 14px;
-            flex-wrap: wrap;
-        }
-
-        .panel-label {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .06em;
-            flex-shrink: 0;
-        }
-
-        .panel-label.primary {
-            background: #a998ff22;
-            color: var(--accent);
-        }
-
-        .panel-label.secondary {
-            background: #ffd17b22;
-            color: var(--yellow);
-        }
-
-        .zoom-group {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: var(--panel);
+            flex-direction: column;
             overflow: hidden;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            min-width: 0;
+            min-height: 0;
         }
+        .panel:hover { border-color: var(--border-hover); box-shadow: var(--shadow-hover); }
 
-        .zoom-btn {
-            border: none;
+        .resizer {
+            flex: 0 0 16px;
             background: transparent;
-            color: var(--muted);
-            padding: 3px 8px;
-            cursor: pointer;
-            font-size: 12px;
-            line-height: 1.4;
-            transition: background .1s, color .1s;
-        }
-
-        .zoom-btn:hover {
-            background: var(--panel-hover);
-            color: var(--text);
-        }
-
-        .zoom-btn:active { background: #243044; }
-        .zoom-btn.reset { font-size: 10px; letter-spacing: .02em; }
-        .zoom-value {
-            padding: 0 6px;
-            font-size: 10px;
-            color: var(--muted);
-            min-width: 44px;
-            text-align: center;
-            border-left: 1px solid var(--border);
-            border-right: 1px solid var(--border);
-            user-select: none;
-        }
-
-        .panel-empty {
+            cursor: col-resize;
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100%;
-            text-align: center;
-            color: var(--muted);
+            position: relative;
         }
+        .panels-container.vertical .resizer { flex: 0 0 16px; cursor: row-resize; }
 
-        .panel-empty-icon {
-            font-size: 36px;
-            margin-bottom: 10px;
+        .resizer::after {
+            content: '';
+            display: block;
+            width: 4px;
+            height: 40px;
+            background: var(--border);
+            border-radius: 2px;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .panels-container.vertical .resizer::after { width: 40px; height: 4px; }
+        .resizer:hover::after { background: var(--accent); transform: scaleY(1.2); }
+        .panels-container.vertical .resizer:hover::after { transform: scaleX(1.2); }
+        .resizer.dragging::after { background: var(--accent); }
+
+        .panel-topbar {
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--border);
+            background: var(--panel-alt);
+            font-size: calc(var(--fs-base) - 4px);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .06em;
             color: var(--accent);
+            flex-shrink: 0;
+        }
+        .panel-topbar.secondary { color: var(--yellow); }
+
+        .panel-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px 40px;
         }
 
-        .panel-empty-text {
-            max-width: 300px;
-            font-size: 13px;
+        .panel-empty {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            height: 100%; text-align: center; color: var(--muted);
+            padding: 20px;
         }
-
-        .content-wrap {
-            max-width: 860px;
-        }
+        .panel-empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.6; }
 
         .breadcrumb {
-            margin-bottom: 16px;
-            font-size: 11px;
+            margin-bottom: 20px;
+            font-size: calc(var(--fs-base) - 3px);
             color: var(--muted);
-            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-family: var(--font-code);
+            opacity: 0.7;
         }
 
         /* ============================================
-           Rendered Markdown & C Syntax Highlight
+           Rendered Markdown
            ============================================ */
+        .document {
+            font-size: var(--fs-base);
+            max-width: 900px;
+        }
 
         .document h1, .document h2, .document h3,
         .document h4, .document h5, .document h6 {
-            margin: 22px 0 10px;
-            font-size: 1.285em;
+            margin: 1.5em 0 0.5em;
             line-height: 1.35;
             letter-spacing: -.02em;
+            color: var(--text-strong);
+            font-weight: 700;
         }
-
+        .document h1 { font-size: 1.6em; padding-bottom: 0.3em; border-bottom: 1px solid var(--border); }
+        .document h2 { font-size: 1.35em; padding-bottom: 0.3em; border-bottom: 1px solid var(--border); }
+        .document h3 { font-size: 1.15em; }
         .document h1:first-child, .document h2:first-child { margin-top: 0; }
-        .document h3, .document h4, .document h5, .document h6 { font-size: 1.07em; }
-        .document p { margin: 10px 0; }
-        .document ul, .document ol { padding-left: 23px; }
-        .document li { margin: 6px 0; }
+        .document p { margin: 0.8em 0; }
+        .document ul, .document ol { padding-left: 1.5em; margin: 0.8em 0; }
+        .document li { margin: 0.3em 0; }
+        .document strong { color: var(--text-strong); font-weight: 700; }
 
+        /* ИНЛАЙН-КОД */
         .document code {
-            padding: 2px 5px;
-            border-radius: 5px;
-            background: #080d1680;
-            color: #d4c7ff;
-            font-size: .92em;
+            font-family: var(--font-code);
+            padding: 0.15em 0.4em;
+            border-radius: var(--radius-sm);
+            background: color-mix(in srgb, var(--text) 12%, transparent);
+            color: var(--text-strong);
+            font-size: 0.88em;
+            font-weight: 500;
         }
 
         .document pre {
-            padding: 14px;
+            padding: 1.2em;
+            margin: 1em 0;
             border: 1px solid var(--border);
-            border-radius: 10px;
+            border-radius: var(--radius-md);
             overflow: auto;
-            background: #0a101b;
+            background: var(--code-block-bg);
             line-height: 1.6;
             white-space: pre;
         }
-
         .document pre code {
-            padding: 0;
-            background: transparent;
-            color: #dfe8ff;
+            font-family: var(--font-code);
+            padding: 0; background: transparent; color: var(--text); border: none; font-size: 0.92em; font-weight: normal;
         }
 
-        /* Классы подсветки кода */
-        .hl-comment { color: var(--hl-comment); font-style: italic; opacity: 0.85; }
+        .hl-comment { color: var(--hl-comment); font-style: italic; }
         .hl-string  { color: var(--hl-string); }
         .hl-char    { color: var(--hl-char); }
-        .hl-preproc { color: var(--hl-preproc); font-weight: bold; }
-        .hl-keyword { color: var(--hl-keyword); font-weight: bold; }
-        .hl-type    { color: var(--accent); font-weight: 600; }
+        .hl-preproc { color: var(--hl-preproc); font-weight: 600; }
+        .hl-keyword { color: var(--hl-keyword); font-weight: 600; }
+        .hl-type    { color: var(--hl-type); font-weight: 500; }
         .hl-number  { color: var(--hl-number); }
-        .hl-func    { color: var(--yellow); }
+        .hl-func    { color: var(--hl-func); }
 
         .document blockquote {
-            margin: 14px 0;
-            padding: 1px 14px;
+            margin: 1em 0;
+            padding: 0.5em 1em;
             border-left: 3px solid var(--accent);
-            color: #bbc5d9;
-            background: #a998ff09;
+            color: var(--text);
+            background: var(--accent-soft);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
         }
+        .document blockquote p:first-child { margin-top: 0; }
+        .document blockquote p:last-child { margin-bottom: 0; }
 
         .document details {
-            margin: 14px 0;
-            padding: 10px 14px;
+            margin: 1em 0;
+            padding: 0.8em 1em;
             border: 1px solid var(--border);
-            border-radius: 10px;
-            background: #141b29;
+            border-radius: var(--radius-md);
+            background: var(--panel-alt);
         }
-
-        .document details summary {
-            cursor: pointer;
-            color: var(--accent);
-            font-weight: 600;
-        }
-
+        .document details summary { cursor: pointer; color: var(--accent); font-weight: 600; }
         .document details[open] summary { margin-bottom: 8px; }
 
-        .table-wrap { overflow-x: auto; margin: 14px 0; }
+        .table-wrap { overflow-x: auto; margin: 1em 0; border: 1px solid var(--border); border-radius: var(--radius-md); }
+        .document table { width: 100%; border-collapse: collapse; font-size: 0.95em; }
+        .document th, .document td { border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); padding: 0.7em 1em; text-align: left; vertical-align: top; }
+        .document th:last-child, .document td:last-child { border-right: none; }
+        .document tbody tr:last-child td { border-bottom: none; }
+        .document th { background: var(--table-header); color: var(--text-strong); font-weight: 700; }
+        .document tbody tr:hover { background: var(--panel-alt); }
 
-        .document table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: .93em;
-        }
-
-        .document th, .document td {
-            border: 1px solid var(--border);
-            padding: 9px;
-            text-align: left;
-            vertical-align: top;
-        }
-
-        .document th { background: #222c3e; }
-
-        .document hr {
-            border: 0;
-            border-top: 1px solid var(--border);
-            margin: 20px 0;
-        }
-
-        .document img { max-width: 100%; }
-
-        .document a {
-            color: var(--accent);
-            text-decoration: underline;
-            text-decoration-color: #a998ff44;
-        }
-
-        .document a:hover { text-decoration-color: var(--accent); }
-
-        /* ============================================
-           Responsive
-           ============================================ */
+        .document hr { border: 0; border-top: 1px solid var(--border); margin: 1.5em 0; }
+        .document img { max-width: 100%; border-radius: var(--radius-sm); }
+        .document a { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 
         @media (max-width: 900px) {
             .app { flex-direction: column; }
-            .nav {
-                width: 100%; max-width: 100%; min-width: 0;
-                max-height: 35vh;
-                border-right: none;
-                border-bottom: 1px solid var(--border);
-            }
-            .panels {
-                flex-direction: column !important;
-                padding: 12px;
-                gap: 12px;
-            }
-            .panel { padding: 18px; }
+            .nav { width: 100%; max-width: 100%; max-height: 40vh; border-right: none; border-bottom: 1px solid var(--border); }
+            .nav.collapsed { display: none; margin-left: 0; }
+            .panels-container { flex-direction: column !important; padding: 10px; }
+            .resizer { flex: 0 0 16px !important; cursor: row-resize !important; }
+            .resizer::after { width: 40px !important; height: 4px !important; }
         }
     </style>
 </head>
@@ -524,50 +725,75 @@
 <body>
 <div class="app">
 
-    <!-- ======== Navigation ======== -->
-    <aside class="nav">
+    <aside class="nav" id="sidebar">
         <div class="nav-header">
-            <h1>📚 Обзор заданий</h1>
-            <button class="nav-btn" id="chooseBtn">Выбрать папку проекта</button>
-        </div>
-        <div id="navStatus" class="nav-status">
-            Выбери корень проекта для загрузки.
-        </div>
-        <nav class="tree" id="tree"></nav>
-    </aside>
+            <div class="nav-header-top">
+                <h1>📚 Задания</h1>
+                <button class="nav-btn" id="chooseBtn" style="width: auto; padding: 6px 12px; font-size: calc(var(--fs-base) - 4px);">📁 Папка</button>
+            </div>
 
-    <!-- ======== Content area ======== -->
-    <div class="content-area" id="contentArea">
-
-        <!-- Task toolbar -->
-        <div class="task-bar" id="taskBar">
-            <span class="task-bar-title" id="taskBarTitle">Выбери задание слева</span>
-            <div id="fileButtons"></div>
-            <button class="layout-toggle" id="layoutToggle" title="Переключить раскладку">⬜</button>
-        </div>
-
-        <!-- Split panels -->
-        <div class="panels" id="panels">
-            <div class="panel" id="panelLeft">
-                <div class="panel-empty">
-                    <div>
-                        <div class="panel-empty-icon">📋</div>
-                        <div class="panel-empty-text">
-                            Выбери задание в дереве слева.<br>
-                            Условие появится здесь автоматически.
-                        </div>
-                    </div>
+            <div class="settings-bar">
+                <div class="settings-row">
+                    <span>Тема:</span>
+                    <select id="themeSelect" class="theme-select" title="Выбрать тему">
+                        <option value="gruvbox">☕ Gruvbox</option>
+                        <option value="catppuccin">🐈 Catppuccin</option>
+                        <option value="kanagawa">🌊 Kanagawa</option>
+                        <option value="nord">❄️ Nord</option>
+                        <option value="dracula">🧛 Dracula</option>
+                        <option value="dark">🌙 GitHub Dark</option>
+                    </select>
+                </div>
+                <div class="settings-row">
+                    <span>Размер UI: <span id="fontVal">16</span>px</span>
+                    <input type="range" id="fontSlider" class="font-slider" min="12" max="26" value="16" step="1">
                 </div>
             </div>
-            <div class="panel" id="panelRight" style="display:none;">
+        </div>
+
+        <div id="navStatus" class="nav-status">Выбери корень проекта для загрузки.</div>
+
+        <nav class="tree" id="tree">
+            <div class="tree-empty-state">
+                <div class="tree-empty-card">
+                    <p><strong>👋 Привет!</strong></p>
+                    <p>Нажми на кнопку <strong>«📁 Папка»</strong> сверху и выбери корень проекта.</p>
+                    <p style="opacity: 0.85; font-size: 0.9em;">
+                        <strong>Зачем это нужно?</strong><br>
+                        Браузер работает локально на твоём компьютере через File System API и читает условия прямо с диска без интернета. Никакие файлы никуда не отправляются.
+                    </p>
+                </div>
+            </div>
+        </nav>
+    </aside>
+
+    <div class="content-area">
+        <div class="task-bar" id="taskBar">
+            <button class="sidebar-toggle-btn" id="sidebarToggle" title="Скрыть/показать меню">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="9" y1="3" x2="9" y2="21"></line>
+                </svg>
+            </button>
+            <span class="task-bar-title" id="taskBarTitle">Выбери задание слева</span>
+            <div id="fileButtons"></div>
+            <button class="layout-toggle" id="layoutToggle" title="Сменить раскладку окон">⬜</button>
+        </div>
+
+        <div class="panels-container" id="panelsContainer">
+            <div class="panel" id="panelLeft" style="flex: 1 1 0%;">
                 <div class="panel-empty">
-                    <div>
-                        <div class="panel-empty-icon">💡</div>
-                        <div class="panel-empty-text">
-                            Нажми на кнопку файла сверху,<br>
-                            чтобы открыть теорию, решение или тесты.
-                        </div>
-                    </div>
+                    <div class="panel-empty-icon">📋</div>
+                    <div class="panel-empty-text">Выбери задание.<br>Условие появится здесь.</div>
+                </div>
+            </div>
+
+            <div class="resizer" id="resizer" style="display: none;" title="Потяни для изменения размера"></div>
+
+            <div class="panel" id="panelRight" style="display: none; flex: 1 1 0%;">
+                <div class="panel-empty">
+                    <div class="panel-empty-icon">💡</div>
+                    <div class="panel-empty-text">Нажми на кнопку файла сверху.</div>
                 </div>
             </div>
         </div>
@@ -576,10 +802,6 @@
 
 <script>
     "use strict";
-
-    /* ================================================================
-       CONFIG
-       ================================================================ */
 
     var SECONDARY_FILES = [
         { name: "theory.md",            icon: "💡", label: "Теория",            reveal: true },
@@ -599,117 +821,143 @@
         "08_structures":      "Структуры"
     };
 
-    var ZOOM_MIN = 0.8;
-    var ZOOM_MAX = 1.5;
-    var ZOOM_STEP = 0.1;
-
-    /* ================================================================
-       DOM REFS
-       ================================================================ */
-
     var chooseBtn    = document.getElementById("chooseBtn");
     var navStatus    = document.getElementById("navStatus");
     var treeEl       = document.getElementById("tree");
     var taskBarTitle = document.getElementById("taskBarTitle");
     var fileButtons  = document.getElementById("fileButtons");
     var layoutToggle = document.getElementById("layoutToggle");
-    var panels       = document.getElementById("panels");
-    var panelLeft    = document.getElementById("panelLeft");
-    var panelRight   = document.getElementById("panelRight");
+    var sidebarToggle= document.getElementById("sidebarToggle");
+    var sidebar      = document.getElementById("sidebar");
 
-    /* ================================================================
-       STATE
-       ================================================================ */
+    var panelsContainer = document.getElementById("panelsContainer");
+    var panelLeft       = document.getElementById("panelLeft");
+    var panelRight      = document.getElementById("panelRight");
+    var resizer         = document.getElementById("resizer");
 
-    var activeTaskEl    = null;
-    var activeTask      = null;
-    var activeSecondary = null;
-    var isVertical      = false;
-    var zoomLeft        = 1.0;
-    var zoomRight       = 1.0;
+    var themeSelect  = document.getElementById("themeSelect");
+    var fontSlider   = document.getElementById("fontSlider");
+    var fontVal      = document.getElementById("fontVal");
 
-    /* ================================================================
-       FILE SYSTEM
-       ================================================================ */
+    var activeTaskEl = null, activeTask = null, activeSecondary = null;
+    var isVertical = false;
+
+    // --- Настройки (Тема и Глобальный Шрифт) ---
+    function setTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        themeSelect.value = theme;
+        try { localStorage.setItem("c-practice-theme", theme); } catch (e) {}
+    }
+
+    function setFontSize(val) {
+        document.documentElement.style.setProperty('--fs-base', val + 'px');
+        fontVal.textContent = val;
+        fontSlider.value = val;
+        try { localStorage.setItem("c-practice-font", val); } catch (e) {}
+    }
+
+    themeSelect.addEventListener("change", function () { setTheme(this.value); });
+    fontSlider.addEventListener("input", function () { setFontSize(this.value); });
+
+    (function () {
+        var sTheme = localStorage.getItem("c-practice-theme") || "gruvbox";
+        var sFont  = localStorage.getItem("c-practice-font") || "16"; // Золотой стандарт!
+        setTheme(sTheme);
+        setFontSize(sFont);
+    })();
+
+    // --- Скрытие меню ---
+    sidebarToggle.addEventListener("click", function() {
+        sidebar.classList.toggle("collapsed");
+    });
+
+    // --- Ресайзер ---
+    let isResizing = false;
+
+    resizer.addEventListener('mousedown', function(e) {
+        isResizing = true;
+        resizer.classList.add('dragging');
+        document.body.style.cursor = isVertical ? 'row-resize' : 'col-resize';
+        document.body.style.userSelect = 'none';
+        e.preventDefault();
+    });
+
+    window.addEventListener('mousemove', function(e) {
+        if (!isResizing) return;
+
+        const rect = panelsContainer.getBoundingClientRect();
+        if (!isVertical) {
+            let newWidth = ((e.clientX - rect.left) / rect.width) * 100;
+            if (newWidth > 15 && newWidth < 85) {
+                panelLeft.style.flex = `0 0 calc(${newWidth}% - 8px)`;
+                panelRight.style.flex = `1 1 0%`;
+            }
+        } else {
+            let newHeight = ((e.clientY - rect.top) / rect.height) * 100;
+            if (newHeight > 15 && newHeight < 85) {
+                panelLeft.style.flex = `0 0 calc(${newHeight}% - 8px)`;
+                panelRight.style.flex = `1 1 0%`;
+            }
+        }
+    });
+
+    window.addEventListener('mouseup', function() {
+        if (isResizing) {
+            isResizing = false;
+            resizer.classList.remove('dragging');
+            document.body.style.cursor = 'default';
+            document.body.style.userSelect = 'auto';
+        }
+    });
+
+    layoutToggle.addEventListener("click", function () {
+        isVertical = !isVertical;
+        panelsContainer.classList.toggle("vertical", isVertical);
+        layoutToggle.textContent = isVertical ? "⬛" : "⬜";
+        panelLeft.style.flex = "1 1 0%";
+        panelRight.style.flex = "1 1 0%";
+    });
 
     async function pickProject() {
         if (!window.isSecureContext || typeof window.showDirectoryPicker !== "function") {
-            showNav("Нужен Chrome или Edge.", true);
-            return;
+            showNav("Нужен Chrome или Edge.", true); return;
         }
+        var root, tasksDir;
+        try { root = await window.showDirectoryPicker({ id: "c-practice-preview", mode: "read" }); }
+        catch (e) { if (e.name === "AbortError") return; throw e; }
 
-        var root;
-        try {
-            root = await window.showDirectoryPicker({ id: "c-practice-preview", mode: "read" });
-        } catch (e) {
-            if (e.name === "AbortError") return;
-            throw e;
-        }
-
-        var tasksDir;
-        try {
-            tasksDir = await root.getDirectoryHandle("tasks");
-        } catch (e) {
-            showNav("В выбранной папке нет tasks.", true);
-            return;
-        }
+        try { tasksDir = await root.getDirectoryHandle("tasks"); }
+        catch (e) { showNav("В выбранной папке нет tasks.", true); return; }
 
         showNav("Читаю структуру…");
         var structure = await scanTasks(tasksDir);
+        if (structure.length === 0) { showNav("Не найдено ни одного задания.", true); return; }
 
-        if (structure.length === 0) {
-            showNav("Не найдено ни одного задания.", true);
-            return;
-        }
-
-        var total = 0;
-        for (var i = 0; i < structure.length; i++) total += structure[i].tasks.length;
-
+        var total = 0; for (var i = 0; i < structure.length; i++) total += structure[i].tasks.length;
         buildTree(structure);
-        showNav("Загружено " + total + " заданий из " + structure.length + " разделов.");
+        showNav("Загружено " + total + " заданий.");
     }
 
     async function scanTasks(tasksDir) {
         var sections = [];
-
         for await (var sEntry of tasksDir.values()) {
             if (sEntry.kind !== "directory") continue;
-
-            var sDir  = sEntry;
             var tasks = [];
-
-            for await (var tEntry of sDir.values()) {
+            for await (var tEntry of sEntry.values()) {
                 if (tEntry.kind !== "directory") continue;
-
-                var tDir = tEntry;
-
                 var hasReadme = false;
-                try { await tDir.getFileHandle("README.md"); hasReadme = true; } catch (e) {}
+                try { await tEntry.getFileHandle("README.md"); hasReadme = true; } catch (e) {}
                 if (!hasReadme) continue;
-
                 var available = [];
                 for (var f = 0; f < SECONDARY_FILES.length; f++) {
-                    try {
-                        await tDir.getFileHandle(SECONDARY_FILES[f].name);
-                        available.push(SECONDARY_FILES[f]);
-                    } catch (e) {}
+                    try { await tEntry.getFileHandle(SECONDARY_FILES[f].name); available.push(SECONDARY_FILES[f]); } catch (e) {}
                 }
-
-                tasks.push({
-                    name:       tEntry.name,
-                    directory:  tDir,
-                    section:    sEntry.name,
-                    secondary:  available
-                });
+                tasks.push({ name: tEntry.name, directory: tEntry, section: sEntry.name, secondary: available });
             }
-
-            tasks.sort(function (a, b) { return a.name.localeCompare(b.name); });
-            if (tasks.length > 0) {
-                sections.push({ name: sDir.name, tasks: tasks });
-            }
+            tasks.sort((a, b) => a.name.localeCompare(b.name));
+            if (tasks.length > 0) sections.push({ name: sEntry.name, tasks: tasks });
         }
-
-        sections.sort(function (a, b) { return a.name.localeCompare(b.name); });
+        sections.sort((a, b) => a.name.localeCompare(b.name));
         return sections;
     }
 
@@ -719,623 +967,241 @@
         return await f.text();
     }
 
-    /* ================================================================
-       NAVIGATION TREE
-       ================================================================ */
-
     function showNav(msg, isErr) {
         navStatus.textContent = msg;
         navStatus.className = "nav-status" + (isErr ? " error" : "");
     }
 
     function prettyName(dirName) {
-        var n = dirName.replace(/^\d+_/, "");
-        var extra = n.endsWith("_extra");
+        var n = dirName.replace(/^\d+_/, ""), extra = n.endsWith("_extra");
         if (extra) n = n.replace(/_extra$/, "");
-        n = n.replace(/_/g, " ");
-        n = n.charAt(0).toUpperCase() + n.slice(1);
+        n = n.replace(/_/g, " "); n = n.charAt(0).toUpperCase() + n.slice(1);
         return { name: n, extra: extra };
     }
 
     function buildTree(sections) {
         treeEl.replaceChildren();
-
         for (var s = 0; s < sections.length; s++) {
-            var sec = sections[s];
-
-            var secEl    = document.createElement("div");
-            secEl.className = "tree-section";
-
-            var secTitle = document.createElement("div");
-            secTitle.className = "tree-section-title";
-            secTitle.textContent = SECTION_NAMES[sec.name] || sec.name;
-            secTitle.addEventListener("click", (function (el) {
-                return function () { el.classList.toggle("open"); };
-            })(secEl));
-
-            var secBody = document.createElement("div");
-            secBody.className = "tree-section-body";
+            var sec = sections[s], secNum = s + 1;
+            var secEl = document.createElement("div"); secEl.className = "tree-section";
+            var secTitle = document.createElement("div"); secTitle.className = "tree-section-title";
+            secTitle.textContent = secNum + ". " + (SECTION_NAMES[sec.name] || sec.name);
+            secTitle.addEventListener("click", (function(el){ return function(){ el.classList.toggle("open"); }; })(secEl));
+            var secBody = document.createElement("div"); secBody.className = "tree-section-body";
 
             for (var t = 0; t < sec.tasks.length; t++) {
-                var task = sec.tasks[t];
-                var info = prettyName(task.name);
-
-                var taskEl = document.createElement("div");
-                taskEl.className = "tree-task";
-
-                var icon = document.createElement("span");
-                icon.className = "tree-task-icon";
-                icon.textContent = "📄";
-
-                var nameSpan = document.createElement("span");
-                nameSpan.textContent = info.name;
-
+                var task = sec.tasks[t], info = prettyName(task.name), taskNum = t + 1;
+                var displayTaskName = secNum + "." + taskNum + ". " + info.name;
+                var taskEl = document.createElement("div"); taskEl.className = "tree-task";
+                var icon = document.createElement("span"); icon.className = "tree-task-icon"; icon.textContent = "📄";
+                var nameSpan = document.createElement("span"); nameSpan.textContent = displayTaskName;
                 taskEl.append(icon, nameSpan);
-
                 if (info.extra) {
-                    var badge = document.createElement("span");
-                    badge.className = "tree-badge";
-                    badge.textContent = "extra";
-                    taskEl.appendChild(badge);
+                    var badge = document.createElement("span"); badge.className = "tree-badge"; badge.textContent = "extra"; taskEl.appendChild(badge);
                 }
-
-                taskEl.addEventListener("click", (function (taskData, el) {
-                    return function () { selectTask(taskData, el); };
-                })(task, taskEl));
-
+                taskEl.addEventListener("click", (function(tData, el, dName, iExt) {
+                    return function() { selectTask(tData, el, dName, iExt); };
+                })(task, taskEl, displayTaskName, info.extra));
                 secBody.appendChild(taskEl);
             }
-
-            secEl.append(secTitle, secBody);
-            treeEl.appendChild(secEl);
+            secEl.append(secTitle, secBody); treeEl.appendChild(secEl);
         }
-
-        var first = treeEl.querySelector(".tree-section");
-        if (first) first.classList.add("open");
+        var first = treeEl.querySelector(".tree-section"); if (first) first.classList.add("open");
     }
 
-    /* ================================================================
-       TASK SELECTION
-       ================================================================ */
-
-    async function selectTask(task, el) {
+    async function selectTask(task, el, dName, isExtra) {
         if (activeTaskEl) activeTaskEl.classList.remove("active");
-        el.classList.add("active");
-        activeTaskEl = el;
-        activeTask   = task;
-
-        var info = prettyName(task.name);
-        taskBarTitle.textContent = info.name + (info.extra ? " (extra)" : "");
-
+        el.classList.add("active"); activeTaskEl = el; activeTask = task;
+        taskBarTitle.textContent = dName + (isExtra ? " (extra)" : "");
         buildFileButtons(task);
-        await loadPanel(panelLeft, task.directory, "README.md", task.section, task.name, "primary", "📋 Условие", "left");
 
-        activeSecondary = null;
-        clearSecondaryButtons();
+        panelLeft.style.flex = "1 1 0%";
         panelRight.style.display = 'none';
+        resizer.style.display = 'none';
+
+        await loadPanel(panelLeft, task.directory, "README.md", task.section, task.name, "primary", "📋 Условие");
+        activeSecondary = null; clearSecondaryButtons();
     }
 
     function buildFileButtons(task) {
         fileButtons.replaceChildren();
-
         for (var i = 0; i < task.secondary.length; i++) {
-            var conf = task.secondary[i];
-
-            var btn = document.createElement("button");
+            var conf = task.secondary[i], btn = document.createElement("button");
             btn.className = "task-bar-btn" + (conf.reveal ? " reveal" : "");
             btn.textContent = conf.icon + " " + conf.label;
-
-            btn.addEventListener("click", (function (c, b) {
-                return function () { openSecondary(c, b); };
-            })(conf, btn));
-
+            btn.addEventListener("click", (function(c, b){ return function(){ openSecondary(c, b); }; })(conf, btn));
             fileButtons.appendChild(btn);
         }
     }
 
     function clearSecondaryButtons() {
         var btns = fileButtons.querySelectorAll(".task-bar-btn");
-        for (var i = 0; i < btns.length; i++) {
-            btns[i].classList.remove("active");
-        }
+        for (var i = 0; i < btns.length; i++) btns[i].classList.remove("active");
     }
 
     async function openSecondary(conf, btn) {
         if (!activeTask) return;
-
         if (activeSecondary === conf.name) {
-            clearSecondaryButtons();
-            activeSecondary = null;
+            clearSecondaryButtons(); activeSecondary = null;
             panelRight.style.display = 'none';
+            resizer.style.display = 'none';
+            panelLeft.style.flex = "1 1 0%";
             return;
         }
+        clearSecondaryButtons(); btn.classList.add("active"); activeSecondary = conf.name;
 
-        clearSecondaryButtons();
-        btn.classList.add("active");
-        activeSecondary = conf.name;
+        panelRight.style.display = 'flex';
+        resizer.style.display = 'flex';
+        panelLeft.style.flex = "1 1 0%";
+        panelRight.style.flex = "1 1 0%";
 
-        panelRight.style.display = '';
-
-        await loadPanel(
-            panelRight,
-            activeTask.directory,
-            conf.name,
-            activeTask.section,
-            activeTask.name,
-            "secondary",
-            conf.icon + " " + conf.label,
-            "right"
-        );
+        await loadPanel(panelRight, activeTask.directory, conf.name, activeTask.section, activeTask.name, "secondary", conf.icon + " " + conf.label);
     }
 
-    /* ================================================================
-       PANEL RENDERING
-       ================================================================ */
-
-    async function loadPanel(panel, dir, filename, sectionName, taskName, labelClass, labelText, side) {
+    async function loadPanel(panel, dir, filename, sectionName, taskName, labelClass, labelText) {
         var content;
-
-        try {
-            content = await readFile(dir, filename);
-        } catch (e) {
-            panel.replaceChildren();
-            var err = document.createElement("p");
-            err.style.color = "var(--red)";
-            err.textContent = "Не удалось прочитать: " + e.message;
-            panel.appendChild(err);
-            return;
-        }
+        try { content = await readFile(dir, filename); }
+        catch (e) { panel.replaceChildren(); var err = document.createElement("p"); err.style.color = "var(--red)"; err.style.padding = "20px"; err.textContent = "Ошибка: " + e.message; panel.appendChild(err); return; }
 
         panel.replaceChildren();
 
         var topbar = document.createElement("div");
-        topbar.className = "panel-topbar";
-
-        var label = document.createElement("span");
-        label.className = "panel-label " + labelClass;
-        label.textContent = labelText;
-        topbar.appendChild(label);
-
-        topbar.appendChild(createZoomGroup(side));
-
+        topbar.className = "panel-topbar " + labelClass;
+        topbar.textContent = labelText;
         panel.appendChild(topbar);
 
-        var bc = document.createElement("div");
-        bc.className = "breadcrumb";
-        bc.textContent = "tasks/" + sectionName + "/" + taskName + "/" + filename;
-        panel.appendChild(bc);
+        var body = document.createElement("div"); body.className = "panel-body";
+        var bc = document.createElement("div"); bc.className = "breadcrumb"; bc.textContent = "tasks/" + sectionName + "/" + taskName + "/" + filename; body.appendChild(bc);
 
-        var wrap = document.createElement("div");
-        wrap.className = "content-wrap document";
+        var wrap = document.createElement("div"); wrap.className = "content-wrap document";
 
-        if (side === "left") {
-            wrap.style.fontSize = (14 * zoomLeft).toFixed(2) + "px";
-        } else {
-            wrap.style.fontSize = (14 * zoomRight).toFixed(2) + "px";
-        }
-
-        var isMd = filename.endsWith(".md");
-
-        if (isMd) {
+        if (filename.endsWith(".md")) {
             wrap.appendChild(renderMarkdown(content));
         } else {
-            var pre  = document.createElement("pre");
-            var code = document.createElement("code");
-
-            // Если открытый файл - исходник на Си, подсвечиваем его
-            if (filename.endsWith(".c") || filename.endsWith(".h")) {
-                code.innerHTML = highlightC(content);
-            } else {
-                code.textContent = content;
-            }
-
-            pre.appendChild(code);
-            wrap.appendChild(pre);
+            var pre = document.createElement("pre"), code = document.createElement("code");
+            if (filename.endsWith(".c") || filename.endsWith(".h")) code.innerHTML = highlightC(content);
+            else code.textContent = content;
+            pre.appendChild(code); wrap.appendChild(pre);
         }
-
-        panel.appendChild(wrap);
-        panel.scrollTop = 0;
+        body.appendChild(wrap);
+        panel.appendChild(body);
+        body.scrollTop = 0;
     }
 
-    function createZoomGroup(side) {
-        var group = document.createElement("div");
-        group.className = "zoom-group";
-
-        var zoomOut = document.createElement("button");
-        zoomOut.className = "zoom-btn";
-        zoomOut.textContent = "−";
-        zoomOut.title = "Уменьшить текст";
-
-        var zoomVal = document.createElement("div");
-        zoomVal.className = "zoom-value";
-        zoomVal.textContent = Math.round((side === "left" ? zoomLeft : zoomRight) * 100) + "%";
-
-        var zoomReset = document.createElement("button");
-        zoomReset.className = "zoom-btn reset";
-        zoomReset.textContent = "100%";
-        zoomReset.title = "Сбросить масштаб";
-
-        var zoomIn = document.createElement("button");
-        zoomIn.className = "zoom-btn";
-        zoomIn.textContent = "+";
-        zoomIn.title = "Увеличить текст";
-
-        zoomOut.addEventListener("click", function (e) {
-            e.stopPropagation();
-            if (side === "left") {
-                zoomLeft = Math.max(ZOOM_MIN, +(zoomLeft - ZOOM_STEP).toFixed(2));
-                applyZoom(panelLeft, zoomLeft, "left");
-            } else {
-                zoomRight = Math.max(ZOOM_MIN, +(zoomRight - ZOOM_STEP).toFixed(2));
-                applyZoom(panelRight, zoomRight, "right");
-            }
-            zoomVal.textContent = Math.round((side === "left" ? zoomLeft : zoomRight) * 100) + "%";
-        });
-
-        zoomReset.addEventListener("click", function (e) {
-            e.stopPropagation();
-            if (side === "left") {
-                zoomLeft = 1.0;
-                applyZoom(panelLeft, zoomLeft, "left");
-            } else {
-                zoomRight = 1.0;
-                applyZoom(panelRight, zoomRight, "right");
-            }
-            zoomVal.textContent = "100%";
-        });
-
-        zoomIn.addEventListener("click", function (e) {
-            e.stopPropagation();
-            if (side === "left") {
-                zoomLeft = Math.min(ZOOM_MAX, +(zoomLeft + ZOOM_STEP).toFixed(2));
-                applyZoom(panelLeft, zoomLeft, "left");
-            } else {
-                zoomRight = Math.min(ZOOM_MAX, +(zoomRight + ZOOM_STEP).toFixed(2));
-                applyZoom(panelRight, zoomRight, "right");
-            }
-            zoomVal.textContent = Math.round((side === "left" ? zoomLeft : zoomRight) * 100) + "%";
-        });
-
-        group.append(zoomOut, zoomVal, zoomReset, zoomIn);
-        return group;
-    }
-
-    function applyZoom(panel, z, side) {
-        var wrap = panel.querySelector(".content-wrap.document");
-        if (wrap) {
-            wrap.style.fontSize = (14 * z).toFixed(2) + "px";
-        }
-        var val = panel.querySelector(".zoom-value");
-        if (val) {
-            val.textContent = Math.round(z * 100) + "%";
-        }
-    }
-
-    function showPanelEmpty(panel, icon, text) {
-        panel.replaceChildren();
-        var outer = document.createElement("div");
-        outer.className = "panel-empty";
-        var inner = document.createElement("div");
-        var ic    = document.createElement("div");
-        ic.className = "panel-empty-icon";
-        ic.textContent = icon;
-        var tx = document.createElement("div");
-        tx.className = "panel-empty-text";
-        tx.textContent = text;
-        inner.append(ic, tx);
-        outer.appendChild(inner);
-        panel.appendChild(outer);
-    }
-
-    /* ================================================================
-       LAYOUT TOGGLE
-       ================================================================ */
-
-    layoutToggle.addEventListener("click", function () {
-        isVertical = !isVertical;
-        panels.classList.toggle("vertical", isVertical);
-        layoutToggle.textContent = isVertical ? "⬛" : "⬜";
-        layoutToggle.title = isVertical
-            ? "Переключить на горизонтальную раскладку"
-            : "Переключить на вертикальную раскладку";
-    });
-
-    /* ================================================================
-       LIGHTWEIGHT C SYNTAX HIGHLIGHTER
-       ================================================================ */
-
-    function escapeHtml(str) {
-        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
+    function escapeHtml(str) { return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
     function highlightC(code) {
-        // Регулярные выражения для лексем языка Си
         var regex = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\])*")|('(?:\\.|[^'\\])*')|(^\s*#[a-zA-Z_]+)|(\b(?:break|case|char|const|continue|default|do|double|else|enum|extern|float|for|goto|if|inline|int|long|register|restrict|return|short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|volatile|while)\b)|(\b(?:size_t|ssize_t|uintptr_t|intptr_t|FILE|NULL|stdin|stdout|stderr|[a-zA-Z0-9_]+_t)\b)|(\b0x[0-9a-fA-F]+\b|\b\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[fFlL]?\b)|(\b[a-zA-Z_][a-zA-Z0-9_]*(?=\s*\())/gm;
-
-        let lastIndex = 0;
-        let html = '';
-
-        code.replace(regex, function(match, comment, string, char, preproc, keyword, type, number, func, index) {
-            // Обычный текст перед найденным токеном экранируем
-            if (index > lastIndex) {
-                html += escapeHtml(code.slice(lastIndex, index));
-            }
-
-            // Оборачиваем токены в соответствующие теги
-            if (comment) {
-                html += '<span class="hl-comment">' + escapeHtml(comment) + '</span>';
-            } else if (string) {
-                html += '<span class="hl-string">' + escapeHtml(string) + '</span>';
-            } else if (char) {
-                html += '<span class="hl-char">' + escapeHtml(char) + '</span>';
-            } else if (preproc) {
-                html += '<span class="hl-preproc">' + escapeHtml(preproc) + '</span>';
-            } else if (keyword) {
-                html += '<span class="hl-keyword">' + escapeHtml(keyword) + '</span>';
-            } else if (type) {
-                html += '<span class="hl-type">' + escapeHtml(type) + '</span>';
-            } else if (number) {
-                html += '<span class="hl-number">' + escapeHtml(number) + '</span>';
-            } else if (func) {
-                html += '<span class="hl-func">' + escapeHtml(func) + '</span>';
-            }
-
-            lastIndex = index + match.length;
+        let last = 0, html = '';
+        code.replace(regex, function(match, c, s, ch, p, k, t, n, f, idx) {
+            if (idx > last) html += escapeHtml(code.slice(last, idx));
+            if (c) html += '<span class="hl-comment">' + escapeHtml(c) + '</span>';
+            else if (s) html += '<span class="hl-string">' + escapeHtml(s) + '</span>';
+            else if (ch) html += '<span class="hl-char">' + escapeHtml(ch) + '</span>';
+            else if (p) html += '<span class="hl-preproc">' + escapeHtml(p) + '</span>';
+            else if (k) html += '<span class="hl-keyword">' + escapeHtml(k) + '</span>';
+            else if (t) html += '<span class="hl-type">' + escapeHtml(t) + '</span>';
+            else if (n) html += '<span class="hl-number">' + escapeHtml(n) + '</span>';
+            else if (f) html += '<span class="hl-func">' + escapeHtml(f) + '</span>';
+            last = idx + match.length;
         });
-
-        // Добавляем оставшийся текст в конце
-        if (lastIndex < code.length) {
-            html += escapeHtml(code.slice(lastIndex));
-        }
-
+        if (last < code.length) html += escapeHtml(code.slice(last));
         return html;
     }
 
-    /* ================================================================
-       MARKDOWN RENDERER
-       ================================================================ */
-
-    function element(tag, cls, text) {
-        var n = document.createElement(tag);
-        if (cls) n.className = cls;
-        if (text !== undefined) n.textContent = text;
-        return n;
-    }
+    function element(tag, cls) { var n = document.createElement(tag); if (cls) n.className = cls; return n; }
 
     function appendInline(parent, text) {
-        // Регулярное выражение для Markdown и базовых HTML тегов (br, b, strong, i, em, u, code)
         var pat = /(`[^`\n]+`|\*\*[^*\n]+\*\*|\*[^*\n]+\*|\[[^\]]*\]\([^)]*\)|<br\s*\/?>|<b>.*?<\/b>|<strong>.*?<\/strong>|<i>.*?<\/i>|<em>.*?<\/em>|<u>.*?<\/u>|<code>.*?<\/code>)/gi;
         var pos = 0, m;
         while ((m = pat.exec(text)) !== null) {
-            if (m.index > pos) {
-                parent.appendChild(document.createTextNode(text.slice(pos, m.index)));
-            }
-            var tok = m[0];
-            var tokLower = tok.toLowerCase();
-
-            if (tok.startsWith("`")) {
-                parent.appendChild(element("code", "", tok.slice(1, -1)));
-            } else if (tok.startsWith("**")) {
-                var s = element("strong");
-                appendInline(s, tok.slice(2, -2));
-                parent.appendChild(s);
-            } else if (tok.startsWith("*")) {
-                var e = element("em");
-                appendInline(e, tok.slice(1, -1));
-                parent.appendChild(e);
-            } else if (tok.startsWith("[")) {
-                var lm = tok.match(/^\[([^\]]*)\]\(([^)]*)\)$/);
-                if (lm) {
-                    var a = element("a");
-                    a.href = lm[2];
-                    a.target = "_blank";
-                    a.rel = "noopener noreferrer";
-                    appendInline(a, lm[1]);
-                    parent.appendChild(a);
-                } else {
-                    parent.appendChild(document.createTextNode(tok));
-                }
-            } else if (tokLower.startsWith("<br")) {
-                parent.appendChild(document.createElement("br"));
-            } else if (tokLower.startsWith("<b>")) {
-                var s = element("strong");
-                appendInline(s, tok.slice(3, -4));
-                parent.appendChild(s);
-            } else if (tokLower.startsWith("<strong>")) {
-                var s = element("strong");
-                appendInline(s, tok.slice(8, -9));
-                parent.appendChild(s);
-            } else if (tokLower.startsWith("<i>")) {
-                var e = element("em");
-                appendInline(e, tok.slice(3, -4));
-                parent.appendChild(e);
-            } else if (tokLower.startsWith("<em>")) {
-                var e = element("em");
-                appendInline(e, tok.slice(4, -5));
-                parent.appendChild(e);
-            } else if (tokLower.startsWith("<u>")) {
-                var u = element("u");
-                appendInline(u, tok.slice(3, -4));
-                parent.appendChild(u);
-            } else if (tokLower.startsWith("<code>")) {
-                parent.appendChild(element("code", "", tok.slice(6, -7)));
-            }
+            if (m.index > pos) parent.appendChild(document.createTextNode(text.slice(pos, m.index)));
+            var t = m[0], tl = t.toLowerCase();
+            if (t.startsWith("`")) { var c = element("code"); c.textContent = t.slice(1, -1); parent.appendChild(c); }
+            else if (t.startsWith("**")) { var s=element("strong"); appendInline(s, t.slice(2,-2)); parent.appendChild(s); }
+            else if (t.startsWith("*")) { var e=element("em"); appendInline(e, t.slice(1,-1)); parent.appendChild(e); }
+            else if (t.startsWith("[")) { var lm=t.match(/^\[([^\]]*)\]\(([^)]*)\)$/); if(lm){var a=element("a");a.href=lm[2];a.target="_blank";a.rel="noopener noreferrer";appendInline(a,lm[1]);parent.appendChild(a);} }
+            else if (tl.startsWith("<br")) parent.appendChild(document.createElement("br"));
+            else if (tl.startsWith("<b>")||tl.startsWith("<strong>")) { var b=element("strong"); appendInline(b, t.replace(/^<[^>]+>|<\/[^>]+>$/g,"")); parent.appendChild(b); }
+            else if (tl.startsWith("<i>")||tl.startsWith("<em>")) { var i=element("em"); appendInline(i, t.replace(/^<[^>]+>|<\/[^>]+>$/g,"")); parent.appendChild(i); }
+            else if (tl.startsWith("<u>")) { var u=element("u"); appendInline(u, t.replace(/^<[^>]+>|<\/[^>]+>$/g,"")); parent.appendChild(u); }
+            else if (tl.startsWith("<code>")) { var cc = element("code"); cc.textContent = t.replace(/^<code>|<\/code>$/gi,""); parent.appendChild(cc); }
             pos = pat.lastIndex;
         }
-        if (pos < text.length) {
-            parent.appendChild(document.createTextNode(text.slice(pos)));
-        }
-    }
-
-    function appendCellWithBreaks(parent, text) {
-        appendInline(parent, text);
+        if (pos < text.length) parent.appendChild(document.createTextNode(text.slice(pos)));
     }
 
     function tableCells(line) {
         var v = line.trim().replace(/\\\|/g, "\u0001");
-        if (v.startsWith("|")) v = v.slice(1);
-        if (v.endsWith("|"))   v = v.slice(0, -1);
-        return v.split("|").map(function (c) { return c.trim().replace(/\u0001/g, "|"); });
+        if (v.startsWith("|")) v = v.slice(1); if (v.endsWith("|")) v = v.slice(0, -1);
+        return v.split("|").map(c => c.trim().replace(/\u0001/g, "|"));
     }
-
-    function isTableDivider(line) {
-        if (!line || !line.includes("|")) return false;
-        var c = tableCells(line);
-        return c.length > 0 && c.every(function (x) { return /^:?-{3,}:?$/.test(x); });
-    }
-
-    function isBlockStart(lines, idx) {
-        if (idx >= lines.length) return true;
-        var l = lines[idx];
-        return /^\s*$/.test(l) || /^\s*(`{3,}|~{3,})/.test(l)
-            || /^#{1,6}\s+/.test(l) || /^\s*>/.test(l)
-            || /^\s*[-+*]\s+/.test(l) || /^\s*\d+[.)]\s+/.test(l)
-            || /^\s*([-*_])(?:\s*\1){2,}\s*$/.test(l)
-            || /^\s*<details/i.test(l) || /^\s*<\/details/i.test(l)
-            || (l.includes("|") && isTableDivider(lines[idx + 1]));
+    function isTableDiv(l) { if(!l||!l.includes("|"))return false; var c=tableCells(l); return c.length>0&&c.every(x=>/^:?-{3,}:?$/.test(x)); }
+    function isBlockStart(ls, idx) {
+        if(idx>=ls.length) return true; var l=ls[idx];
+        return /^\s*$/.test(l) || /^\s*(`{3,}|~{3,})/.test(l) || /^#{1,6}\s+/.test(l) || /^\s*>/.test(l) || /^\s*[-+*]\s+/.test(l) || /^\s*\d+[.)]\s+/.test(l) || /^\s*([-*_])(?:\s*\1){2,}\s*$/.test(l) || /^\s*<details/i.test(l) || /^\s*<\/details/i.test(l) || (l.includes("|")&&isTableDiv(ls[idx+1]));
     }
 
     function renderMarkdown(md) {
-        var frag = document.createDocumentFragment();
-        var lines = md.replace(/\r\n?/g, "\n").split("\n");
-        var i = 0;
-
+        var frag = document.createDocumentFragment(), lines = md.replace(/\r\n?/g, "\n").split("\n"), i = 0;
         while (i < lines.length) {
-            var line = lines[i];
-            if (!line.trim()) { i++; continue; }
-
-            // Блоки кода в Markdown (```c)
-            var fence = line.match(/^\s*(`{3,}|~{3,})(.*)$/);
-            if (fence) {
-                var mk = fence[1], cl = [], lang = fence[2].trim().toLowerCase();
-                i++;
-                while (i < lines.length) {
-                    var ct = lines[i].trim();
-                    if (ct.length >= mk.length && Array.from(ct).every(function (c) { return c === mk[0]; })) { i++; break; }
-                    cl.push(lines[i]); i++;
-                }
-
-                var pre = element("pre");
-                var codeEl = element("code");
-
-                // Если указан язык C/C++, применяем подсветку синтаксиса
-                if (lang === "c" || lang === "cpp") {
-                    codeEl.innerHTML = highlightC(cl.join("\n"));
-                } else {
-                    codeEl.textContent = cl.join("\n");
-                }
-
-                pre.appendChild(codeEl);
-                frag.appendChild(pre);
-                continue;
+            var l = lines[i]; if (!l.trim()) { i++; continue; }
+            var f = l.match(/^\s*(`{3,}|~{3,})(.*)$/);
+            if (f) {
+                var mk = f[1], lang = f[2].trim().toLowerCase(), cl = []; i++;
+                while (i < lines.length) { if (lines[i].trim().startsWith(mk)) { i++; break; } cl.push(lines[i]); i++; }
+                var pre = element("pre"), cod = element("code");
+                if (lang === "c" || lang === "cpp") cod.innerHTML = highlightC(cl.join("\n")); else cod.textContent = cl.join("\n");
+                pre.appendChild(cod); frag.appendChild(pre); continue;
             }
-
-            var hd = line.match(/^(#{1,6})\s+(.*)$/);
-            if (hd) { var h = element("h" + hd[1].length); appendInline(h, hd[2]); frag.appendChild(h); i++; continue; }
-
-            // Надежный разбор спойлеров <details>
-            if (/^\s*<details/i.test(line)) {
-                var det = document.createElement("details");
-                if (/open/i.test(line)) {
-                    det.open = true;
-                }
-
-                var dc = [];
-                var firstLine = line.replace(/^\s*<details[^>]*>/i, "");
-                if (firstLine.trim()) {
-                    dc.push(firstLine);
-                }
-                i++;
-
-                while (i < lines.length && !/^\s*<\/details/i.test(lines[i])) {
-                    dc.push(lines[i]);
-                    i++;
-                }
-
-                if (i < lines.length) {
-                    var lastLine = lines[i].replace(/<\/details\s*>\s*$/i, "");
-                    if (lastLine.trim()) {
-                        dc.push(lastLine);
-                    }
-                    i++;
-                }
-
-                var detailsContent = dc.join("\n");
-
-                var sm = detailsContent.match(/<summary>([\s\S]*?)<\/summary>/i);
-                if (sm) {
-                    var sn = document.createElement("summary");
-                    appendInline(sn, sm[1].trim());
-                    det.appendChild(sn);
-                    detailsContent = detailsContent.replace(/<summary>[\s\S]*?<\/summary>/i, "");
-                }
-
-                if (detailsContent.trim()) {
-                    det.appendChild(renderMarkdown(detailsContent));
-                }
-
-                frag.appendChild(det);
-                continue;
+            var hd = l.match(/^(#{1,6})\s+(.*)$/);
+            if (hd) { var h = element("h"+hd[1].length); appendInline(h, hd[2]); frag.appendChild(h); i++; continue; }
+            if (/^\s*<details/i.test(l)) {
+                var det = document.createElement("details"); if (/open/i.test(l)) det.open = true;
+                var dc = []; if (l.replace(/^\s*<details[^>]*>/i, "").trim()) dc.push(l.replace(/^\s*<details[^>]*>/i, "")); i++;
+                while (i < lines.length && !/^\s*<\/details/i.test(lines[i])) { dc.push(lines[i]); i++; }
+                if (i < lines.length) { var ll = lines[i].replace(/<\/details\s*>\s*$/i, ""); if (ll.trim()) dc.push(ll); i++; }
+                var dStr = dc.join("\n"), sm = dStr.match(/<summary>([\s\S]*?)<\/summary>/i);
+                if (sm) { var sn = document.createElement("summary"); appendInline(sn, sm[1].trim()); det.appendChild(sn); dStr = dStr.replace(/<summary>[\s\S]*?<\/summary>/i, ""); }
+                if (dStr.trim()) det.appendChild(renderMarkdown(dStr));
+                frag.appendChild(det); continue;
             }
-
-            if (line.includes("|") && isTableDivider(lines[i + 1])) {
-                var wrap = element("div", "table-wrap");
-                var tbl = element("table"), thd = element("thead"), hr = element("tr");
-                var hc = tableCells(line);
-                for (var hi = 0; hi < hc.length; hi++) { var th = element("th"); appendCellWithBreaks(th, hc[hi]); hr.appendChild(th); }
-                thd.appendChild(hr); tbl.appendChild(thd); i += 2;
-                var tb = element("tbody");
+            if (l.includes("|") && isTableDiv(lines[i + 1])) {
+                var wrap = element("div", "table-wrap"), tbl = element("table"), thd = element("thead"), tr = element("tr"), hc = tableCells(l);
+                for (var hi=0; hi<hc.length; hi++){ var th=element("th"); appendInline(th, hc[hi]); tr.appendChild(th); }
+                thd.appendChild(tr); tbl.appendChild(thd); i+=2; var tb = element("tbody");
                 while (i < lines.length && lines[i].trim() && lines[i].includes("|")) {
-                    var dr = element("tr"), dc2 = tableCells(lines[i]);
-                    for (var di = 0; di < dc2.length; di++) { var td = element("td"); if (dc2[di]) appendCellWithBreaks(td, dc2[di]); dr.appendChild(td); }
+                    var dr=element("tr"), dc=tableCells(lines[i]);
+                    for (var di=0; di<dc.length; di++){ var td=element("td"); if (dc[di]) appendInline(td, dc[di]); dr.appendChild(td); }
                     tb.appendChild(dr); i++;
                 }
                 tbl.appendChild(tb); wrap.appendChild(tbl); frag.appendChild(wrap); continue;
             }
-
-            if (/^\s*>/.test(line)) {
-                var ql = [];
-                while (i < lines.length && /^\s*>/.test(lines[i])) { ql.push(lines[i].replace(/^\s*>\s?/, "")); i++; }
+            if (/^\s*>/.test(l)) {
+                var ql = []; while (i < lines.length && /^\s*>/.test(lines[i])) { ql.push(lines[i].replace(/^\s*>\s?/, "")); i++; }
                 var bq = element("blockquote"); bq.appendChild(renderMarkdown(ql.join("\n"))); frag.appendChild(bq); continue;
             }
-
-            if (/^\s*([-*_])(?:\s*\1){2,}\s*$/.test(line)) { frag.appendChild(element("hr")); i++; continue; }
-
-            var uo = /^\s*[-+*]\s+/.test(line), od = /^\s*\d+[.)]\s+/.test(line);
+            if (/^\s*([-*_])(?:\s*\1){2,}\s*$/.test(l)) { frag.appendChild(element("hr")); i++; continue; }
+            var uo = /^\s*[-+*]\s+/.test(l), od = /^\s*\d+[.)]\s+/.test(l);
             if (uo || od) {
-                var list = element(od ? "ol" : "ul");
-                var ip = od ? /^\s*\d+[.)]\s+(.*)$/ : /^\s*[-+*]\s+(.*)$/;
+                var lst = element(od ? "ol" : "ul"), ip = od ? /^\s*\d+[.)]\s+(.*)$/ : /^\s*[-+*]\s+(.*)$/;
                 while (i < lines.length) {
                     var im = lines[i].match(ip); if (!im) break;
                     var lt = [im[1]]; i++;
                     while (i < lines.length && lines[i].trim() && !ip.test(lines[i]) && !isBlockStart(lines, i)) { lt.push(lines[i].trim()); i++; }
-                    var li = element("li"); appendInline(li, lt.join(" ")); list.appendChild(li);
+                    var li = element("li"); appendInline(li, lt.join(" ")); lst.appendChild(li);
                 }
-                frag.appendChild(list); continue;
+                frag.appendChild(lst); continue;
             }
-
-            var pl = [line]; i++;
+            var pl = [l]; i++;
             while (i < lines.length && !isBlockStart(lines, i)) { pl.push(lines[i]); i++; }
             var p = element("p"); appendInline(p, pl.join("\n")); frag.appendChild(p);
         }
-
         return frag;
     }
 
-    /* ================================================================
-       INIT
-       ================================================================ */
-
-    chooseBtn.addEventListener("click", function () {
-        pickProject().catch(function (e) {
-            console.error(e);
-            showNav("Ошибка: " + e.message, true);
-        });
-    });
-
-    if (!window.isSecureContext || typeof window.showDirectoryPicker !== "function") {
-        showNav("Нужен Chrome или Edge с доступом к файлам.", true);
-    }
+    chooseBtn.onclick = function() { pickProject().catch(e => { console.error(e); showNav("Ошибка: " + e.message, true); }); };
+    if (!window.isSecureContext || typeof window.showDirectoryPicker !== "function") showNav("Нужен Chrome/Edge (File System Access API).", true);
 </script>
 </body>
 </html>
