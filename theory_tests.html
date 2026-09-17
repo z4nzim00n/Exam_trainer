@@ -1,1435 +1,789 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="color-scheme" content="dark">
-    <title>C Practice — генератор заданий</title>
-
+    <title>C Practice — тесты по теории</title>
     <style>
-        :root {
-            --bg:           #0c1019;
-            --panel:        #141b29;
-            --panel-hover:  #1b2536;
-            --border:       #293348;
-            --text:         #eef2ff;
-            --muted:        #9eacc6;
-            --accent:       #a998ff;
-            --green:        #70ddb0;
-            --yellow:       #ffd17b;
-            --red:          #ff98aa;
-            --radius:       20px;
-            --divider:      #4a3f7a;
-
-            --hl-comment:   #6272a4;
-            --hl-string:    #50fa7b;
-            --hl-char:      #f1fa8c;
-            --hl-preproc:   #ff79c6;
-            --hl-keyword:   #ff79c6;
-            --hl-type:      var(--accent);
-            --hl-number:    #bd93f9;
-            --hl-func:      #8be9fd;
-        }
-
-        * { box-sizing: border-box; }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-            color: var(--text);
-            background:
-                    radial-gradient(ellipse at 10% 0%, #28204366, transparent 45%),
-                    radial-gradient(ellipse at 100% 15%, #123f4666, transparent 40%),
-                    var(--bg);
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            line-height: 1.55;
-        }
-
-        button, input { font: inherit; }
-        a { color: var(--accent); }
-
-        code, pre, .timer, .path, .source-path {
-            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-        }
-
-        button {
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 11px 16px;
-            background: var(--panel);
-            color: var(--text);
-            cursor: pointer;
-            transition: background .15s, transform .15s;
-        }
-
-        button:hover:not(:disabled) {
-            background: var(--panel-hover);
-            transform: translateY(-1px);
-        }
-
-        button:disabled { opacity: .45; cursor: not-allowed; }
-
-        button:focus-visible, input:focus-visible,
-        summary:focus-visible, a:focus-visible {
-            outline: 3px solid var(--accent);
-            outline-offset: 4px;
-        }
-
-        button.primary {
-            color: #171224;
-            background: var(--accent);
-            border-color: var(--accent);
-            font-weight: 700;
-        }
-
-        button.primary:hover:not(:disabled) { background: #beb0ff; }
-
-        button.reveal { color: var(--yellow); border-color: #6b5c30; }
-        button.reveal:hover:not(:disabled) { background: #2a2418; }
-
-        button.done-btn {
-            color: var(--green);
-            border-color: #315849;
-        }
-        button.done-btn:hover:not(:disabled) { background: #1a2e25; }
-
-        button.file-btn { font-size: 13px; padding: 8px 12px; }
-
-        .container {
-            width: min(1700px, 100%);
-            margin: 0 auto;
-            padding: 36px;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 24px;
-            margin-bottom: 28px;
-        }
-
-        .eyebrow {
-            margin-bottom: 8px;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: .16em;
-            font-size: 12px;
-            font-weight: 750;
-        }
-
-        h1 {
-            margin: 0;
-            font-size: clamp(30px, 4vw, 48px);
-            letter-spacing: -.05em;
-            line-height: 1.15;
-        }
-
-        .subtitle {
-            margin: 12px 0 0;
-            max-width: 720px;
-            color: var(--muted);
-        }
-
-        .clock {
-            min-width: 155px;
-            padding: 16px 22px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            background: #141b29aa;
-            text-align: center;
-        }
-
-        .clock-label { color: var(--muted); font-size: 12px; }
-
-        .timer {
-            margin-top: 3px;
-            font-size: 27px;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .toolbar {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 12px;
-            padding: 18px;
-            background: #141b29d9;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-        }
-
-        .checkbox {
-            display: inline-flex;
-            align-items: center;
-            gap: 9px;
-            margin-left: auto;
-            color: var(--muted);
-            cursor: pointer;
-        }
-
-        .checkbox input {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--accent);
-        }
-
-        .status {
-            margin: 16px 0 8px;
-            padding: 13px 16px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            color: var(--muted);
-            background: #101723;
-            overflow-wrap: anywhere;
-        }
-
-        .status.success { color: var(--green); border-color: #315849; }
-        .status.error { color: var(--red); border-color: #754454; }
-
-        .meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px 20px;
-            margin-bottom: 22px;
-            padding: 0 3px;
-            color: var(--muted);
-            font-size: 13px;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 18px;
-            align-items: start;
-        }
-
-        .card {
-            min-width: 0;
-            overflow: hidden;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            background: var(--panel);
-            box-shadow: 0 12px 40px #00000020;
-            transition: border-color 0.25s, box-shadow 0.25s;
-        }
-
-        .card:hover { border-color: #384663; }
-
-        .card.completed {
-            border-color: #315849;
-        }
-
-        .card-header {
-            position: relative;
-            padding: 20px;
-            border-bottom: 2px solid var(--divider);
-            box-shadow:
-                    0 1px 0 0 #a998ff33,
-                    0 4px 12px -6px #a998ff40;
-            background:
-                    linear-gradient(180deg, transparent 0%, #a998ff08 100%);
-        }
-
-        .card.completed .card-header {
-            border-bottom-color: #315849;
-            box-shadow:
-                    0 1px 0 0 #70ddb033,
-                    0 4px 12px -6px #70ddb040;
-            background:
-                    linear-gradient(180deg, transparent 0%, #70ddb008 100%);
-        }
-
-        .card-header::after {
-            content: "";
-            position: absolute;
-            left: 20px;
-            right: 20px;
-            bottom: -2px;
-            height: 2px;
-            background: linear-gradient(
-                    90deg,
-                    transparent 0%,
-                    var(--accent) 20%,
-                    var(--accent) 80%,
-                    transparent 100%
-            );
-            opacity: .55;
-            pointer-events: none;
-        }
-
-        .card.completed .card-header::after {
-            background: linear-gradient(
-                    90deg,
-                    transparent 0%,
-                    var(--green) 20%,
-                    var(--green) 80%,
-                    transparent 100%
-            );
-        }
-
-        .card-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            font-size: 12px;
-            font-weight: 750;
-            letter-spacing: .05em;
-            text-transform: uppercase;
-        }
-
-        .badge::before {
-            content: "";
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: currentColor;
-        }
-
-        .easy   .badge { color: var(--green); }
-        .medium .badge { color: var(--yellow); }
-        .hard   .badge { color: var(--red); }
-
-        .extra-badge {
-            padding: 3px 8px;
-            border: 1px solid #53466e;
-            border-radius: 7px;
-            color: #c6b8f5;
-            font-size: 11px;
-        }
-
-        .extra-badge[hidden] { display: none; }
-
-        .task-title {
-            margin: 15px 0 9px;
-            font-size: 20px;
-            line-height: 1.3;
-            letter-spacing: -.025em;
-        }
-
-        .path {
-            color: var(--muted);
-            font-size: 11px;
-            overflow-wrap: anywhere;
-        }
-
-        .source-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 8px;
-        }
-
-        .source-label {
-            color: var(--muted);
-            font-size: 11px;
-            white-space: nowrap;
-        }
-
-        .source-path {
-            color: var(--accent);
-            font-size: 11px;
-            overflow-wrap: anywhere;
-        }
-
-        .source-row[hidden] { display: none; }
-
-        .card-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 9px;
-            margin-top: 16px;
-        }
-
-        .card-files {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 7px;
-            margin-top: 14px;
-            padding-top: 14px;
-            border-top: 1px dashed #3a4666;
-        }
-
-        .card-files-label {
-            width: 100%;
-            color: var(--muted);
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            margin-bottom: 2px;
-        }
-
-        .spoiler-hint {
-            margin-top: 10px;
-            padding: 8px 12px;
-            border: 1px dashed #53466e;
-            border-radius: 10px;
-            color: var(--muted);
-            font-size: 12px;
-            text-align: center;
-        }
-
-        .spoiler-hint[hidden] { display: none; }
-
-        .document {
-            height: min(65vh, 850px);
-            min-height: 360px;
-            overflow: auto;
-            padding: 20px;
-            scrollbar-color: #4c5972 transparent;
-            font-size: 14px;
-            overflow-wrap: anywhere;
-            transition: height 0.35s ease, min-height 0.35s ease, padding 0.35s ease;
-        }
-
-        .document.empty {
-            display: grid;
-            place-items: center;
-            text-align: center;
-            color: var(--muted);
-        }
-
-        .document.empty.locked {
-            background: rgba(12, 16, 25, 0.4);
-        }
-
-        /* Свернутая карточка */
-        .document.collapsed {
-            height: 0;
-            min-height: 0;
-            padding: 0 20px;
-            overflow: hidden;
-        }
-
-        /* Компактная полоска «Выполнено» */
-        .completed-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            padding: 14px 20px;
-            background: linear-gradient(90deg, #1a2e25, #141b29);
-            border-top: 1px solid #315849;
-            cursor: default;
-        }
-
-        .completed-bar[hidden] { display: none; }
-
-        .completed-bar-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .completed-bar-icon {
-            font-size: 20px;
-            animation: pop-in 0.3s ease;
-        }
-
-        @keyframes pop-in {
-            0%   { transform: scale(0); opacity: 0; }
-            60%  { transform: scale(1.2); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .completed-bar-text {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--green);
-        }
-
-        .completed-bar-title {
-            font-size: 12px;
-            color: var(--muted);
-            margin-left: 4px;
-        }
-
-        .completed-bar button {
-            font-size: 12px;
-            padding: 6px 12px;
-            border-radius: 8px;
-        }
-
-        .empty-inner { max-width: 320px; padding: 20px 0; }
-        .empty-icon { margin-bottom: 12px; font-size: 35px; color: var(--accent); }
-
-        .empty-icon.locked-animation {
-            animation: pulse-lock 2s infinite alternate;
-            color: var(--yellow);
-        }
-
-        @keyframes pulse-lock {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(1.1); opacity: 1; }
-        }
-
-        .document h1, .document h2, .document h3,
-        .document h4, .document h5, .document h6 {
-            margin: 22px 0 10px;
-            font-size: 18px;
-            line-height: 1.35;
-            letter-spacing: -.02em;
-        }
-
-        .document h1:first-child, .document h2:first-child { margin-top: 0; }
-        .document h3, .document h4, .document h5, .document h6 { font-size: 15px; }
-        .document p { margin: 10px 0; }
-        .document ul, .document ol { padding-left: 23px; }
-        .document li { margin: 6px 0; }
-
-        .document code {
-            padding: 2px 5px;
-            border-radius: 5px;
-            background: #080d1680;
-            color: #d4c7ff;
-            font-size: .92em;
-        }
-
-        .document pre, .commands {
-            padding: 14px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            overflow: auto;
-            background: #0a101b;
-            line-height: 1.6;
-            white-space: pre;
-        }
-
-        .document pre code {
-            padding: 0;
-            background: transparent;
-            color: #dfe8ff;
-        }
-
-        .hl-comment { color: var(--hl-comment); font-style: italic; opacity: 0.85; }
-        .hl-string  { color: var(--hl-string); }
-        .hl-char    { color: var(--hl-char); }
-        .hl-preproc { color: var(--hl-preproc); font-weight: bold; }
-        .hl-keyword { color: var(--hl-keyword); font-weight: bold; }
-        .hl-type    { color: var(--accent); font-weight: 600; }
-        .hl-number  { color: var(--hl-number); }
-        .hl-func    { color: var(--yellow); }
-
-        .document blockquote {
-            margin: 14px 0;
-            padding: 1px 14px;
-            border-left: 3px solid var(--accent);
-            color: #bbc5d9;
-            background: #a998ff09;
-        }
-
-        .document details {
-            margin: 14px 0;
-            padding: 10px 14px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            background: #141b29;
-        }
-
-        .document details summary {
-            cursor: pointer;
-            color: var(--accent);
-            font-weight: 600;
-        }
-
-        .document details[open] summary { margin-bottom: 8px; }
-
-        .table-wrap { overflow-x: auto; margin: 14px 0; }
-
-        .document table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-        }
-
-        .document th, .document td {
-            border: 1px solid var(--border);
-            padding: 9px;
-            text-align: left;
-            vertical-align: top;
-        }
-
-        .document th { background: #222c3e; }
-
-        .document hr {
-            border: 0;
-            border-top: 1px solid var(--border);
-            margin: 20px 0;
-        }
-
-        .document img { max-width: 100%; }
-
-        .document a {
-            color: var(--accent);
-            text-decoration: underline;
-            text-decoration-color: #a998ff44;
-        }
-
-        .document a:hover { text-decoration-color: var(--accent); }
-
-        .help {
-            margin-top: 24px;
-            padding: 18px 20px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            color: var(--muted);
-            background: #141b2980;
-            font-size: 14px;
-        }
-
-        .help summary { color: var(--text); cursor: pointer; }
-        .help li { margin: 8px 0; }
-
-        .footer {
-            margin: 24px 0 0;
-            color: var(--muted);
-            text-align: center;
-            font-size: 12px;
-        }
-
-        @media (max-width: 1050px) {
-            .container { padding: 22px; }
-            .grid { grid-template-columns: 1fr; }
-            .document { height: auto; max-height: 65vh; min-height: 180px; }
-            .document.collapsed { height: 0; min-height: 0; max-height: 0; }
-        }
-
-        @media (max-width: 600px) {
-            .container { padding: 16px; }
-            .header { flex-direction: column; }
-            .clock {
-                width: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-            }
-            .timer { margin: 0; }
-            .checkbox { margin-left: 0; width: 100%; }
-            .toolbar > button { flex: 1; }
+        /* ===================== THEMES ===================== */
+        :root[data-theme="dark"]{
+            --bg:#0c1019; --bg2:#0a0e16; --panel:#141b29; --panel2:#1b2536;
+            --border:#293348; --text:#eef2ff; --muted:#9eacc6; --accent:#a998ff;
+            --green:#70ddb0; --yellow:#ffd17b; --red:#ff98aa;
+            --glow1:#28204366; --glow2:#123f4666;
+            --opt-bg:#10172399; --code-bg:#080d1680; --shadow:0 12px 40px #00000030;
+        }
+        :root[data-theme="light"]{
+            --bg:#f4f6fb; --bg2:#eaeef7; --panel:#ffffff; --panel2:#f0f3fa;
+            --border:#d8dfeb; --text:#1a2233; --muted:#64748b; --accent:#7c5cff;
+            --green:#12a97a; --yellow:#c47f0a; --red:#dc3d5c;
+            --glow1:#7c5cff14; --glow2:#12a97a14;
+            --opt-bg:#f8fafcdd; --code-bg:#eef2f9; --shadow:0 8px 28px #0f172a14;
+        }
+
+        *{box-sizing:border-box;margin:0;padding:0}
+        html{scroll-behavior:smooth}
+        body{
+            min-height:100vh;color:var(--text);
+            background:radial-gradient(ellipse at 10% 0%,var(--glow1),transparent 45%),
+            radial-gradient(ellipse at 100% 12%,var(--glow2),transparent 42%),var(--bg);
+            font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.55;
+            transition:background .35s,color .25s;
+        }
+        button{font:inherit;cursor:pointer;border:1px solid var(--border);border-radius:12px;
+            background:var(--panel);color:var(--text);transition:.16s}
+        button:hover:not(:disabled){background:var(--panel2);transform:translateY(-1px)}
+        button:disabled{cursor:default}
+        button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+        code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+            background:var(--code-bg);padding:2px 6px;border-radius:5px;font-size:.9em;color:var(--accent)}
+
+        .wrap{width:min(920px,100%);margin:0 auto;padding:36px 20px 80px}
+
+        /* ===================== THEME TOGGLE ===================== */
+        .theme-btn{
+            position:fixed;top:18px;right:18px;z-index:50;
+            width:46px;height:46px;border-radius:14px;font-size:20px;
+            display:grid;place-items:center;backdrop-filter:blur(10px);
+            box-shadow:var(--shadow);
+        }
+
+        /* ===================== HERO ===================== */
+        .hero{text-align:center;margin-bottom:38px}
+        .eyebrow{color:var(--accent);text-transform:uppercase;letter-spacing:.18em;
+            font-size:11px;font-weight:800;margin-bottom:10px}
+        .hero h1{font-size:clamp(28px,5vw,44px);letter-spacing:-.04em;line-height:1.1}
+        .hero p{color:var(--muted);margin-top:13px;max-width:560px;margin-inline:auto;font-size:15px}
+
+        /* ===================== TOPIC GRID ===================== */
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+        .topic{padding:20px;border-radius:18px;background:var(--panel);text-align:left;
+            box-shadow:var(--shadow);position:relative}
+        .topic:hover{border-color:var(--accent);transform:translateY(-3px)}
+        .t-icon{font-size:26px;display:block;margin-bottom:10px}
+        .t-name{font-size:16px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px}
+        .t-count{color:var(--muted);font-size:12.5px}
+        .t-note{margin-top:9px;padding:4px 8px;border-radius:7px;font-size:10.5px;
+            background:color-mix(in srgb,var(--yellow) 14%,transparent);color:var(--yellow);display:inline-block}
+        .topic.special{border-color:color-mix(in srgb,var(--yellow) 40%,var(--border))}
+
+        /* ===================== RANDOM PANEL ===================== */
+        .rnd{margin-top:26px;padding:22px;border:1px solid var(--border);border-radius:18px;
+            background:var(--panel);box-shadow:var(--shadow)}
+        .rnd h2{font-size:17px;margin-bottom:5px}
+        .rnd .sub{color:var(--muted);font-size:13px;margin-bottom:16px}
+        .rnd-row{display:flex;flex-wrap:wrap;gap:13px;align-items:center}
+        .cnt{display:flex;align-items:center;gap:9px}
+        .cnt input{width:76px;padding:9px;border:1px solid var(--border);border-radius:10px;
+            background:var(--bg2);color:var(--text);font:inherit;text-align:center}
+        .chk{display:flex;align-items:center;gap:8px;color:var(--muted);cursor:pointer;font-size:14px}
+        .chk input{width:17px;height:17px;accent-color:var(--accent);cursor:pointer}
+        .primary{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700;padding:11px 20px}
+        :root[data-theme="dark"] .primary{color:#171224}
+        .primary:hover:not(:disabled){filter:brightness(1.12)}
+
+        /* ===================== QUIZ HEADER ===================== */
+        .qhead{position:sticky;top:0;z-index:30;padding:14px 0 12px;margin-bottom:20px;
+            background:linear-gradient(to bottom,var(--bg) 70%,transparent);
+            backdrop-filter:blur(6px)}
+        .qbar{display:flex;align-items:center;gap:11px;flex-wrap:wrap;margin-bottom:11px}
+        .qbar .back{padding:7px 13px;font-size:13px}
+        .qbar .title{font-weight:700;font-size:15.5px;margin-right:auto}
+        .pill{padding:5px 11px;border-radius:20px;font-size:12.5px;font-weight:700}
+        .pill.ok{background:color-mix(in srgb,var(--green) 15%,transparent);color:var(--green)}
+        .pill.bad{background:color-mix(in srgb,var(--red) 15%,transparent);color:var(--red)}
+        .prog{height:5px;background:var(--panel2);border-radius:4px;overflow:hidden}
+        .prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));
+            border-radius:4px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+
+        /* ===================== QUESTION CARDS ===================== */
+        .stack{display:flex;flex-direction:column;gap:18px}
+        .card{padding:24px;border:1px solid var(--border);border-radius:18px;
+            background:var(--panel);box-shadow:var(--shadow);
+            animation:slideIn .45s cubic-bezier(.2,.8,.3,1)}
+        @keyframes slideIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+        .card.done{opacity:.92}
+        .card.done:hover{opacity:1}
+
+        .q-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:9px}
+        .q-num{color:var(--accent);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+        .tag{padding:3px 9px;border-radius:7px;font-size:10.5px;font-weight:600}
+        .tag.multi{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent)}
+        .tag.src{background:color-mix(in srgb,var(--yellow) 14%,transparent);color:var(--yellow)}
+        .tag.topic{background:var(--panel2);color:var(--muted)}
+        .q-text{font-size:18.5px;font-weight:650;letter-spacing:-.02em;line-height:1.38;margin-bottom:16px}
+
+        .opts{display:flex;flex-direction:column;gap:9px}
+        .opt{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;text-align:left;
+            border-radius:13px;background:var(--opt-bg);width:100%}
+        .opt:hover:not(:disabled){border-color:var(--accent)}
+        .opt:disabled{transform:none}
+        .okey{flex-shrink:0;width:25px;height:25px;border-radius:8px;background:var(--panel2);
+            display:grid;place-items:center;font-size:11.5px;font-weight:800;color:var(--muted)}
+        .otext{flex:1;font-size:14.5px}
+        .omark{flex-shrink:0;font-size:17px;font-weight:800;opacity:0;transition:.2s}
+
+        .opt.sel{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,transparent)}
+        .opt.sel .okey{background:var(--accent);color:#fff}
+        :root[data-theme="dark"] .opt.sel .okey{color:#171224}
+        .opt.right{border-color:var(--green);background:color-mix(in srgb,var(--green) 10%,transparent)}
+        .opt.right .okey{background:var(--green);color:#fff}
+        .opt.right .omark{opacity:1;color:var(--green)}
+        .opt.bad{border-color:var(--red);background:color-mix(in srgb,var(--red) 10%,transparent)}
+        .opt.bad .okey{background:var(--red);color:#fff}
+        .opt.bad .omark{opacity:1;color:var(--red)}
+        .opt.miss{border-color:var(--yellow);background:color-mix(in srgb,var(--yellow) 9%,transparent)}
+        .opt.miss .omark{opacity:1;color:var(--yellow)}
+
+        /* ===================== EXPLANATION ===================== */
+        .exp{margin-top:17px;border-radius:14px;overflow:hidden;
+            animation:expand .4s cubic-bezier(.2,.8,.3,1)}
+        @keyframes expand{from{opacity:0;max-height:0}to{opacity:1;max-height:500px}}
+        .exp-head{padding:11px 16px;font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px}
+        .exp.ok .exp-head{background:color-mix(in srgb,var(--green) 13%,transparent);color:var(--green)}
+        .exp.no .exp-head{background:color-mix(in srgb,var(--red) 13%,transparent);color:var(--red)}
+        .exp-body{padding:14px 16px;background:var(--opt-bg);font-size:14px;line-height:1.6}
+        .exp-right{margin-bottom:9px;padding-bottom:9px;border-bottom:1px solid var(--border)}
+        .exp-right b{color:var(--green)}
+        .exp-why{color:var(--muted)}
+        .exp-why b{color:var(--text);font-weight:650}
+
+        .next-wrap{margin-top:16px}
+        .next-btn{padding:11px 22px}
+
+        /* ===================== RESULTS ===================== */
+        .res{text-align:center;padding:40px 26px;border:1px solid var(--border);border-radius:20px;
+            background:var(--panel);box-shadow:var(--shadow);animation:slideIn .5s}
+        .res-emo{font-size:58px;margin-bottom:12px}
+        .res h2{font-size:26px;letter-spacing:-.03em;margin-bottom:7px}
+        .res .grade{color:var(--muted);margin-bottom:26px;font-size:15px}
+        .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:420px;margin:0 auto 26px}
+        .stat{padding:16px 10px;border:1px solid var(--border);border-radius:14px;background:var(--opt-bg)}
+        .sval{font-size:26px;font-weight:800;letter-spacing:-.03em}
+        .slbl{color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;margin-top:2px}
+        .stat.g .sval{color:var(--green)} .stat.r .sval{color:var(--red)} .stat.a .sval{color:var(--accent)}
+        .res-act{display:flex;gap:11px;justify-content:center;flex-wrap:wrap}
+
+        .hidden{display:none!important}
+
+        @media(max-width:600px){
+            .wrap{padding:24px 14px 60px}
+            .card{padding:18px}
+            .q-text{font-size:16.5px}
+            .stats{grid-template-columns:1fr;max-width:230px}
+            .theme-btn{width:42px;height:42px;top:12px;right:12px}
         }
     </style>
 </head>
-
 <body>
-<main class="container">
-    <header class="header">
-        <div>
-            <div class="eyebrow">C Practice / local trainer</div>
-            <h1>Три задачи. Чистый main.c.</h1>
-            <p class="subtitle">
-                Получи случайный набор, открой редактор и попробуй сам.
-                Условия здесь, рабочие файлы — в Your_tasks.
-            </p>
-        </div>
-        <div class="clock">
-            <div class="clock-label">Время текущего набора</div>
-            <div class="timer" id="timer">00:00:00</div>
-        </div>
-    </header>
 
-    <section class="toolbar" aria-label="Управление тренировкой">
-        <button id="chooseButton" type="button">Выбрать папку проекта</button>
-        <button id="generateButton" class="primary" type="button" disabled>Новый набор</button>
-        <button id="pauseButton" type="button" disabled>Пауза</button>
-        <label class="checkbox">
-            <input id="extraCheckbox" type="checkbox" checked>
-            Включать дополнительные задания
-        </label>
+<button class="theme-btn" id="themeBtn" title="Сменить тему">🌙</button>
+
+<div class="wrap">
+
+    <!-- ========== MENU ========== -->
+    <section id="menu">
+        <div class="hero">
+            <div class="eyebrow">C Practice / theory quiz</div>
+            <h1>Тесты по теории</h1>
+            <p>Выбери тему или собери случайный набор. После каждого ответа — подробный разбор,
+                почему правильный вариант именно такой.</p>
+        </div>
+        <div class="grid" id="topicGrid"></div>
+        <div class="rnd">
+            <h2>🎲 Случайный набор</h2>
+            <div class="sub">Вопросы берутся понемногу из каждой выбранной темы.</div>
+            <div class="rnd-row">
+                <div class="cnt">
+                    <span style="color:var(--muted);font-size:14px">Вопросов:</span>
+                    <input type="number" id="rndCount" value="20" min="5" max="150">
+                </div>
+                <label class="chk"><input type="checkbox" id="rndWidum" checked> Включить вопросы с widum.ru/s21/</label>
+                <button class="primary" id="rndStart">Начать</button>
+            </div>
+        </div>
     </section>
 
-    <div id="status" class="status" role="status" aria-live="polite">
-        Выбери корень проекта — папку, внутри которой находится tasks.
-    </div>
+    <!-- ========== QUIZ ========== -->
+    <section id="quiz" class="hidden">
+        <div class="qhead">
+            <div class="qbar">
+                <button class="back" id="quitBtn">← Выйти</button>
+                <span class="title" id="quizTitle"></span>
+                <span class="pill ok" id="pillOk">✓ 0</span>
+                <span class="pill bad" id="pillBad">✗ 0</span>
+            </div>
+            <div class="prog"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+        </div>
+        <div class="stack" id="stack"></div>
+    </section>
 
-    <div class="meta">
-        <span id="catalogInfo">Каталог не подключён</span>
-        <span id="attemptInfo">Набор ещё не создан</span>
-    </div>
+    <!-- ========== RESULTS ========== -->
+    <section id="results" class="hidden">
+        <div class="res">
+            <div class="res-emo" id="resEmo">🎉</div>
+            <h2 id="resTitle"></h2>
+            <div class="grade" id="resGrade"></div>
+            <div class="stats">
+                <div class="stat g"><div class="sval" id="sOk">0</div><div class="slbl">Верно</div></div>
+                <div class="stat r"><div class="sval" id="sBad">0</div><div class="slbl">Ошибок</div></div>
+                <div class="stat a"><div class="sval" id="sPct">0%</div><div class="slbl">Результат</div></div>
+            </div>
+            <div class="res-act">
+                <button class="primary" id="retryBtn">Пройти заново</button>
+                <button id="reviewBtn">Посмотреть разбор</button>
+                <button id="menuBtn">К списку тем</button>
+            </div>
+        </div>
+    </section>
 
-    <section class="grid" id="cards" aria-label="Задания"></section>
-
-    <details class="help">
-        <summary>Как пользоваться и что сохраняется</summary>
-        <ol>
-            <li>Нажми «Выбрать папку проекта» и разреши доступ.
-                Нужен корень репозитория, не сама папка tasks.</li>
-            <li>Нажми «Новый набор». Страница выберет три задания и
-                создаст отдельную попытку в Your_tasks.</li>
-            <li>В каждой рабочей папке будут копия README.md и пустой
-                main.c. Эталон, теория и тесты не копируются.</li>
-            <li>Открой созданный main.c в редакторе.
-                Компиляция и проверка — через терминал.</li>
-            <li>Кнопки файлов задания открывают исходные материалы
-                в новых вкладках. Если какого-то файла нет — кнопка
-                неактивна и подписана «(нет)».</li>
-        </ol>
-        <p>Всё работает локально. Страница не отправляет файлы в сеть.
-            После перезагрузки нужно снова выбрать папку.</p>
-        <pre class="commands"># Из рабочей папки задания:
-gcc -Wall -Wextra -Werror -std=c11 main.c -o main
-./main
-
-# С математическими функциями:
-gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm</pre>
-    </details>
-
-    <p class="footer">
-        Не запоминай билет. Разбирайся, почему работает решение.
-    </p>
-</main>
+</div>
 
 <script>
     "use strict";
 
-    const TASKS = [
-        { path: "01_basics/01_fix_int_keyword",            title: "Исправление INT",                level: "easy" },
-        { path: "01_basics/02_fix_declaration_separator",   title: "Разделитель в объявлении",        level: "easy" },
-        { path: "01_basics/03_fix_declaration_syntax",      title: "Ошибка в объявлении переменных",  level: "easy" },
-        { path: "01_basics/04_fix_multiple_declaration",    title: "Повторный тип после запятой",     level: "easy" },
-        { path: "01_basics/05_fix_missing_type",            title: "Отсутствующий тип переменной",    level: "easy" },
-        { path: "01_basics/06_fix_double_initialization",   title: "Инициализация double",            level: "easy" },
-        { path: "02_input_output/01_zero_padding",          title: "Ведущие нули",                    level: "easy" },
-        { path: "02_input_output/02_fix_output_width",      title: "Исправление ширины вывода",       level: "easy" },
-        { path: "02_input_output/03_groot",                 title: "Я есть Грут!",                    level: "easy" },
-        { path: "02_input_output/04_windows_path",          title: "Путь к Блокноту",                 level: "easy" },
-        { path: "02_input_output/05_print_205",             title: "Вывод числа 205",                 level: "easy" },
-        { path: "03_expressions/01_sphere_mass",            title: "Масса шара",                      level: "medium" },
-        { path: "03_expressions/02_radians_to_degrees",     title: "Перевод радиан в градусы",        level: "medium" },
-        { path: "03_expressions/03_swap_edge_digits",       title: "Перестановка крайних цифр",       level: "medium" },
-        { path: "03_expressions/04_strictly_between",       title: "Число строго между двумя числами",level: "medium" },
-        { path: "03_expressions/05_boolean_expression",     title: "Логическое выражение",            level: "medium" },
-        { path: "04_loops/01_sequence_max",                 title: "Поиск наибольшего",               level: "medium" },
-        { path: "04_loops/02_max_digit",                    title: "Наибольшая цифра",                level: "medium" },
-        { path: "04_loops/03_odd_digits_product",           title: "Произведение нечётных цифр",      level: "medium" },
-        { path: "04_loops/04_reverse_number_extra",         title: "Разворот числа",                  level: "medium" },
-        { path: "04_loops/05_unpaired_number_extra",        title: "Число без пары",                  level: "medium" },
-        { path: "05_dynamic_arrays/01_dot_product",         title: "Скалярное произведение",          level: "hard" },
-        { path: "05_dynamic_arrays/02_alternate_ends",      title: "Чередование первого и последнего",level: "hard" },
-        { path: "05_dynamic_arrays/03_remove_duplicates",   title: "Удаление повторов",               level: "hard" },
-        { path: "05_dynamic_arrays/04_reverse_sequence",    title: "Реверс последовательности",       level: "hard" },
-        { path: "06_strings/01_string_length_extra",        title: "Длина строки",                    level: "medium" },
-        { path: "06_strings/02_count_letters_digits_extra", title: "Подсчёт букв и цифр",             level: "medium" },
-        { path: "06_strings/03_to_lower_extra",             title: "Перевод в нижний регистр",        level: "medium" },
-        { path: "06_strings/04_to_upper_extra",             title: "Перевод в верхний регистр",        level: "medium" },
-        { path: "06_strings/05_remove_digits_extra",        title: "Удаление цифр",                   level: "medium" },
-        { path: "06_strings/06_count_words_extra",          title: "Подсчёт слов",                    level: "medium" },
-        { path: "06_strings/07_trim_spaces",                title: "Удаление лишних пробелов",        level: "medium" },
-        { path: "06_strings/08_reverse_string_extra",       title: "Разворот строки",                 level: "medium" },
-        { path: "06_strings/09_palindrome_extra",           title: "Палиндром (точный)",              level: "medium" },
-        { path: "06_strings/10_compare_strings_extra",      title: "Сравнение строк",                 level: "medium" },
-        { path: "06_strings/11_caesar_cipher_extra",        title: "Шифр Цезаря",                     level: "medium" },
-        { path: "06_strings/12_remove_last_substring",      title: "Удаление последней подстроки",    level: "hard" },
-        { path: "06_strings/13_palindrome",                 title: "Проверка на палиндром (экзамен)", level: "medium" },
-        { path: "06_strings/14_trim_whitespace",            title: "Удаление пробелов и табуляций",   level: "medium" },
-        { path: "07_matrices/01_matrix_addition_extra",     title: "Сложение квадратных матриц",      level: "medium" },
-        { path: "07_matrices/02_matrix_multiplication",     title: "Умножение квадратных матриц",     level: "hard" },
-        { path: "07_matrices/03_swap_rows",                 title: "Перестановка строк",              level: "hard" },
-        { path: "07_matrices/04_rotate_clockwise",          title: "Поворот матрицы",                 level: "hard" },
-        { path: "07_matrices/05_spiral_clockwise",          title: "Спираль по часовой стрелке",      level: "hard" },
-        { path: "07_matrices/06_spiral_squares",            title: "Квадраты чисел по спирали",       level: "hard" },
-        { path: "08_structures/01_students_above_average",  title: "Студенты выше среднего балла",    level: "hard" },
-        { path: "08_structures/02_students_sort_by_rate",   title: "Сортировка студентов по баллам",  level: "hard" },
-        { path: "08_structures/03_best_student_extra",      title: "Студент с наивысшим баллом",      level: "medium" },
-        { path: "08_structures/04_shopping_cart_extra",     title: "Товары в корзине",                level: "medium" },
-        { path: "08_structures/05_books_sort_extra",        title: "Книги: сортировка по году",       level: "hard" }
-    ];
+    /* ============================================================
+       БАНК ВОПРОСОВ
+       q — вопрос, a — варианты, correct — индексы верных, exp — разбор
+       ============================================================ */
+    const BANK = {
 
-    const LEVELS = [
-        { id: "easy",   label: "Лёгкое" },
-        { id: "medium", label: "Среднее" },
-        { id: "hard",   label: "Сложное" }
-    ];
+        basics:{icon:"🔤",name:"Основы C",q:[
+                {q:"Какой тип используется для хранения целых чисел?",a:["float","int","char*","double"],correct:[1],
+                    exp:"<b>int</b> — базовый целочисленный тип, обычно 4 байта. <code>float</code> и <code>double</code> хранят вещественные числа, а <code>char*</code> — это указатель на символ."},
+                {q:"Что произойдёт при делении 7 / 2, если оба операнда типа int?",a:["Результат 3.5","Результат 3","Ошибка компиляции","Результат 4"],correct:[1],
+                    exp:"Если оба операнда целые, выполняется <b>целочисленное деление</b> — дробная часть просто отбрасывается, без округления. Чтобы получить 3.5, нужно привести хотя бы один операнд: <code>7.0 / 2</code> или <code>(double)7 / 2</code>."},
+                {q:"Какие объявления переменных корректны?",a:["int a = 5;","int a, b = 10;","int a = 5, int b = 10;","int: a = 5;"],correct:[0,1],
+                    exp:"Тип пишется <b>один раз</b> в начале объявления. Вариант C повторяет <code>int</code> после запятой — это синтаксическая ошибка. В варианте D двоеточие после типа недопустимо."},
+                {q:"Что делает ключевое слово void в int main(void)?",a:["Функция ничего не возвращает","Функция не принимает аргументов","Функция пустая","Отключает проверку типов"],correct:[1],
+                    exp:"<code>void</code> в <b>скобках</b> означает отсутствие параметров. Возвращаемый тип здесь <code>int</code> — он стоит перед именем функции. Если написать <code>main()</code> без <code>void</code>, компилятор не будет проверять аргументы."},
+                {q:"Какие утверждения о типе char верны?",a:["Занимает 1 байт","Может хранить только буквы","Хранит код символа","Может участвовать в арифметике"],correct:[0,2,3],
+                    exp:"<code>char</code> — это <b>целочисленный тип</b> размером 1 байт. Он хранит числовой код символа (например, 65 для 'A'), поэтому с ним можно делать арифметику: <code>'a' + 1</code> даст 'b'."},
+                {q:"Что вернёт sizeof(int) на большинстве современных систем?",a:["2","4","8","Зависит от значения переменной"],correct:[1],
+                    exp:"На типичных 32- и 64-битных платформах <code>int</code> занимает <b>4 байта</b>. Стандарт гарантирует минимум 2 байта, но реальный размер зависит от компилятора. <code>sizeof</code> считает размер <i>типа</i>, а не значения."},
+                {q:"Какой результат даст выражение 5 % 3?",a:["1","2","1.66","0"],correct:[1],
+                    exp:"Оператор <code>%</code> возвращает <b>остаток от деления</b>. 5 делится на 3 один раз, остаток = 5 − 3 = 2. Для вещественных чисел <code>%</code> не работает — там нужна функция <code>fmod</code>."},
+                {q:"Почему нельзя использовать неинициализированную переменную?",a:["Компилятор не даст скомпилировать","В ней лежит мусор — неопределённое поведение","Она всегда равна нулю","Это замедляет программу"],correct:[1],
+                    exp:"Локальные переменные <b>не обнуляются автоматически</b>. В памяти остаётся то, что было там раньше. Программа скомпилируется (максимум с предупреждением), но результат будет непредсказуемым."},
+                {q:"Что такое неявное приведение типов?",a:["Компилятор сам преобразует тип при необходимости","Программист пишет (int)x","Это ошибка компиляции","Тип меняется во время выполнения"],correct:[0],
+                    exp:"При смешивании типов компилятор <b>автоматически</b> приводит операнды к общему типу. Например, в <code>int + double</code> целое станет вещественным. Явное приведение — это когда программист сам пишет <code>(int)x</code>."},
+                {q:"Какое значение получит y после int x = 5; double y = x / 2;?",a:["2.5","2.0","2","Ошибка"],correct:[1],
+                    exp:"Деление <code>x / 2</code> происходит <b>до</b> присваивания, и оба операнда целые — получается 2. Только потом двойка превращается в <code>2.0</code>. Чтобы получить 2.5, нужно <code>(double)x / 2</code>."},
+                {q:"Какие модификаторы применимы к int?",a:["short","long","unsigned","signed"],correct:[0,1,2,3],
+                    exp:"Все четыре допустимы. <code>short</code> и <code>long</code> меняют <b>размер</b>, <code>signed</code> и <code>unsigned</code> — наличие <b>знака</b>. Их можно комбинировать: <code>unsigned long int</code>."},
+                {q:"Что означает const перед типом переменной?",a:["Переменная хранится в постоянной памяти","Значение нельзя изменить после инициализации","Переменная глобальная","Переменная быстрее работает"],correct:[1],
+                    exp:"<code>const</code> — это <b>обещание компилятору</b>, что значение не будет меняться. Попытка присвоить новое значение вызовет ошибку компиляции. На место хранения и скорость это напрямую не влияет."}
+            ]},
 
-    const PATH_ALIASES = {
-        "03_expressions/05_boolean_expression":   "03_expressions/05_boolean_expressio",
-        "05_dynamic_arrays/03_remove_duplicates": "05_dynamic_arrays/03_remove_duplicate",
-        "07_matrices/06_spiral_squares":          "07_matrices/06_spiral_square"
+        io:{icon:"⌨️",name:"Ввод и вывод",q:[
+                {q:"Что нужно передавать в scanf для чтения int?",a:["Значение переменной","Адрес переменной через &","Указатель на указатель","Имя переменной в кавычках"],correct:[1],
+                    exp:"<code>scanf</code> должна <b>записать</b> значение в переменную, а для этого ей нужен адрес: <code>scanf(\"%d\", &x)</code>. Без <code>&</code> функция получит копию значения и запишет данные по случайному адресу — программа упадёт."},
+                {q:"Что возвращает scanf?",a:["Прочитанное значение","Количество успешно присвоенных значений","0 при успехе","Всегда 1"],correct:[1],
+                    exp:"Возвращается <b>число успешно прочитанных элементов</b>. Для <code>scanf(\"%d %d\", &a, &b)</code> при полном успехе вернётся 2. Это стандартный способ проверить корректность ввода: <code>if (scanf(\"%d\", &x) != 1) ...</code>"},
+                {q:"Как вывести число 42 с ведущими нулями в поле ширины 5?",a:['printf("%5d", 42)','printf("%05d", 42)','printf("%d5", 42)','printf("%.5d", 42)'],correct:[1],
+                    exp:"Флаг <code>0</code> перед шириной заполняет пустое место нулями: <code>%05d</code> даст <code>00042</code>. Без нуля (<code>%5d</code>) будут пробелы: <code>&nbsp;&nbsp;&nbsp;42</code>."},
+                {q:"Какой спецификатор используется для double в printf?",a:["%d","%f","%lf","%s"],correct:[1,2],
+                    exp:"В <code>printf</code> работают оба: <code>float</code> при передаче автоматически повышается до <code>double</code>. В <b>scanf</b> разница критична — там <code>%f</code> для <code>float</code>, а <code>%lf</code> для <code>double</code>."},
+                {q:'Что делает printf("%.2f", 3.14159)?',a:["Выведет 3.14159","Выведет 3.14","Выведет 3","Ошибка"],correct:[1],
+                    exp:"<code>.2</code> задаёт <b>точность</b> — количество знаков после запятой. Число округляется до 3.14. Обрати внимание: <code>%.0f</code> от 0.0 даст <code>0</code>, а <code>%.2f</code> даст <code>0.00</code>."},
+                {q:"Как вывести символ обратного слеша?",a:['printf("\\\\\\\\")','printf("\\\\")','printf("/")','putchar(92)'],correct:[0,3],
+                    exp:"Обратный слеш — служебный символ, его нужно <b>экранировать</b>: два слеша в коде дают один на экране. Вариант с <code>putchar(92)</code> работает, потому что 92 — это ASCII-код слеша."},
+                {q:'Чем getchar() отличается от scanf("%c")?',a:["Ничем","getchar читает один символ, не пропуская пробелы","getchar читает строку","scanf быстрее"],correct:[1],
+                    exp:"Оба читают один символ, но <code>getchar()</code> проще и не требует форматной строки. Главное отличие от <code>%d</code> или <code>%s</code>: <b>пробелы и переводы строк не пропускаются</b> — это важно для задач на посимвольную обработку."},
+                {q:"Почему результат getchar() сохраняют в int, а не в char?",a:["Так быстрее","Чтобы корректно отличить символ от EOF","char не может хранить символы","Это требование стандарта"],correct:[1],
+                    exp:"<code>EOF</code> — это специальное значение (обычно −1), которое <b>не помещается</b> в диапазон обычных символов. Если сохранить результат в <code>char</code>, EOF может совпасть с реальным символом, и цикл чтения сломается."},
+                {q:'Что останется в буфере после scanf("%d", &x)?',a:["Ничего","Символ перевода строки","Пробел","Вся строка"],correct:[1],
+                    exp:"<code>%d</code> читает только цифры и останавливается на первом нецифровом символе — обычно это <code>\\n</code> от нажатия Enter. Он <b>остаётся в буфере</b>, и следующий <code>fgets</code> или <code>getchar</code> прочитает именно его."},
+                {q:"Как правильно вывести кавычку внутри строки?",a:['printf("\\\\"")',"printf(\"'\")",'printf("\\\'")','putchar(34)'],correct:[0,3],
+                    exp:"Двойная кавычка закрывает строковый литерал, поэтому её нужно <b>экранировать</b>: <code>\\\"</code>. Код 34 в ASCII — это как раз двойная кавычка. Одинарная кавычка внутри строки экранирования не требует."},
+                {q:'Что делает fgets по сравнению со scanf("%s")?',a:["Читает строку целиком, включая пробелы","Читает только одно слово","Не добавляет \\0","Ограничивает длину чтения"],correct:[0,3],
+                    exp:"<code>fgets</code> читает <b>до перевода строки</b>, сохраняя пробелы, и принимает размер буфера — это защищает от переполнения. <code>scanf(\"%s\")</code> останавливается на первом пробеле и не знает границ массива."},
+                {q:"Какой спецификатор для вывода long long?",a:["%d","%ld","%lld","%llf"],correct:[2],
+                    exp:"Каждая <code>l</code> добавляет «длины»: <code>%d</code> для <code>int</code>, <code>%ld</code> для <code>long</code>, <code>%lld</code> для <code>long long</code>. Неверный спецификатор — это <b>неопределённое поведение</b>, вывод будет мусорным."}
+            ]},
+
+        expr:{icon:"🧮",name:"Выражения",q:[
+                {q:"Что означает оператор && в C?",a:["Побитовое И","Логическое И","Адрес переменной","Конкатенация"],correct:[1],
+                    exp:"<code>&&</code> — <b>логическое И</b>: истинно, только если оба операнда истинны. Один амперсанд <code>&</code> — это побитовое И (работает с битами) или взятие адреса (унарная форма)."},
+                {q:"Что такое короткое замыкание при вычислении a && b?",a:["Если a ложно, b не вычисляется","Оба операнда всегда вычисляются","Компилятор оптимизирует код","Результат всегда 1"],correct:[0],
+                    exp:"Если левая часть <code>&&</code> ложна, результат уже известен — правая <b>не вычисляется</b>. Это позволяет писать безопасные проверки: <code>if (p != NULL && p->x > 0)</code> — разыменование не произойдёт при <code>NULL</code>."},
+                {q:"Чему равно выражение !0 в C?",a:["0","1","-1","Ошибка"],correct:[1],
+                    exp:"В C <b>ноль — это ложь</b>, любое другое число — истина. Оператор <code>!</code> инвертирует: <code>!0</code> даёт 1, а <code>!5</code> даёт 0. Логические операторы всегда возвращают ровно 0 или 1."},
+                {q:"Как получить последнюю цифру числа n?",a:["n / 10","n % 10","n - 10","n >> 1"],correct:[1],
+                    exp:"Остаток от деления на 10 — это и есть <b>последняя цифра</b>: для 123 получим 3. А <code>n / 10</code> наоборот <i>убирает</i> последнюю цифру (123 → 12)."},
+                {q:"Как убрать последнюю цифру числа n?",a:["n % 10","n / 10","n - n % 10","n >> 10"],correct:[1],
+                    exp:"Целочисленное деление на 10 <b>отбрасывает</b> последний разряд: 123 / 10 = 12. Вариант C (<code>n - n % 10</code>) обнулит последнюю цифру, но не сдвинет число: получится 120, а не 12."},
+                {q:"Что вернёт выражение (5 > 3)?",a:["true","1","0","Ошибка"],correct:[1],
+                    exp:"В классическом C нет типа <code>bool</code> без <code>&lt;stdbool.h&gt;</code>. Операторы сравнения возвращают <b>int</b>: 1 при истине, 0 при лжи."},
+                {q:"Почему нельзя писать 0 <= x <= 9?",a:["Это синтаксическая ошибка","Сначала вычислится (0<=x), результат 0 или 1 сравнится с 9","Так можно","Компилятор выдаст предупреждение"],correct:[1],
+                    exp:"Операторы вычисляются <b>слева направо по одному</b>. Сначала <code>0 &lt;= x</code> даёт 0 или 1, затем это сравнивается с 9 — и всегда истинно. Правильно: <code>x &gt;= 0 && x &lt;= 9</code>."},
+                {q:"Что делает оператор ^ применительно к целым числам?",a:["Возведение в степень","Побитовое исключающее ИЛИ","Логическое ИЛИ","Инверсия битов"],correct:[1],
+                    exp:"<code>^</code> — это <b>XOR</b>: бит результата равен 1, если биты операндов различаются. Для возведения в степень используется <code>pow()</code> из <code>&lt;math.h&gt;</code>. Инверсия — это <code>~</code>."},
+                {q:"Чему равно x ^ x для любого целого x?",a:["x","0","1","-x"],correct:[1],
+                    exp:"Каждый бит XOR с самим собой даёт 0. Это свойство используется в задаче «число без пары»: если применить XOR ко всем элементам, <b>парные взаимно уничтожатся</b>, останется непарное."},
+                {q:"Как правильно привести int к double при делении?",a:["(double)a / b","a / (double)b","(double)(a / b)","double(a) / b"],correct:[0,1],
+                    exp:"Достаточно привести <b>один</b> операнд — второй повысится автоматически. Вариант C бесполезен: деление уже произошло в целых числах. Вариант D — синтаксис C++, в C так нельзя."},
+                {q:"Какие математические функции требуют подключения <math.h>?",a:["round","sqrt","pow","abs для int"],correct:[0,1,2],
+                    exp:"<code>round</code>, <code>sqrt</code> и <code>pow</code> объявлены в <code>&lt;math.h&gt;</code> и часто требуют флага <code>-lm</code> при сборке. А <code>abs</code> для целых лежит в <code>&lt;stdlib.h&gt;</code>."},
+                {q:"Что означает тернарный оператор a ? b : c?",a:["Если a истинно — результат b, иначе c","Всегда возвращает b","Это цикл","Сравнивает три значения"],correct:[0],
+                    exp:"Это <b>краткая форма if-else</b>, но в виде выражения: <code>int max = (x &gt; y) ? x : y;</code>. Полезно там, где нужен именно результат, а не оператор."}
+            ]},
+
+        loops:{icon:"🔁",name:"Циклы",q:[
+                {q:"Чем while отличается от do-while?",a:["Ничем","do-while выполнится минимум один раз","while быстрее","do-while не поддерживается в C"],correct:[1],
+                    exp:"<code>while</code> проверяет условие <b>до</b> тела, поэтому может не выполниться ни разу. <code>do-while</code> проверяет <b>после</b>, значит тело гарантированно выполнится хотя бы однажды."},
+                {q:"Что делает оператор break внутри цикла?",a:["Завершает всю программу","Выходит из ближайшего цикла","Пропускает итерацию","Возвращает значение"],correct:[1],
+                    exp:"<code>break</code> прерывает <b>только ближайший</b> охватывающий цикл или <code>switch</code>. Из вложенных циклов он выведет лишь из внутреннего. Для выхода из функции нужен <code>return</code>."},
+                {q:"Что делает continue?",a:["Выходит из цикла","Переходит к следующей итерации","Перезапускает цикл","Останавливает программу"],correct:[1],
+                    exp:"<code>continue</code> <b>пропускает остаток тела</b> и переходит к следующей итерации. В <code>for</code> при этом выполняется шаг (<code>i++</code>), а в <code>while</code> — сразу проверка условия."},
+                {q:"Сколько раз выполнится for(int i=0; i<5; i++)?",a:["4","5","6","Бесконечно"],correct:[1],
+                    exp:"Значения <code>i</code>: 0, 1, 2, 3, 4 — это <b>5 итераций</b>. При <code>i == 5</code> условие <code>i &lt; 5</code> становится ложным. Классическая конструкция для перебора массива из 5 элементов."},
+                {q:"Как читать числа до маркера -1?",a:['while(scanf("%d",&x)==1 && x!=-1)',"for(int i=0;i<-1;i++)","while(x != -1) без чтения","do{}while(x)"],correct:[0],
+                    exp:"Условие делает <b>две проверки сразу</b>: чтение прошло успешно и число не равно маркеру. Сам <code>-1</code> в тело цикла не попадёт, поэтому не будет обработан как элемент."},
+                {q:'Почему важен порядок в условии scanf(...) == 1 && x != -1?',a:["Не важен","Сначала нужно проверить успех чтения, иначе x содержит мусор","Компилятор требует","Так короче"],correct:[1],
+                    exp:"Благодаря <b>короткому замыканию</b> правая часть не вычисляется, если левая ложна. Если поменять местами, при неудачном чтении программа сравнит неинициализированную переменную — это неопределённое поведение."},
+                {q:"Как найти максимум в последовательности без массива?",a:["Хранить текущий максимум и сравнивать с новым","Нужен массив обязательно","Отсортировать данные","Использовать рекурсию"],correct:[0],
+                    exp:"Достаточно <b>одной переменной</b>: каждый новый элемент сравниваем с текущим максимумом и обновляем при необходимости. Это работает за один проход и с постоянной памятью."},
+                {q:"Что произойдёт при for(int i=0; i<5; i--)?",a:["Цикл выполнится 5 раз","Бесконечный цикл","Ошибка компиляции","Цикл не выполнится"],correct:[1],
+                    exp:"<code>i</code> уменьшается, поэтому условие <code>i &lt; 5</code> <b>всегда истинно</b>. Формально при переполнении <code>int</code> возникнет неопределённое поведение, но на практике это зацикливание."},
+                {q:"Какие циклы есть в C?",a:["for","while","do-while","foreach"],correct:[0,1,2],
+                    exp:"В C ровно <b>три</b> вида циклов. <code>foreach</code> есть в C#, PHP, Java (в виде <code>for-each</code>), но не в C — здесь для перебора массива используют обычный <code>for</code> с индексом."},
+                {q:"Как перебрать все цифры числа?",a:["while(n > 0) { d = n % 10; n /= 10; }","for(int i=0;i<n;i++)","Через массив","Только рекурсией"],correct:[0],
+                    exp:"На каждом шаге берём <b>последнюю цифру</b> через остаток и <b>отбрасываем</b> её делением. Цикл идёт справа налево и заканчивается, когда число обнулится."},
+                {q:"Что вернёт цикл while(n > 0) для n = 0?",a:["Выполнится один раз","Не выполнится ни разу","Бесконечный цикл","Ошибка"],correct:[1],
+                    exp:"Условие проверяется <b>до</b> первой итерации и сразу ложно. Это типичная ловушка в задачах на цифры: для числа 0 нужно обрабатывать случай отдельно, иначе программа ничего не выведет."},
+                {q:"Как работает вложенный цикл?",a:["Внутренний полностью проходит на каждой итерации внешнего","Оба цикла идут параллельно","Внешний выполняется один раз","Это запрещено"],correct:[0],
+                    exp:"На <b>каждом</b> шаге внешнего цикла внутренний прокручивается целиком с начала. Для матрицы 3×4 это даёт 3 × 4 = 12 итераций тела."}
+            ]},
+
+        arrays:{icon:"📦",name:"Динамические массивы",q:[
+                {q:"Какая функция выделяет память динамически?",a:["malloc","alloc","new","create"],correct:[0],
+                    exp:"<code>malloc</code> из <code>&lt;stdlib.h&gt;</code> выделяет блок нужного размера и возвращает указатель на него. <code>new</code> — это C++, а <code>alloc</code> и <code>create</code> в стандарте C отсутствуют."},
+                {q:"Что возвращает malloc при нехватке памяти?",a:["0","NULL","-1","Выбрасывает исключение"],correct:[1],
+                    exp:"При неудаче возвращается <b>NULL</b>. В C нет исключений, поэтому результат нужно проверять вручную: <code>if (p == NULL) { ... }</code>. Обращение по нулевому указателю приведёт к падению программы."},
+                {q:"Чем calloc отличается от malloc?",a:["calloc быстрее","calloc обнуляет выделенную память","calloc не требует free","Ничем"],correct:[1],
+                    exp:"<code>calloc(n, size)</code> принимает два аргумента и <b>заполняет память нулями</b>. <code>malloc</code> оставляет мусор от предыдущего использования. Освобождать нужно обе одинаково — через <code>free</code>."},
+                {q:"Что произойдёт, если не вызвать free?",a:["Ничего","Утечка памяти","Программа упадёт","Компилятор выдаст ошибку"],correct:[1],
+                    exp:"Выделенный блок останется <b>занятым</b> до завершения программы. В коротких задачах это не критично, но Valgrind это заметит, а в долгоживущих программах память будет расти бесконечно."},
+                {q:"Как правильно выделить массив из n элементов int?",a:["malloc(n)","malloc(n * sizeof(int))","malloc(sizeof(int))","calloc(n, sizeof(int))"],correct:[1,3],
+                    exp:"Нужно умножить количество на <b>размер одного элемента</b>. <code>malloc(n)</code> выделит всего n байт вместо n × 4. Часто пишут <code>sizeof(*p)</code> — тогда при смене типа указателя код не сломается."},
+                {q:"Что делает realloc?",a:["Освобождает память","Изменяет размер выделенного блока","Копирует массив","Обнуляет память"],correct:[1],
+                    exp:"<code>realloc</code> меняет размер блока, по возможности <b>сохраняя данные</b>. Если расширить на месте нельзя, функция выделит новый участок, скопирует содержимое и освободит старый."},
+                {q:"Почему опасно писать a = realloc(a, size)?",a:["Это медленно","При неудаче потеряется старый указатель — утечка","Realloc так не работает","Ничего опасного"],correct:[1],
+                    exp:"Если <code>realloc</code> вернёт <code>NULL</code>, в <code>a</code> запишется ноль, а <b>старый блок останется висеть</b> в памяти без ссылки. Правильно: сохранить результат во временный указатель и проверить его."},
+                {q:"Какие функции требуют подключения <stdlib.h>?",a:["malloc","free","calloc","realloc"],correct:[0,1,2,3],
+                    exp:"Все функции управления динамической памятью объявлены в <code>&lt;stdlib.h&gt;</code>. Без этого заголовка компилятор с <code>-Wall -Werror</code> выдаст ошибку о неявном объявлении."},
+                {q:"Что означает обращение к массиву после free?",a:["Вернётся ноль","Неопределённое поведение","Данные сохраняются","Ошибка компиляции"],correct:[1],
+                    exp:"Память возвращена системе и может быть <b>переиспользована</b>. Иногда данные ещё видны, иногда программа падает — поведение непредсказуемо. Такой указатель называют «висячим»."},
+                {q:"Как обратиться к i-му элементу через указатель p?",a:["p[i]","*(p + i)","p + i","&p[i]"],correct:[0,1],
+                    exp:"<code>p[i]</code> — это просто <b>синтаксический сахар</b> для <code>*(p + i)</code>. Варианты C и D дают адрес элемента, а не его значение."},
+                {q:"Сколько байт займёт массив из 10 int (при sizeof(int)==4)?",a:["10","40","4","80"],correct:[1],
+                    exp:"10 элементов × 4 байта = <b>40 байт</b>. Именно столько нужно запросить у <code>malloc</code>: <code>malloc(10 * sizeof(int))</code>."},
+                {q:"Зачем присваивать указателю NULL после free?",a:["Это обязательно по стандарту","Чтобы избежать обращения по висячему указателю","Освобождает больше памяти","Ускоряет программу"],correct:[1],
+                    exp:"После <code>free</code> указатель хранит <b>старый адрес</b>, но пользоваться им нельзя. Обнуление делает проблему явной: обращение по <code>NULL</code> сразу упадёт, а не испортит чужие данные."}
+            ]},
+
+        strings:{icon:"📝",name:"Строки",q:[
+                {q:"Чем заканчивается строка в C?",a:["Символом \\n","Нулевым символом \\0","Пробелом","Ничем"],correct:[1],
+                    exp:"<b>Нулевой символ</b> <code>'\\0'</code> (код 0) — единственный признак конца строки. Именно по нему <code>printf(\"%s\")</code> и <code>strlen</code> понимают, где остановиться. Не путать с символом <code>'0'</code> (код 48)."},
+                {q:"Какой размер массива нужен для строки из 10 символов?",a:["10","11","12","9"],correct:[1],
+                    exp:"10 символов текста + <b>1 байт под <code>'\\0'</code></b> = 11. Частая ошибка — забыть про терминатор: тогда строковые функции выйдут за границу массива."},
+                {q:"Что делает strlen?",a:["Возвращает размер массива","Возвращает длину строки без \\0","Включает \\0 в длину","Копирует строку"],correct:[1],
+                    exp:"<code>strlen</code> считает символы <b>до</b> нулевого терминатора, не включая его. Для <code>\"cat\"</code> вернёт 3, хотя в памяти занято 4 байта. Размер массива она не знает."},
+                {q:"Почему нельзя сравнивать строки через ==?",a:["Можно","Сравниваются адреса, а не содержимое","Это синтаксическая ошибка","Работает только для коротких строк"],correct:[1],
+                    exp:"Имя массива превращается в <b>указатель</b>, поэтому <code>==</code> сравнит адреса в памяти. Для сравнения содержимого нужен <code>strcmp</code> или посимвольный обход в цикле."},
+                {q:"Что возвращает strcmp(a, b), если a идёт раньше b в алфавите?",a:["Положительное число","Отрицательное число","0","1"],correct:[1],
+                    exp:"<code>strcmp</code> возвращает <b>разность кодов</b> первых различающихся символов. Если <code>a</code> «меньше» — результат отрицательный, если «больше» — положительный, при равенстве — 0. Конкретное число не гарантировано, проверять надо знак."},
+                {q:"Как проверить, что символ является цифрой, без <ctype.h>?",a:["ch >= '0' && ch <= '9'","ch >= 0 && ch <= 9","isdigit(ch)","ch == '0'"],correct:[0],
+                    exp:"Цифры в ASCII идут <b>подряд</b> от <code>'0'</code> (48) до <code>'9'</code> (57), поэтому достаточно проверить диапазон. Вариант B сравнивает с числами 0 и 9 — это управляющие символы, а не цифры."},
+                {q:"Как перевести заглавную латинскую букву в строчную вручную?",a:["ch + 32","ch - 'A' + 'a'","ch - 32","tolower(ch)"],correct:[0,1],
+                    exp:"В ASCII строчные буквы стоят <b>ровно на 32 позиции дальше</b> заглавных ('A'=65, 'a'=97). Запись <code>ch - 'A' + 'a'</code> предпочтительнее: она понятнее и не зависит от знания конкретного числа."},
+                {q:"Какая функция копирует строку с выделением памяти?",a:["strcpy","strdup","memcpy","strcat"],correct:[1],
+                    exp:"<code>strdup</code> сама вызывает <code>malloc</code> нужного размера и копирует туда строку — результат потом надо освободить через <code>free</code>. <code>strcpy</code> требует, чтобы буфер <b>уже был выделен</b>."},
+                {q:"Почему gets() нельзя использовать?",a:["Она медленная","Удалена из стандарта C11, небезопасна","Не читает пробелы","Требует <stdlib.h>"],correct:[1],
+                    exp:"<code>gets</code> не знает <b>размер буфера</b> и пишет столько, сколько введёт пользователь — классическая уязвимость переполнения. В C11 её удалили окончательно; вместо неё используют <code>fgets</code>."},
+                {q:"Что оставляет fgets в конце прочитанной строки?",a:["Только \\0","Символ \\n, если он поместился, и \\0","Пробел","Ничего"],correct:[1],
+                    exp:"<code>fgets</code> <b>сохраняет перевод строки</b> как часть данных. Обычно его убирают вручную: найти <code>'\\n'</code> и заменить на <code>'\\0'</code>, иначе он попадёт в сравнение или вывод."},
+                {q:"Какие утверждения о строках в C верны?",a:["Строка — массив символов","Можно обращаться к отдельным символам по индексу","Нет защиты от выхода за границы","Строка — это объект"],correct:[0,1,2],
+                    exp:"В C строка — это просто <b>массив <code>char</code></b> с терминатором. Никакого класса или объекта нет, границы никто не проверяет — ответственность полностью на программисте."},
+                {q:"Как правильно прочитать строку с пробелами?",a:['scanf("%s", str)',"fgets(str, size, stdin)","getchar() в цикле","gets(str)"],correct:[1,2],
+                    exp:"<code>fgets</code> и посимвольное чтение через <code>getchar</code> <b>сохраняют пробелы</b>. <code>scanf(\"%s\")</code> останавливается на первом пробельном символе, а <code>gets</code> удалена из стандарта."}
+            ]},
+
+        matrices:{icon:"🔢",name:"Матрицы",q:[
+                {q:"Как объявить статическую матрицу 3×4 типа int?",a:["int m[3][4];","int m[4][3];","int m[12];","int **m;"],correct:[0],
+                    exp:"Первый индекс — <b>количество строк</b>, второй — столбцов. <code>int m[12]</code> — это одномерный массив (хотя элементов столько же), а <code>int **m</code> — указатель, память под него ещё надо выделить."},
+                {q:"Что означает m[i][j]?",a:["Элемент в строке i, столбце j","Элемент в столбце i, строке j","i-й элемент массива j","Указатель на строку"],correct:[0],
+                    exp:"Порядок индексов — <b>сначала строка, потом столбец</b>. Запись <code>m[i]</code> сама по себе даёт i-ю строку целиком (указатель на её начало)."},
+                {q:"Какие способы представления матрицы в памяти существуют?",a:["Двумерный массив","Массив указателей на строки","Массив указателей на столбцы","Связанный список"],correct:[0,1,2],
+                    exp:"Классические варианты — статический двумерный массив и массив указателей (чаще на строки, но можно и на столбцы). Связанный список для матриц <b>не используют</b>: он не даёт доступа по индексу за O(1)."},
+                {q:"Как вычисляется элемент при умножении матриц C = A × B?",a:["C[i][j] = A[i][j] * B[i][j]","C[i][j] = сумма A[i][k] * B[k][j]","C[i][j] = A[j][i] * B[i][j]","C[i][j] = A[i][j] + B[i][j]"],correct:[1],
+                    exp:"Элемент результата — это <b>скалярное произведение</b> i-й строки первой матрицы на j-й столбец второй. Поэтому нужен третий цикл по k и три вложенных цикла в сумме."},
+                {q:"Как вычисляется элемент при сложении матриц?",a:["C[i][j] = A[i][j] + B[i][j]","Через тройной цикл","C[i][j] = сумма строк","Матрицы нельзя складывать"],correct:[0],
+                    exp:"Сложение <b>поэлементное</b> — достаточно двух циклов. Матрицы должны иметь одинаковые размеры. Это заметно проще умножения, где нужен дополнительный проход."},
+                {q:"Что получится при повороте матрицы M×N на 90° по часовой стрелке?",a:["Матрица M×N","Матрица N×M","Матрица квадратная","Размер не меняется"],correct:[1],
+                    exp:"Строки становятся столбцами, поэтому <b>размеры меняются местами</b>: матрица 2×3 превратится в 3×2. Элемент <code>a[i][j]</code> попадёт в позицию <code>b[j][M-1-i]</code>."},
+                {q:"Сколько вложенных циклов нужно для умножения квадратных матриц?",a:["1","2","3","4"],correct:[2],
+                    exp:"Два внешних цикла перебирают позицию результата (i и j), третий накапливает <b>сумму произведений</b> по k. Сложность получается O(n³)."},
+                {q:"Как выделить динамическую матрицу как массив указателей?",a:["Выделить массив указателей, затем каждую строку отдельно","malloc(rows * cols)","Нельзя выделить динамически","Только статически"],correct:[0],
+                    exp:"Сначала <code>malloc</code> под массив из <code>rows</code> указателей, затем в цикле — под каждую строку. Получается <b>двухуровневая структура</b>, к которой можно обращаться как <code>m[i][j]</code>."},
+                {q:"Как правильно освободить матрицу, выделенную как массив указателей?",a:["Один free(m)","Сначала free каждой строки, потом free(m)","Сначала free(m), потом строки","Освобождение не нужно"],correct:[1],
+                    exp:"Порядок <b>строго обратный</b> выделению. Если освободить <code>m</code> первым, адреса строк потеряются и они утекут. Один <code>free(m)</code> освободит только массив указателей."},
+                {q:"Как обойти матрицу по строкам?",a:["Внешний цикл по i, внутренний по j","Внешний по j, внутренний по i","Один цикл до M*N","Рекурсивно"],correct:[0],
+                    exp:"Внешний цикл фиксирует строку, внутренний пробегает её элементы — так вывод получается <b>построчным</b>. Обратный порядок даст обход по столбцам."},
+                {q:"Что значит транспонировать матрицу?",a:["Поменять строки и столбцы местами","Повернуть на 90°","Отразить по горизонтали","Умножить на единичную"],correct:[0],
+                    exp:"Транспонирование — это <code>b[j][i] = a[i][j]</code>, отражение относительно <b>главной диагонали</b>. Поворот на 90° = транспонирование плюс отражение, это разные операции."},
+                {q:"Как обеспечить отсутствие пробела в конце строки матрицы?",a:["Печатать пробел перед элементом, кроме первого","Всегда печатать пробел после","Использовать \\t","Обрезать строку"],correct:[0],
+                    exp:"Приём тот же, что и для вывода списков: разделитель ставится <b>перед</b> элементом при условии <code>j &gt; 0</code>. Тогда после последнего элемента ничего лишнего не останется."}
+            ]},
+
+        structs:{icon:"🏗",name:"Структуры",q:[
+                {q:"Как обратиться к полю структуры через переменную?",a:["s.field","s->field","s::field","*s.field"],correct:[0],
+                    exp:"Точка используется, когда у нас <b>сама структура</b>. Стрелка <code>-&gt;</code> — когда указатель на неё. <code>::</code> — это C++."},
+                {q:"Как обратиться к полю структуры через указатель?",a:["p.field","p->field","(*p).field","*p.field"],correct:[1,2],
+                    exp:"<code>p-&gt;field</code> — это <b>сокращение</b> для <code>(*p).field</code>. Скобки в развёрнутой форме обязательны: без них точка сработает раньше разыменования."},
+                {q:"Можно ли копировать структуры присваиванием?",a:["Нет, только memcpy","Да, все поля копируются автоматически","Только через цикл","Только простые структуры"],correct:[1],
+                    exp:"Присваивание структур <b>разрешено</b> и копирует все поля побайтово. Но если внутри есть указатель, скопируется сам адрес — оба экземпляра будут ссылаться на одни данные (поверхностное копирование)."},
+                {q:"Можно ли сравнивать структуры через ==?",a:["Да, всегда","Нет, нужно сравнивать поля по отдельности","Только маленькие структуры","Да, если нет указателей"],correct:[1],
+                    exp:"Оператор <code>==</code> для структур <b>не определён</b> — это ошибка компиляции. Причина в выравнивании: между полями могут быть «дыры» с мусором, и побайтовое сравнение было бы ненадёжным."},
+                {q:"Какие операции применимы к структурам?",a:["Доступ через .","Доступ через ->","Копирование присваиванием","Прямое сравнение =="],correct:[0,1,2],
+                    exp:"Доступ к полям и копирование работают, а вот <b>сравнение через <code>==</code> запрещено</b>. Арифметика со структурами тоже недоступна."},
+                {q:"Как выделить память под массив структур?",a:["malloc(n * sizeof(struct name))","malloc(n)","malloc(sizeof(struct name))","Только статически"],correct:[0],
+                    exp:"Принцип тот же, что и для обычных массивов: <b>количество × размер элемента</b>. Часто пишут <code>sizeof(*ptr)</code> — так короче и безопаснее при смене типа."},
+                {q:"Верные утверждения о структурах в C?",a:["Память можно выделять статически и динамически","Поля могут быть разных типов","Нужно всегда выделять динамически","Структуры нельзя передавать в функции"],correct:[0,1],
+                    exp:"Структуру можно объявить как обычную переменную <b>или</b> выделить через <code>malloc</code>. Поля могут быть любых типов, включая другие структуры. Передавать в функции можно и по значению, и по указателю."},
+                {q:"Что делает typedef struct {...} Name;?",a:["Создаёт псевдоним типа","Создаёт переменную","Выделяет память","Объявляет функцию"],correct:[0],
+                    exp:"<code>typedef</code> позволяет писать <code>Name s;</code> вместо <code>struct Name s;</code>. Это <b>только удобство именования</b> — никакой памяти не выделяется."},
+                {q:"Как передать структуру в функцию без копирования?",a:["По значению","По указателю","Через глобальную переменную","Это невозможно"],correct:[1],
+                    exp:"Передача <b>по указателю</b> копирует только адрес (обычно 8 байт) вместо всей структуры. Это быстрее для больших структур и позволяет функции изменять оригинал."},
+                {q:"Что такое устойчивая сортировка?",a:["Быстрая сортировка","Сохраняет относительный порядок равных элементов","Не использует дополнительную память","Работает за O(n)"],correct:[1],
+                    exp:"Если два элемента <b>равны по ключу</b>, устойчивая сортировка оставит их в исходном порядке. В пузырьковой сортировке это достигается строгим сравнением (<code>&lt;</code> вместо <code>&lt;=</code>)."},
+                {q:"Как поменять местами две структуры?",a:["Через временную переменную того же типа","Только поэлементно","swap(a, b)","Это невозможно"],correct:[0],
+                    exp:"Поскольку присваивание структур работает, обмен делается <b>классическим способом</b>: <code>tmp = a; a = b; b = tmp;</code>. Встроенной функции <code>swap</code> в C нет."},
+                {q:"Какая сложность у пузырьковой сортировки?",a:["O(n)","O(n log n)","O(n²)","O(1)"],correct:[2],
+                    exp:"Два вложенных цикла дают примерно n²/2 сравнений — это <b>O(n²)</b>. Для малых массивов (до сотни элементов) этого достаточно, для больших нужны <code>qsort</code> или другие алгоритмы."}
+            ]},
+
+        widum:{icon:"🎓",name:"Экзаменационные",note:"Возможно, будут на экзамене",src:true,q:[
+                {q:"Какие типы файлов существуют?",a:["Универсальные","Блочные","Бинарные","Текстовые"],correct:[1,2,3],
+                    exp:"В C файлы делятся на <b>текстовые и бинарные</b> по способу интерпретации данных. В Unix-системах отдельно выделяют <b>блочные</b> устройства (диски) наряду с символьными. «Универсальных» файлов не бывает."},
+                {q:"Что такое строки в языке C?",a:["Строка — это объект","Источник ошибок, так как нет защиты при выходе за границы","Строка — это массив символов","Можно получить доступ к отдельным символам"],correct:[2,3],
+                    exp:"Строка в C — это <b>массив <code>char</code></b> с завершающим <code>'\\0'</code>. Доступ по индексу есть, но никакой проверки границ нет. Объектов в C не существует — это концепция ООП-языков."},
+                {q:"Какие аргументы у main()?",a:["main() не принимает аргументы","int argc, char *argv[]","char *argv[], int argc","int argc, char **argv"],correct:[1,3],
+                    exp:"Стандартная сигнатура: <b>сначала счётчик, потом массив строк</b>. Записи <code>char *argv[]</code> и <code>char **argv</code> эквивалентны. Порядок параметров менять нельзя."},
+                {q:"Что является принципом структурного программирования?",a:["Всё должно быть написано в одной функции","Следует использовать только глобальные переменные","Рекомендуется использовать классы","Программа должна быть разбита на отдельные блоки или функции"],correct:[3],
+                    exp:"Ключевая идея — <b>декомпозиция</b>: разбиение задачи на небольшие независимые блоки. Классы относятся к ООП, а монолитный код и глобальные переменные — наоборот, антипаттерны."},
+                {q:"Каким режимом открыть файл для дозаписи в конец?",a:["w+","r","w","a"],correct:[3],
+                    exp:"<code>a</code> (append) добавляет данные <b>в конец</b>, сохраняя существующее содержимое. Режимы <code>w</code> и <code>w+</code> обрезают файл до нуля, а <code>r</code> открывает только для чтения."},
+                {q:"Как вернуть код ошибки и значение функции?",a:["Функция может возвращать два значения","Использовать исключения","Через глобальную переменную","Возврат кода ошибки, значение — через указатель"],correct:[3],
+                    exp:"Стандартный приём в C: функция возвращает <b>статус</b>, а результат записывает по переданному указателю. Исключений в C нет, а глобальные переменные ломают переиспользуемость кода."},
+                {q:"Что такое структурное программирование?",a:["В нём используются классы","В нём используются структуры","В нём используются функции","В нём используется декомпозиция и 3 базовые конструкции"],correct:[2,3],
+                    exp:"Три базовые конструкции — <b>последовательность, ветвление и цикл</b>. Задача разбивается на функции. Слово «структуры» здесь не про <code>struct</code>, а про структуру программы."},
+                {q:"Что такое компиляция?",a:["Сжатие исходного кода","Проверка стиля и форматирования кода","Процесс преобразования исходного кода в исполняемый файл","Запуск программы на выполнение"],correct:[2],
+                    exp:"Компиляция <b>переводит</b> текст программы в машинный код. Запуск — это отдельный шаг, происходящий уже после сборки. Проверка стиля выполняется линтерами вроде <code>clang-format</code>."},
+                {q:"Как происходит обработка аргументов командной строки?",a:["Командная строка не поддерживается","Используется глобальный массив","Обрабатывается программистом с использованием argc и argv","Система автоматически разбирает аргументы"],correct:[2],
+                    exp:"Система лишь <b>передаёт</b> аргументы в <code>main</code> как массив строк. Разбор флагов, преобразование в числа, проверка корректности — всё это пишет программист вручную."},
+                {q:"Что такое SSH и где применяется?",a:["SSH — это протокол канального уровня","SSH применяется для передачи гипертекста","SSH (secure shell) — это сетевой протокол для защищённого управления удалёнными системами","SSH применяется для безопасной передачи данных"],correct:[2],
+                    exp:"SSH работает на <b>прикладном уровне</b> и обеспечивает шифрованный доступ к удалённой машине. Гипертекст передаёт HTTP. В Школе 21 SSH нужен для работы с Git по ключам."},
+                {q:"Какое имя файла является валидным?",a:["Любая последовательность букв, цифр и спец. символов","Любая последовательность символов, кроме «/» и «\\0»","Любая последовательность букв и цифр","Имя должно быть не длиннее 8 символов"],correct:[1],
+                    exp:"В Unix запрещены ровно два символа: <b>слеш</b> (разделитель пути) и <b>нулевой байт</b> (конец строки). Ограничение в 8 символов — это устаревшее правило MS-DOS."},
+                {q:"Основные компоненты Unix?",a:["Системные библиотеки","Системные утилиты","Графическая оболочка","Ядро"],correct:[0,1,3],
+                    exp:"Классическая архитектура: <b>ядро</b> управляет ресурсами, <b>библиотеки</b> дают программам API, <b>утилиты</b> обеспечивают работу пользователя. Графическая оболочка — необязательная надстройка, серверы работают без неё."},
+                {q:"Как хранятся строки в памяти в C?",a:["Хранятся в виде объекта","Хранятся в бинарном дереве","Хранятся как массив с последним символом «\\0»","Хранятся как структура данных"],correct:[2],
+                    exp:"Символы лежат в памяти <b>подряд</b>, а признаком конца служит нулевой байт. Длина отдельно нигде не хранится — поэтому <code>strlen</code> каждый раз проходит по всей строке."},
+                {q:"Что такое компоновщик?",a:["Переименовывает переменные","Удаляет ненужные части программы","Соединяет объектные файлы в единый исполняемый файл","Проверяет грамматику языка"],correct:[2],
+                    exp:"Компоновщик (linker) работает <b>после компилятора</b>: связывает объектные файлы между собой и подключает библиотеки. Ошибка «undefined reference» приходит именно от него."},
+                {q:"Что НЕ является принципом структурного программирования?",a:["Использование циклов","Использование функций","Использование глобальных переменных","Использование goto"],correct:[2,3],
+                    exp:"<code>goto</code> создаёт «спагетти-код» и ломает линейную логику, а <b>глобальные переменные</b> делают зависимости неявными. Циклы и функции — наоборот, основа структурного подхода."},
+                {q:"Как происходит обработка ошибок в C и нужно ли проверять выделение памяти?",a:["В C нет встроенной поддержки исключений","Нужно проверять результат malloc","malloc не всегда выделяет память","Ошибки обрабатываются автоматически"],correct:[0,1,2],
+                    exp:"В C ошибки передаются через <b>возвращаемые значения</b> и <code>errno</code>. <code>malloc</code> может вернуть <code>NULL</code> при нехватке памяти, поэтому проверка обязательна. Ничего автоматического здесь нет."},
+                {q:"Какие операции можно проводить над структурами?",a:["Можно обращаться с помощью операций . и ->","Можно прибавлять указатель к структуре","Можно сравнивать структуры напрямую","Можно копировать структуры присваиванием"],correct:[0,3],
+                    exp:"Доступ к полям и копирование целиком <b>разрешены</b>. А вот сравнение через <code>==</code> компилятор не пропустит, и арифметика со структурами тоже недоступна."},
+                {q:"В чём разница между git и GitLab?",a:["Git — это система управления версиями, а GitLab — веб-сервис для размещения репозиториев","Git и GitLab — одно и то же","GitLab — это клиент для Git","Git — это веб-интерфейс, а GitLab — язык программирования"],correct:[0],
+                    exp:"<b>Git</b> — консольная программа для контроля версий, работает локально. <b>GitLab</b> — платформа, которая хранит репозитории на сервере и добавляет CI/CD, задачи и код-ревью."},
+                {q:"Укажите верные утверждения о структурах в C",a:["В C для struct нужно динамически выделять память","Для struct можно выделять как статически, так и динамически память","Можно менять тип переменных","Структуры нельзя использовать в функциях"],correct:[1,2],
+                    exp:"Структуру можно объявить <b>обычной переменной</b> (память на стеке) или выделить через <code>malloc</code> (куча). Поля описываются произвольными типами при объявлении структуры."},
+                {q:"Что такое препроцессор в C?",a:["Выполняет замену макросов и вставку текстов перед компиляцией","Преобразует код в машинные инструкции","Запускает программу","Оптимизирует бинарный файл"],correct:[0],
+                    exp:"Препроцессор работает <b>до компиляции</b> и обрабатывает директивы с <code>#</code>: подставляет <code>#include</code>, раскрывает <code>#define</code>, обрабатывает условную компиляцию. Это чисто текстовые преобразования."},
+                {q:"Какая функция позволяет скопировать строку с выделением памяти под новую строку?",a:["memcpy","strcpy","strdup","strconcat"],correct:[2],
+                    exp:"<code>strdup</code> = duplicate: выделяет память нужного размера <b>и</b> копирует строку. Результат обязательно освобождать через <code>free</code>. Функции <code>strconcat</code> в стандарте нет."},
+                {q:'Что вернёт strcmp("adcb", "abc")?',a:["0","Положительное число","-1","1"],correct:[1],
+                    exp:"Сравнение идёт посимвольно: 'a' = 'a', затем <b>'d' против 'b'</b>. Код 'd' (100) больше кода 'b' (98), поэтому результат положительный. Конкретное значение стандартом не задано."},
+                {q:"Какие существуют способы представления матрицы в памяти?",a:["Двумерный массив","Связанный список","Массив указателей на столбцы","Массив указателей на строки"],correct:[0,2,3],
+                    exp:"Все три варианта дают <b>доступ по индексу за O(1)</b>. Связанный список для матрицы неэффективен: чтобы добраться до элемента, придётся идти по цепочке."},
+                {q:"Какие существуют функции для работы с памятью?",a:["realloc","free","calloc","malloc"],correct:[0,1,2,3],
+                    exp:"Полный набор из <code>&lt;stdlib.h&gt;</code>: <code>malloc</code> выделяет, <code>calloc</code> выделяет с обнулением, <code>realloc</code> изменяет размер, <code>free</code> освобождает."}
+            ]}
+
     };
 
-    const FILE_BUTTONS = [
-        { key: "readme",    filename: "README.md",              label: "📋 Условие",          tabTitle: "Условие",              reveal: false },
-        { key: "theory",    filename: "theory.md",              label: "💡 Теория",            tabTitle: "Теория",               reveal: true },
-        { key: "tests",     filename: "tests.md",               label: "🧪 Тесты",            tabTitle: "Тесты",                reveal: false },
-        { key: "solution",  filename: "solution.c",             label: "✅ Решение",           tabTitle: "Решение",              reveal: true },
-        { key: "commented", filename: "solution_commented.c",   label: "💬 С комментариями",  tabTitle: "Решение с комментариями", reveal: true }
-    ];
+    /* ============================================================
+       THEME
+       ============================================================ */
+    const root = document.documentElement;
+    const themeBtn = document.getElementById("themeBtn");
 
-    const ui = {
-        choose:   document.getElementById("chooseButton"),
-        generate: document.getElementById("generateButton"),
-        pause:    document.getElementById("pauseButton"),
-        extra:    document.getElementById("extraCheckbox"),
-        status:   document.getElementById("status"),
-        catalog:  document.getElementById("catalogInfo"),
-        attempt:  document.getElementById("attemptInfo"),
-        timer:    document.getElementById("timer"),
-        cards:    document.getElementById("cards")
-    };
+    function setTheme(t){
+        root.setAttribute("data-theme", t);
+        themeBtn.textContent = t === "dark" ? "🌙" : "☀️";
+        try{ localStorage.setItem("quiz-theme", t); }catch(e){}
+    }
+    themeBtn.addEventListener("click", () => {
+        setTheme(root.getAttribute("data-theme") === "dark" ? "light" : "dark");
+    });
+    (function(){
+        let saved = null;
+        try{ saved = localStorage.getItem("quiz-theme"); }catch(e){}
+        if(!saved) saved = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        setTheme(saved);
+    })();
 
-    const state = {
-        root:      null,
-        tasksDir:  null,
-        available: [],
-        missing:   [],
-        busy:      false,
-        attempt:   null,
-        current:   { easy: null, medium: null, hard: null },
-        seen:      { easy: new Set(), medium: new Set(), hard: new Set() },
-        timer:     { running: false, startedAt: 0, elapsed: 0 },
-        locked:    { easy: false, medium: true, hard: true },
-        completed: { easy: false, medium: false, hard: false }
-    };
+    /* ============================================================
+       HELPERS
+       ============================================================ */
+    const KEYS = ["A","B","C","D","E","F"];
+    const $ = id => document.getElementById(id);
+    const screens = { menu:$("menu"), quiz:$("quiz"), results:$("results") };
+    let session = null;
 
-    const cardUI = {};
-
-    function el(tag, className, text) {
-        const node = document.createElement(tag);
-        if (className) node.className = className;
-        if (text !== undefined) node.textContent = text;
-        return node;
+    function show(name){
+        for(const k in screens) screens[k].classList.toggle("hidden", k !== name);
+        window.scrollTo({top:0,behavior:"instant"});
+    }
+    function shuffle(a){
+        for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+        return a;
+    }
+    function plural(n,one,few,many){
+        const m10=n%10,m100=n%100;
+        if(m10===1&&m100!==11)return one;
+        if(m10>=2&&m10<=4&&(m100<10||m100>=20))return few;
+        return many;
+    }
+    function el(tag,cls,txt){
+        const n=document.createElement(tag);
+        if(cls)n.className=cls;
+        if(txt!==undefined)n.textContent=txt;
+        return n;
     }
 
-    function setStatus(message, kind) {
-        ui.status.className = "status" + (kind ? " " + kind : "");
-        ui.status.textContent = message;
-    }
-
-    function extraEnabled() { return ui.extra.checked; }
-
-    function poolFor(level) {
-        return state.available.filter(function (task) {
-            return task.level === level && (extraEnabled() || !task.extra);
-        });
-    }
-
-    function refreshControls() {
-        ui.choose.disabled   = state.busy;
-        ui.extra.disabled    = state.busy;
-        ui.pause.disabled    = !state.attempt;
-        ui.pause.textContent = state.timer.running ? "Пауза" : "Продолжить";
-
-        ui.generate.disabled = state.busy
-            || !state.root
-            || LEVELS.some(function (level) { return poolFor(level.id).length === 0; });
-
-        for (var i = 0; i < LEVELS.length; i++) {
-            var levelId   = LEVELS[i].id;
-            var card      = cardUI[levelId];
-            var current   = state.current[levelId];
-            var hasTask   = !!current;
-            var isLocked  = state.locked[levelId];
-            var isDone    = state.completed[levelId];
-
-            card.skip.disabled = state.busy || !hasTask || isDone;
-            card.doneBtn.disabled = !hasTask || isLocked;
-
-            if (isDone) {
-                card.doneBtn.textContent = "↩️ Вернуть";
-                card.doneBtn.className = "file-btn";
-            } else {
-                card.doneBtn.textContent = "✅ Решено";
-                card.doneBtn.className = "file-btn done-btn";
-            }
-
-            for (var j = 0; j < FILE_BUTTONS.length; j++) {
-                var cfg = FILE_BUTTONS[j];
-                var btn = card.fileButtons[cfg.key];
-
-                if (!hasTask || isLocked || isDone) {
-                    btn.disabled = true;
-                    btn.title = isLocked ? "Сначала откройте задание" : "";
-                    btn.textContent = cfg.label;
-                } else {
-                    var exists = current.task.availableFiles
-                        && current.task.availableFiles[cfg.key];
-
-                    btn.disabled = !exists;
-                    btn.title = exists ? "" : "Файл отсутствует в этом задании";
-                    btn.textContent = exists ? cfg.label : cfg.label + " (нет)";
-                }
-            }
-
-            card.source.disabled = !hasTask || isLocked || isDone;
-        }
-
-        if (state.root) {
-            var parts = LEVELS.map(function (level) {
-                return level.label.toLowerCase() + ": " + poolFor(level.id).length;
+    /* ============================================================
+       MENU
+       ============================================================ */
+    function buildMenu(){
+        const grid = $("topicGrid");
+        grid.replaceChildren();
+        for(const key in BANK){
+            const t = BANK[key];
+            const b = el("button","topic"+(t.src?" special":""));
+            b.append(
+                el("span","t-icon",t.icon),
+                el("div","t-name",t.name),
+                el("div","t-count",t.q.length+" "+plural(t.q.length,"вопрос","вопроса","вопросов"))
+            );
+            if(t.note) b.appendChild(el("div","t-note","⚠ "+t.note));
+            b.addEventListener("click",()=>{
+                const qs = t.q.map(q=>({...q,_topic:t.name,_src:!!t.src}));
+                startQuiz(t.name, shuffle(qs));
             });
-            ui.catalog.textContent =
-                "Найдено " + state.available.length + "/" + TASKS.length
-                + " · " + parts.join(" · ");
-        } else {
-            ui.catalog.textContent = "Каталог не подключён";
+            grid.appendChild(b);
         }
     }
 
-    async function runOperation(operation) {
-        if (state.busy) return;
-        state.busy = true;
-        refreshControls();
-        try {
-            await operation();
-        } catch (error) {
-            console.error(error);
-            if (error.name === "AbortError") {
-                setStatus("Действие отменено.");
-            } else {
-                setStatus((error.message || "Ошибка.") + " Старые попытки не изменялись.", "error");
-            }
-        } finally {
-            state.busy = false;
-            refreshControls();
+    $("rndStart").addEventListener("click",()=>{
+        const want = Math.max(5,Math.min(150,parseInt($("rndCount").value)||20));
+        const useW = $("rndWidum").checked;
+        const pools = [];
+        for(const key in BANK){
+            if(key==="widum" && !useW) continue;
+            pools.push(BANK[key].q.map(q=>({...q,_topic:BANK[key].name,_src:!!BANK[key].src})));
         }
-    }
-
-    function elapsedMilliseconds() {
-        return state.timer.elapsed + (state.timer.running ? Date.now() - state.timer.startedAt : 0);
-    }
-
-    function updateTimer() {
-        var total = Math.floor(elapsedMilliseconds() / 1000);
-        ui.timer.textContent = [
-            Math.floor(total / 3600),
-            Math.floor(total / 60) % 60,
-            total % 60
-        ].map(function (v) { return String(v).padStart(2, "0"); }).join(":");
-    }
-
-    function resetTimer(start) {
-        state.timer.elapsed = 0;
-        state.timer.startedAt = Date.now();
-        state.timer.running = !!start;
-        updateTimer();
-    }
-
-    function toggleTimer() {
-        if (!state.attempt) return;
-        if (state.timer.running) {
-            state.timer.elapsed += Date.now() - state.timer.startedAt;
-            state.timer.running = false;
-        } else {
-            state.timer.startedAt = Date.now();
-            state.timer.running = true;
-        }
-        updateTimer();
-        refreshControls();
-    }
-
-    setInterval(updateTimer, 500);
-
-    async function getNestedDirectory(parent, path) {
-        var dir = parent;
-        var parts = path.split("/").filter(Boolean);
-        for (var i = 0; i < parts.length; i++) dir = await dir.getDirectoryHandle(parts[i]);
-        return dir;
-    }
-
-    async function resolveTaskDirectory(tasksDir, task) {
-        var candidates = [task.path];
-        if (task.path.endsWith("_extra")) candidates.push(task.path.replace(/_extra$/, "__extra"));
-        if (PATH_ALIASES[task.path]) candidates.push(PATH_ALIASES[task.path]);
-
-        for (var i = 0; i < candidates.length; i++) {
-            try {
-                var dir = await getNestedDirectory(tasksDir, candidates[i]);
-                var readme = await dir.getFileHandle("README.md");
-                var avail = { readme: true };
-                for (var f = 0; f < FILE_BUTTONS.length; f++) {
-                    var fn = FILE_BUTTONS[f].filename;
-                    if (fn === "README.md") continue;
-                    try { await dir.getFileHandle(fn); avail[FILE_BUTTONS[f].key] = true; }
-                    catch (e) { if (e.name === "NotFoundError") avail[FILE_BUTTONS[f].key] = false; else throw e; }
-                }
-                return {
-                    path: task.path, title: task.title, level: task.level,
-                    actualPath: candidates[i], directory: dir, readme: readme,
-                    extra: task.path.endsWith("_extra"), availableFiles: avail
-                };
-            } catch (e) {
-                if (e.name !== "NotFoundError" && e.name !== "TypeMismatchError") throw e;
-            }
-        }
-        return null;
-    }
-
-    async function ensureWritePermission() {
-        if (!state.root) throw new Error("Сначала выбери папку проекта.");
-        var opt = { mode: "readwrite" };
-        if (await state.root.queryPermission(opt) === "granted") return;
-        if (await state.root.requestPermission(opt) !== "granted")
-            throw new Error("Для сохранения нужно разрешение на запись.");
-    }
-
-    async function writeFile(dir, name, content) {
-        var h = await dir.getFileHandle(name, { create: true });
-        var w = await h.createWritable();
-        try { await w.write(content); await w.close(); }
-        catch (e) { try { await w.abort(); } catch (_) {} throw e; }
-    }
-
-    function uniqueSuffix() {
-        var v = new Uint32Array(2); crypto.getRandomValues(v);
-        return Array.from(v, function (x) { return x.toString(16).padStart(8, "0"); }).join("");
-    }
-
-    async function createUniqueDirectory(parent, prefix) {
-        for (var a = 0; a < 10; a++) {
-            var name = prefix + "_" + uniqueSuffix();
-            try { await parent.getDirectoryHandle(name); continue; }
-            catch (e) { if (e.name === "TypeMismatchError") continue; if (e.name !== "NotFoundError") throw e; }
-            return { name: name, directory: await parent.getDirectoryHandle(name, { create: true }) };
-        }
-        throw new Error("Не удалось создать уникальную папку.");
-    }
-
-    function timestamp() {
-        var d = new Date(), p = function (v) { return String(v).padStart(2, "0"); };
-        return [d.getFullYear(), p(d.getMonth()+1), p(d.getDate())].join("-")
-            + "_" + [p(d.getHours()), p(d.getMinutes()), p(d.getSeconds())].join("-");
-    }
-
-    async function readTaskReadme(task) {
-        var f = await task.readme.getFile(), md = await f.text();
-        if (!md.trim()) throw new Error("README.md пустой: tasks/" + task.actualPath);
-        return md;
-    }
-
-    async function readFileFromTask(task, filename) {
-        try { var h = await task.directory.getFileHandle(filename); var f = await h.getFile(); return await f.text(); }
-        catch (e) { if (e.name === "NotFoundError") throw new Error("Файл " + filename + " не найден в tasks/" + task.actualPath); throw e; }
-    }
-
-    async function saveSelection(attempt, level, task, markdown) {
-        var ld = await attempt.directory.getDirectoryHandle(level, { create: true });
-        var leaf = task.path.split("/").pop();
-        var sel = await createUniqueDirectory(ld, leaf);
-        await writeFile(sel.directory, "README.md", markdown);
-        await writeFile(sel.directory, "main.c", "");
-        return { task: task, markdown: markdown, directory: sel.directory,
-            relativePath: "Your_tasks/" + attempt.name + "/" + level + "/" + sel.name };
-    }
-
-    async function chooseProject() {
-        if (!window.isSecureContext || typeof window.showDirectoryPicker !== "function")
-            throw new Error("Этот браузер не поддерживает доступ к папкам. Используй Chrome или Edge.");
-        var root = await window.showDirectoryPicker({ id: "c-practice-project", mode: "readwrite" });
-        var td;
-        try { td = await root.getDirectoryHandle("tasks"); }
-        catch (e) { if (e.name === "NotFoundError") throw new Error("В выбранной папке нет tasks."); throw e; }
-        setStatus("Читаю каталог заданий…");
-        var avail = [], miss = [];
-        for (var i = 0; i < TASKS.length; i++) {
-            var r = await resolveTaskDirectory(td, TASKS[i]);
-            if (r) avail.push(r); else miss.push(TASKS[i].path);
-        }
-        if (!avail.length) throw new Error("Не найдено ни одного задания с README.md.");
-        state.root = root; state.tasksDir = td; state.available = avail; state.missing = miss; state.attempt = null;
-        state.locked.easy = false; state.locked.medium = true; state.locked.hard = true;
-        state.completed.easy = false; state.completed.medium = false; state.completed.hard = false;
-        for (var j = 0; j < LEVELS.length; j++) {
-            state.current[LEVELS[j].id] = null; state.seen[LEVELS[j].id].clear(); renderCard(LEVELS[j].id);
-        }
-        resetTimer();
-        ui.attempt.textContent = "Набор ещё не создан";
-        setStatus(miss.length
-            ? "Подключён проект «" + root.name + "». Не найдены " + miss.length + " задания: " + miss.join(", ")
-            : "Проект «" + root.name + "» подключён. Все 50 заданий найдены.", miss.length ? undefined : "success");
-    }
-
-    function randomItem(items) { return items[Math.floor(Math.random() * items.length)]; }
-
-    function chooseCandidate(level) {
-        var cp = state.current[level] ? state.current[level].task.path : null;
-        var pool = poolFor(level);
-        var unseen = pool.filter(function (t) { return t.path !== cp && !state.seen[level].has(t.path); });
-        if (unseen.length) return { task: randomItem(unseen), restart: false };
-        var alt = pool.filter(function (t) { return t.path !== cp; });
-        if (!alt.length) {
-            if (!cp && pool.length) return { task: randomItem(pool), restart: false };
-            throw new Error("Нет другого задания. Включи дополнительные упражнения.");
-        }
-        var lbl = LEVELS.find(function (l) { return l.id === level; }).label;
-        if (!confirm("Категория «" + lbl + "»: все задания уже выпадали. Начать новый круг?")) return null;
-        return { task: randomItem(alt), restart: true };
-    }
-
-    function commitCandidate(level, cand, sel) {
-        if (cand.restart) state.seen[level].clear();
-        state.seen[level].add(cand.task.path);
-        state.current[level] = sel;
-    }
-
-    async function generateSet() {
-        if (!state.root) throw new Error("Сначала выбери папку проекта.");
-        await ensureWritePermission();
-        var planned = [];
-        for (var i = 0; i < LEVELS.length; i++) {
-            var c = chooseCandidate(LEVELS[i].id);
-            if (!c) { setStatus("Создание набора отменено."); return; }
-            planned.push({ level: LEVELS[i].id, candidate: c, markdown: null });
-        }
-        setStatus("Читаю условия и создаю рабочие файлы…");
-        for (var j = 0; j < planned.length; j++) planned[j].markdown = await readTaskReadme(planned[j].candidate.task);
-        var output = await state.root.getDirectoryHandle("Your_tasks", { create: true });
-        var attempt = await createUniqueDirectory(output, "attempt_" + timestamp());
-        var saved = [];
-        for (var k = 0; k < planned.length; k++) {
-            saved.push({ level: planned[k].level, candidate: planned[k].candidate,
-                selection: await saveSelection(attempt, planned[k].level, planned[k].candidate.task, planned[k].markdown) });
-        }
-        state.attempt = attempt;
-        state.locked.easy = false; state.locked.medium = true; state.locked.hard = true;
-        state.completed.easy = false; state.completed.medium = false; state.completed.hard = false;
-        for (var m = 0; m < saved.length; m++) {
-            commitCandidate(saved[m].level, saved[m].candidate, saved[m].selection);
-            renderCard(saved[m].level);
-        }
-        resetTimer(true);
-        ui.attempt.textContent = "Попытка: " + attempt.name;
-        setStatus("Три задания сохранены в Your_tasks/" + attempt.name + ". Таймер запущен.", "success");
-    }
-
-    async function skipTask(level) {
-        if (!state.attempt || !state.current[level]) return;
-        await ensureWritePermission();
-        var c = chooseCandidate(level); if (!c) { setStatus("Замена отменена."); return; }
-        setStatus("Подбираю замену…");
-        var md = await readTaskReadme(c.task);
-        var sel = await saveSelection(state.attempt, level, c.task, md);
-        state.locked[level] = false; state.completed[level] = false;
-        commitCandidate(level, c, sel); renderCard(level);
-        setStatus("Замена сохранена: " + sel.relativePath, "success");
-    }
-
-    async function openFileInTab(level, filename, tabTitle) {
-        var sel = state.current[level]; if (!sel) return;
-        var content;
-        try { content = await readFileFromTask(sel.task, filename); }
-        catch (e) { setStatus(e.message, "error"); return; }
-        var tab = window.open("about:blank", "_blank");
-        if (!tab) { setStatus("Браузер заблокировал вкладку. Разреши всплывающие окна.", "error"); return; }
-        tab.opener = null;
-        var doc = tab.document, isMd = filename.endsWith(".md");
-        doc.documentElement.lang = "ru";
-        doc.title = tabTitle + " — " + sel.task.title;
-        var mc = doc.createElement("meta"); mc.setAttribute("charset", "UTF-8");
-        var mv = doc.createElement("meta"); mv.name = "viewport"; mv.content = "width=device-width, initial-scale=1";
-        var style = doc.createElement("style");
-        style.textContent = document.querySelector("style").textContent
-            + "\nbody { padding: 20px; }\n.standalone { max-width: 960px; margin: 0 auto; height: auto; min-height: 0; overflow: visible; padding: 28px; background: var(--panel); border: 1px solid var(--border); border-radius: 16px; }\n";
-        doc.head.append(mc, mv, style);
-        var main = doc.createElement("main"); main.className = "document standalone";
-        if (isMd) { main.appendChild(doc.importNode(renderMarkdown(content), true)); }
-        else {
-            var pre = doc.createElement("pre"), code = doc.createElement("code");
-            if (filename.endsWith(".c") || filename.endsWith(".h")) code.innerHTML = highlightC(content);
-            else code.textContent = content;
-            pre.appendChild(code); main.appendChild(pre);
-        }
-        doc.body.replaceChildren(main);
-    }
-
-    function toggleSource(level) { cardUI[level].sourceRow.hidden = !cardUI[level].sourceRow.hidden; }
-
-    function toggleCompleted(level) {
-        state.completed[level] = !state.completed[level];
-        renderCard(level);
-        refreshControls();
-    }
-
-    /* ================================================================
-       C SYNTAX HIGHLIGHTER
-       ================================================================ */
-
-    function escapeHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function highlightC(code) {
-        var rx = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\])*")|('(?:\\.|[^'\\])*')|(^\s*#[a-zA-Z_]+)|(\b(?:break|case|char|const|continue|default|do|double|else|enum|extern|float|for|goto|if|inline|int|long|register|restrict|return|short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|volatile|while)\b)|(\b(?:size_t|ssize_t|uintptr_t|intptr_t|FILE|NULL|stdin|stdout|stderr|[a-zA-Z0-9_]+_t)\b)|(\b0x[0-9a-fA-F]+\b|\b\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[fFlL]?\b)|(\b[a-zA-Z_][a-zA-Z0-9_]*(?=\s*\())/gm;
-        var li = 0, html = '';
-        code.replace(rx, function(m, cm, st, ch, pp, kw, ty, nu, fn, idx) {
-            if (idx > li) html += escapeHtml(code.slice(li, idx));
-            if (cm)      html += '<span class="hl-comment">' + escapeHtml(cm) + '</span>';
-            else if (st) html += '<span class="hl-string">'  + escapeHtml(st) + '</span>';
-            else if (ch) html += '<span class="hl-char">'    + escapeHtml(ch) + '</span>';
-            else if (pp) html += '<span class="hl-preproc">' + escapeHtml(pp) + '</span>';
-            else if (kw) html += '<span class="hl-keyword">' + escapeHtml(kw) + '</span>';
-            else if (ty) html += '<span class="hl-type">'    + escapeHtml(ty) + '</span>';
-            else if (nu) html += '<span class="hl-number">'  + escapeHtml(nu) + '</span>';
-            else if (fn) html += '<span class="hl-func">'    + escapeHtml(fn) + '</span>';
-            li = idx + m.length;
-        });
-        if (li < code.length) html += escapeHtml(code.slice(li));
-        return html;
-    }
-
-    /* ================================================================
-       MARKDOWN PARSER
-       ================================================================ */
-
-    function appendInline(parent, text) {
-        var pat = /(`[^`\n]+`|\*\*[^*\n]+\*\*|\*[^*\n]+\*|\[[^\]]*\]\([^)]*\)|<br\s*\/?>|<b>.*?<\/b>|<strong>.*?<\/strong>|<i>.*?<\/i>|<em>.*?<\/em>|<u>.*?<\/u>|<code>.*?<\/code>)/gi;
-        var pos = 0, m;
-        while ((m = pat.exec(text)) !== null) {
-            if (m.index > pos) parent.appendChild(document.createTextNode(text.slice(pos, m.index)));
-            var tok = m[0], tl = tok.toLowerCase();
-            if      (tok.startsWith("`"))       parent.appendChild(el("code","",tok.slice(1,-1)));
-            else if (tok.startsWith("**"))    { var s=el("strong"); appendInline(s,tok.slice(2,-2)); parent.appendChild(s); }
-            else if (tok.startsWith("*"))     { var e=el("em");     appendInline(e,tok.slice(1,-1)); parent.appendChild(e); }
-            else if (tok.startsWith("["))      { var lm=tok.match(/^\[([^\]]*)\]\(([^)]*)\)$/);
-                if(lm){var a=el("a");a.href=lm[2];a.target="_blank";a.rel="noopener noreferrer";appendInline(a,lm[1]);parent.appendChild(a);}
-                else parent.appendChild(document.createTextNode(tok)); }
-            else if (tl.startsWith("<br"))       parent.appendChild(document.createElement("br"));
-            else if (tl.startsWith("<b>"))      { var s=el("strong"); appendInline(s,tok.slice(3,-4)); parent.appendChild(s); }
-            else if (tl.startsWith("<strong>")) { var s=el("strong"); appendInline(s,tok.slice(8,-9)); parent.appendChild(s); }
-            else if (tl.startsWith("<i>"))      { var e=el("em");     appendInline(e,tok.slice(3,-4)); parent.appendChild(e); }
-            else if (tl.startsWith("<em>"))     { var e=el("em");     appendInline(e,tok.slice(4,-5)); parent.appendChild(e); }
-            else if (tl.startsWith("<u>"))      { var u=el("u");      appendInline(u,tok.slice(3,-4)); parent.appendChild(u); }
-            else if (tl.startsWith("<code>"))     parent.appendChild(el("code","",tok.slice(6,-7)));
-            pos = pat.lastIndex;
-        }
-        if (pos < text.length) parent.appendChild(document.createTextNode(text.slice(pos)));
-    }
-
-    function appendCellWithBreaks(p,t) { appendInline(p,t); }
-
-    function tableCells(line) {
-        var v = line.trim().replace(/\\\|/g,"\u0001");
-        if(v.startsWith("|"))v=v.slice(1); if(v.endsWith("|"))v=v.slice(0,-1);
-        return v.split("|").map(function(c){return c.trim().replace(/\u0001/g,"|");});
-    }
-
-    function isTableDivider(l) {
-        if(!l||!l.includes("|"))return false; var c=tableCells(l);
-        return c.length>0&&c.every(function(x){return /^:?-{3,}:?$/.test(x);});
-    }
-
-    function isBlockStart(lines,idx) {
-        if(idx>=lines.length)return true; var l=lines[idx];
-        return /^\s*$/.test(l)||/^\s*(`{3,}|~{3,})/.test(l)||/^#{1,6}\s+/.test(l)||/^\s*>/.test(l)
-            ||/^\s*[-+*]\s+/.test(l)||/^\s*\d+[.)]\s+/.test(l)||/^\s*([-*_])(?:\s*\1){2,}\s*$/.test(l)
-            ||/^\s*<details/i.test(l)||/^\s*<\/details/i.test(l)||(l.includes("|")&&isTableDivider(lines[idx+1]));
-    }
-
-    function renderMarkdown(md) {
-        var frag = document.createDocumentFragment(), lines = md.replace(/\r\n?/g,"\n").split("\n"), i = 0;
-        while (i < lines.length) {
-            var line = lines[i];
-            if (!line.trim()) { i++; continue; }
-
-            var fence = line.match(/^\s*(`{3,}|~{3,})(.*)$/);
-            if (fence) {
-                var mk=fence[1],lang=fence[2].trim().toLowerCase(),cl=[]; i++;
-                while(i<lines.length){var ct=lines[i].trim();
-                    if(ct.length>=mk.length&&Array.from(ct).every(function(c){return c===mk[0];})){i++;break;}
-                    cl.push(lines[i]);i++;}
-                var pre=el("pre"),code=el("code");
-                if(lang==="c"||lang==="cpp")code.innerHTML=highlightC(cl.join("\n"));else code.textContent=cl.join("\n");
-                pre.appendChild(code);frag.appendChild(pre);continue;
-            }
-
-            var hd=line.match(/^(#{1,6})\s+(.*)$/);
-            if(hd){var h=el("h"+hd[1].length);appendInline(h,hd[2]);frag.appendChild(h);i++;continue;}
-
-            if(/^\s*<details/i.test(line)){
-                var det=document.createElement("details");if(/open/i.test(line))det.open=true;
-                var dc=[],fl=line.replace(/^\s*<details[^>]*>/i,"");if(fl.trim())dc.push(fl);i++;
-                while(i<lines.length&&!/^\s*<\/details/i.test(lines[i])){dc.push(lines[i]);i++;}
-                if(i<lines.length){var ll=lines[i].replace(/<\/details\s*>\s*$/i,"");if(ll.trim())dc.push(ll);i++;}
-                var dtc=dc.join("\n"),sm=dtc.match(/<summary>([\s\S]*?)<\/summary>/i);
-                if(sm){var sn=document.createElement("summary");appendInline(sn,sm[1].trim());det.appendChild(sn);
-                    dtc=dtc.replace(/<summary>[\s\S]*?<\/summary>/i,"");}
-                if(dtc.trim())det.appendChild(renderMarkdown(dtc));frag.appendChild(det);continue;
-            }
-
-            if(line.includes("|")&&isTableDivider(lines[i+1])){
-                var w=el("div","table-wrap"),tbl=el("table"),thd=el("thead"),hr=el("tr"),hc=tableCells(line);
-                for(var hi=0;hi<hc.length;hi++){var th=el("th");appendCellWithBreaks(th,hc[hi]);hr.appendChild(th);}
-                thd.appendChild(hr);tbl.appendChild(thd);i+=2;var tb=el("tbody");
-                while(i<lines.length&&lines[i].trim()&&lines[i].includes("|")){
-                    var dr=el("tr"),dc2=tableCells(lines[i]);
-                    for(var di=0;di<dc2.length;di++){var td=el("td");if(dc2[di])appendCellWithBreaks(td,dc2[di]);dr.appendChild(td);}
-                    tb.appendChild(dr);i++;}
-                tbl.appendChild(tb);w.appendChild(tbl);frag.appendChild(w);continue;
-            }
-
-            if(/^\s*>/.test(line)){
-                var ql=[];while(i<lines.length&&/^\s*>/.test(lines[i])){ql.push(lines[i].replace(/^\s*>\s?/,""));i++;}
-                var bq=el("blockquote");bq.appendChild(renderMarkdown(ql.join("\n")));frag.appendChild(bq);continue;
-            }
-
-            if(/^\s*([-*_])(?:\s*\1){2,}\s*$/.test(line)){frag.appendChild(el("hr"));i++;continue;}
-
-            var uo=/^\s*[-+*]\s+/.test(line),od=/^\s*\d+[.)]\s+/.test(line);
-            if(uo||od){var list=el(od?"ol":"ul"),ip=od?/^\s*\d+[.)]\s+(.*)$/:/ ^\s*[-+*]\s+(.*)$/;
-                // fix: regex without space
-                ip=od?/^\s*\d+[.)]\s+(.*)$/:/ ^\s*[-+*]\s+(.*)$/;
-                ip=od?/^\s*\d+[.)]\s+(.*)$/:(/^\s*[-+*]\s+(.*)$/);
-                while(i<lines.length){var im=lines[i].match(ip);if(!im)break;
-                    var lt=[im[1]];i++;while(i<lines.length&&lines[i].trim()&&!ip.test(lines[i])&&!isBlockStart(lines,i)){lt.push(lines[i].trim());i++;}
-                    var li2=el("li");appendInline(li2,lt.join(" "));list.appendChild(li2);}
-                frag.appendChild(list);continue;
-            }
-
-            var pl=[line];i++;
-            while(i<lines.length&&!isBlockStart(lines,i)){pl.push(lines[i]);i++;}
-            var p=el("p");appendInline(p,pl.join("\n"));frag.appendChild(p);
-        }
-        return frag;
-    }
-
-    /* ================================================================
-       CARDS
-       ================================================================ */
-
-    function createCards() {
-        for (var i = 0; i < LEVELS.length; i++) {
-            var level = LEVELS[i];
-            var card = el("article", "card " + level.id);
-            var header = el("div", "card-header");
-            var top = el("div", "card-top");
-            var badge = el("span", "badge", level.label);
-            var extraBadge = el("span", "extra-badge", "EXTRA"); extraBadge.hidden = true;
-            top.append(badge, extraBadge);
-
-            var title = el("h2", "task-title", "Ждёт своего часа");
-            var path = el("div", "path", "Рабочая папка появится после создания набора");
-            var sourceRow = el("div", "source-row"); sourceRow.hidden = true;
-            var srcLabel = el("span", "source-label", "📂 Исходная папка:");
-            var srcPath = el("span", "source-path", ""); sourceRow.append(srcLabel, srcPath);
-            var spoilerHint = el("div", "spoiler-hint", "💡 Попробуй сначала решить сам, прежде чем смотреть теорию или решение");
-            spoilerHint.hidden = true;
-
-            var actions = el("div", "card-actions");
-            var skipBtn = el("button", "file-btn", "🔄 Заменить"); skipBtn.type = "button"; skipBtn.disabled = true;
-            (function(lid){skipBtn.addEventListener("click",function(){runOperation(function(){return skipTask(lid);});});})(level.id);
-
-            var sourceBtn = el("button", "file-btn", "📂 Источник"); sourceBtn.type = "button"; sourceBtn.disabled = true;
-            (function(lid){sourceBtn.addEventListener("click",function(){toggleSource(lid);});})(level.id);
-
-            var doneBtn = el("button", "file-btn done-btn", "✅ Решено"); doneBtn.type = "button"; doneBtn.disabled = true;
-            (function(lid){doneBtn.addEventListener("click",function(){toggleCompleted(lid);});})(level.id);
-
-            actions.append(skipBtn, sourceBtn, doneBtn);
-
-            var fileSection = el("div", "card-files");
-            var fileLabel = el("div", "card-files-label", "Файлы задания"); fileSection.appendChild(fileLabel);
-            var fileButtons = {};
-            for (var j = 0; j < FILE_BUTTONS.length; j++) {
-                var cfg = FILE_BUTTONS[j];
-                var btn = el("button", "file-btn" + (cfg.reveal ? " reveal" : ""), cfg.label); btn.type = "button"; btn.disabled = true;
-                (function(lid,c,hint){btn.addEventListener("click",function(){if(c.reveal)hint.hidden=true;openFileInTab(lid,c.filename,c.tabTitle);});})(level.id,cfg,spoilerHint);
-                fileButtons[cfg.key] = btn; fileSection.appendChild(btn);
-            }
-
-            header.append(top, title, path, sourceRow, spoilerHint, actions, fileSection);
-
-            var documentBody = el("div", "document empty");
-
-            // Полоска «Выполнено» (по умолчанию скрыта)
-            var completedBar = el("div", "completed-bar"); completedBar.hidden = true;
-            var cbLeft = el("div", "completed-bar-left");
-            var cbIcon = el("span", "completed-bar-icon", "✅");
-            var cbText = el("span", "completed-bar-text", "Задание выполнено");
-            var cbTitle = el("span", "completed-bar-title", "");
-            cbLeft.append(cbIcon, cbText, cbTitle);
-            var cbShowBtn = el("button", "", "👁️ Показать условие"); cbShowBtn.type = "button";
-            (function(lid){cbShowBtn.addEventListener("click",function(){toggleCompleted(lid);});})(level.id);
-            completedBar.append(cbLeft, cbShowBtn);
-
-            card.append(header, documentBody, completedBar);
-            ui.cards.appendChild(card);
-
-            cardUI[level.id] = {
-                card: card, title: title, extra: extraBadge, path: path,
-                sourceRow: sourceRow, srcPath: srcPath, spoilerHint: spoilerHint,
-                skip: skipBtn, source: sourceBtn, doneBtn: doneBtn,
-                fileButtons: fileButtons, document: documentBody,
-                completedBar: completedBar, cbTitle: cbTitle
-            };
-            renderCard(level.id);
-        }
-    }
-
-    function renderCard(level) {
-        var c = cardUI[level], sel = state.current[level];
-        var isLocked = state.locked[level], isDone = state.completed[level];
-
-        c.document.replaceChildren(); c.document.scrollTop = 0;
-
-        // Класс completed на карточку
-        c.card.classList.toggle("completed", isDone && !!sel);
-
-        if (!sel) {
-            c.title.textContent = "Ждёт своего часа"; c.extra.hidden = true;
-            c.path.textContent = "Рабочая папка появится после создания набора";
-            c.sourceRow.hidden = true; c.spoilerHint.hidden = true; c.srcPath.textContent = "";
-            c.document.className = "document empty"; c.completedBar.hidden = true;
-            var inner = el("div","empty-inner");
-            inner.append(el("div","empty-icon","{ }"),el("p","","Выбери папку проекта и нажми «Новый набор»."));
-            c.document.appendChild(inner); return;
-        }
-
-        // Заблокировано
-        if (isLocked) {
-            c.title.textContent = "Задание скрыто"; c.extra.hidden = true;
-            c.path.textContent = "Папка создана: " + sel.relativePath;
-            c.sourceRow.hidden = true; c.spoilerHint.hidden = true; c.srcPath.textContent = "";
-            c.document.className = "document empty locked"; c.completedBar.hidden = true;
-            var inner = el("div","empty-inner");
-            var icon = el("div","empty-icon locked-animation","🔒");
-            var mt = el("h3","","Дорогу осилит идущий"); mt.style.marginTop="10px"; mt.style.marginBottom="8px";
-            var prevName = level === "medium" ? "Лёгкое" : "Среднее";
-            var msg = el("p","","Рекомендуем сначала решить " + prevName + " задание. Нажмите «Открыть», когда будете готовы!");
-            msg.style.cssText = "font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.45";
-            var ub = el("button","primary","🔓 Открыть задание"); ub.type = "button";
-            (function(lvl){ub.addEventListener("click",function(){state.locked[lvl]=false;renderCard(lvl);refreshControls();});})(level);
-            inner.append(icon,mt,msg,ub); c.document.appendChild(inner); return;
-        }
-
-        // Свёрнуто (выполнено)
-        if (isDone) {
-            c.title.textContent = sel.task.title; c.extra.hidden = !sel.task.extra;
-            c.path.textContent = sel.relativePath;
-            c.sourceRow.hidden = true; c.srcPath.textContent = "tasks/" + sel.task.actualPath + "/";
-            c.spoilerHint.hidden = true;
-            c.document.className = "document collapsed";
-            c.completedBar.hidden = false;
-            c.cbTitle.textContent = " — " + sel.task.title;
-            return;
-        }
-
-        // Обычный рендер
-        c.title.textContent = sel.task.title; c.extra.hidden = !sel.task.extra;
-        c.path.textContent = sel.relativePath;
-        c.sourceRow.hidden = true; c.srcPath.textContent = "tasks/" + sel.task.actualPath + "/";
-        c.spoilerHint.hidden = false; c.completedBar.hidden = true;
-        c.document.className = "document";
-        c.document.appendChild(renderMarkdown(sel.markdown));
-    }
-
-    createCards();
-    refreshControls();
-
-    ui.choose.addEventListener("click", function () { runOperation(chooseProject); });
-    ui.generate.addEventListener("click", function () { runOperation(generateSet); });
-    ui.pause.addEventListener("click", toggleTimer);
-    ui.extra.addEventListener("change", function () {
-        refreshControls();
-        setStatus(extraEnabled()
-            ? "Дополнительные задания включены для следующих выборов."
-            : "Дополнительные задания исключены из следующих выборов.");
+        const per = Math.ceil(want/pools.length);
+        let picked = [];
+        pools.forEach(p=>{ picked = picked.concat(shuffle(p.slice()).slice(0,per)); });
+        picked = shuffle(picked).slice(0,want);
+        if(!picked.length){ alert("Нет доступных вопросов."); return; }
+        startQuiz("🎲 Случайный набор", picked, true);
     });
 
-    if (!window.isSecureContext || typeof window.showDirectoryPicker !== "function")
-        setStatus("Доступ к папкам недоступен. Открой страницу в Chrome/Edge.", "error");
+    /* ============================================================
+       QUIZ
+       ============================================================ */
+    function startQuiz(title, questions, showTopic){
+        session = { title, questions, showTopic:!!showTopic, idx:0, ok:0, bad:0, log:[] };
+        $("quizTitle").textContent = title;
+        $("stack").replaceChildren();
+        updateBar();
+        show("quiz");
+        addQuestionCard();
+    }
+
+    function updateBar(){
+        const s = session;
+        $("pillOk").textContent = "✓ "+s.ok;
+        $("pillBad").textContent = "✗ "+s.bad;
+        $("progFill").style.width = (s.idx/s.questions.length*100)+"%";
+    }
+
+    function addQuestionCard(){
+        const s = session;
+        const q = s.questions[s.idx];
+        const multi = q.correct.length > 1;
+        const num = s.idx;
+
+        const card = el("div","card");
+        card.dataset.idx = num;
+
+        /* --- top tags --- */
+        const top = el("div","q-top");
+        top.appendChild(el("span","q-num",`Вопрос ${num+1} / ${s.questions.length}`));
+        if(multi) top.appendChild(el("span","tag multi","Несколько ответов"));
+        if(q._src) top.appendChild(el("span","tag src","widum.ru/s21/"));
+        if(s.showTopic && q._topic && !q._src) top.appendChild(el("span","tag topic",q._topic));
+        card.appendChild(top);
+
+        card.appendChild(el("div","q-text",q.q));
+
+        /* --- options --- */
+        const opts = el("div","opts");
+        const picked = [];
+        const btns = [];
+
+        q.a.forEach((text,i)=>{
+            const b = el("button","opt");
+            b.append(el("span","okey",KEYS[i]), el("span","otext",text), el("span","omark"));
+            b.addEventListener("click",()=>{
+                if(card.dataset.done) return;
+                if(multi){
+                    const p = picked.indexOf(i);
+                    if(p===-1){ picked.push(i); b.classList.add("sel"); }
+                    else { picked.splice(p,1); b.classList.remove("sel"); }
+                    checkBtn.disabled = picked.length===0;
+                } else {
+                    picked.length = 0; picked.push(i);
+                    reveal();
+                }
+            });
+            btns.push(b);
+            opts.appendChild(b);
+        });
+        card.appendChild(opts);
+
+        /* --- check button (multi only) --- */
+        const checkWrap = el("div","next-wrap");
+        const checkBtn = el("button","primary next-btn","Проверить");
+        checkBtn.disabled = true;
+        checkBtn.addEventListener("click",reveal);
+        if(multi){ checkWrap.appendChild(checkBtn); card.appendChild(checkWrap); }
+
+        $("stack").appendChild(card);
+        card.scrollIntoView({behavior:"smooth",block:"center"});
+
+        /* --- reveal answer --- */
+        function reveal(){
+            if(card.dataset.done) return;
+            card.dataset.done = "1";
+            card.classList.add("done");
+            checkWrap.remove();
+
+            const right = q.correct.slice().sort().join(",");
+            const mine  = picked.slice().sort().join(",");
+            const isOk  = right === mine;
+
+            btns.forEach((b,i)=>{
+                b.disabled = true;
+                b.classList.remove("sel");
+                const mark = b.querySelector(".omark");
+                if(q.correct.includes(i)){
+                    if(picked.includes(i)){ b.classList.add("right"); mark.textContent="✓"; }
+                    else { b.classList.add("miss"); mark.textContent="!"; }
+                } else if(picked.includes(i)){
+                    b.classList.add("bad"); mark.textContent="✗";
+                }
+            });
+
+            if(isOk) s.ok++; else s.bad++;
+            s.log.push({q:q.q, ok:isOk});
+
+            /* explanation block */
+            const exp = el("div","exp "+(isOk?"ok":"no"));
+            exp.appendChild(el("div","exp-head", isOk ? "✓ Верно!" : "✗ Неверно"));
+
+            const body = el("div","exp-body");
+            const rl = el("div","exp-right");
+            const rb = el("b"); rb.textContent = q.correct.length>1 ? "Правильные ответы: " : "Правильный ответ: ";
+            rl.appendChild(rb);
+            rl.appendChild(document.createTextNode(q.correct.map(i=>KEYS[i]+") "+q.a[i]).join("  ·  ")));
+            body.appendChild(rl);
+
+            const why = el("div","exp-why");
+            why.innerHTML = q.exp;
+            body.appendChild(why);
+
+            exp.appendChild(body);
+            card.appendChild(exp);
+
+            /* next button */
+            const nw = el("div","next-wrap");
+            const isLast = s.idx === s.questions.length-1;
+            const nb = el("button","primary next-btn", isLast ? "Показать результаты →" : "Следующий вопрос →");
+            nb.addEventListener("click",()=>{
+                nw.remove();
+                s.idx++;
+                updateBar();
+                if(s.idx >= s.questions.length) showResults();
+                else addQuestionCard();
+            });
+            nw.appendChild(nb);
+            card.appendChild(nw);
+
+            updateBar();
+            setTimeout(()=>nb.scrollIntoView({behavior:"smooth",block:"center"}),120);
+        }
+    }
+
+    $("quitBtn").addEventListener("click",()=>{
+        if(session && session.idx>0 && !confirm("Выйти? Прогресс не сохранится.")) return;
+        show("menu");
+    });
+
+    /* ============================================================
+       RESULTS
+       ============================================================ */
+    function showResults(){
+        const s = session;
+        const total = s.questions.length;
+        const pct = Math.round(s.ok/total*100);
+        let emo,title,grade;
+        if(pct===100){emo="🏆";title="Идеально!";grade="Все ответы верны. Так держать!";}
+        else if(pct>=85){emo="🎉";title="Отлично!";grade="Тема освоена очень хорошо.";}
+        else if(pct>=70){emo="👍";title="Хорошо";grade="Крепкий результат, но есть что подтянуть.";}
+        else if(pct>=50){emo="📚";title="Неплохо";grade="Стоит повторить теорию и пройти ещё раз.";}
+        else {emo="💪";title="Есть над чем поработать";grade="Загляни в theory.md и попробуй снова.";}
+
+        $("resEmo").textContent = emo;
+        $("resTitle").textContent = title;
+        $("resGrade").textContent = grade;
+        $("sOk").textContent = s.ok;
+        $("sBad").textContent = s.bad;
+        $("sPct").textContent = pct+"%";
+        $("reviewBtn").classList.toggle("hidden", s.bad===0);
+        show("results");
+    }
+
+    $("retryBtn").addEventListener("click",()=>{
+        startQuiz(session.title, shuffle(session.questions.slice()), session.showTopic);
+    });
+    $("reviewBtn").addEventListener("click",()=>{
+        screens.results.classList.add("hidden");
+        screens.quiz.classList.remove("hidden");
+        const first = document.querySelector(".card .exp.no");
+        if(first) first.scrollIntoView({behavior:"smooth",block:"center"});
+        else window.scrollTo({top:0,behavior:"smooth"});
+    });
+    $("menuBtn").addEventListener("click",()=>show("menu"));
+
+    buildMenu();
 </script>
 </body>
 </html>
