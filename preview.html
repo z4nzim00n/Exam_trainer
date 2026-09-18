@@ -5,872 +5,871 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>C Practice — IDE</title>
 
-    <!-- ПОДКЛЮЧАЕМ МЕГА-ИДЕАЛЬНЫЕ ШРИФТЫ: Inter & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
 
-/* ============================================
-   TOKENS
-   ============================================ */
-:root {
-  --radius-lg: 14px;
-  --radius-md: 10px;
-  --radius-sm: 7px;
+        /* ============================================
+           TOKENS
+           ============================================ */
+        :root {
+            --radius-lg: 14px;
+            --radius-md: 10px;
+            --radius-sm: 7px;
 
-  --fs-ui: 14px;    /* фиксированный размер интерфейса: топбар, кнопки, подписи */
-  --fs-base: 15px;  /* регулируется ползунком: только текст задания и материалов */
+            --fs-ui: 14px;
+            --fs-base: 15px;
 
-  --font-main: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
-}
+            --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+        }
 
-/* ---- Gruvbox ---- */
-:root[data-theme="gruvbox"] {
-  --bg:#282828; --panel:#32302F; --panel-alt:#3C3836; --panel-hover:#504945;
-  --border:#504945; --border-hover:#83A598;
-  --text:#EBDBB2; --text-strong:#FBF1C7; --muted:#A89984;
-  --accent:#83A598; --accent-soft:rgba(131,165,152,.16);
-  --green:#B8BB26; --yellow:#FABD2F; --red:#FB4934;
-  --glow1:rgba(131,165,152,.10); --glow2:rgba(250,189,47,.05);
-  --hl-comment:#928374; --hl-string:#B8BB26; --hl-char:#D3869B; --hl-preproc:#83A598;
-  --hl-keyword:#FB4934; --hl-type:#FABD2F; --hl-number:#D3869B; --hl-func:#B8BB26;
-  --code-block-bg:#1D2021; --table-header:#3C3836;
-  --shadow:0 4px 20px -8px rgba(0,0,0,.8); --shadow-hover:0 8px 30px -8px rgba(0,0,0,.95);
-  --yellow-dim:#8f6a22; --reveal-hover:rgba(250,189,47,.08);
-  --green-dim:#567021; --done-hover:rgba(184,187,38,.08);
-}
+        /* ---- Gruvbox ---- */
+        :root[data-theme="gruvbox"] {
+            --bg:#282828; --panel:#32302F; --panel-alt:#3C3836; --panel-hover:#504945;
+            --border:#504945; --border-hover:#83A598;
+            --text:#EBDBB2; --text-strong:#FBF1C7; --muted:#A89984;
+            --accent:#83A598; --accent-soft:rgba(131,165,152,.16);
+            --green:#B8BB26; --yellow:#FABD2F; --red:#FB4934;
+            --glow1:rgba(131,165,152,.10); --glow2:rgba(250,189,47,.05);
+            --hl-comment:#928374; --hl-string:#B8BB26; --hl-char:#D3869B; --hl-preproc:#83A598;
+            --hl-keyword:#FB4934; --hl-type:#FABD2F; --hl-number:#D3869B; --hl-func:#B8BB26;
+            --code-block-bg:#1D2021; --table-header:#3C3836;
+            --shadow:0 4px 20px -8px rgba(0,0,0,.8); --shadow-hover:0 8px 30px -8px rgba(0,0,0,.95);
+            --yellow-dim:#8f6a22; --reveal-hover:rgba(250,189,47,.08);
+            --green-dim:#567021; --done-hover:rgba(184,187,38,.08);
+        }
 
-/* ---- Catppuccin ---- */
-:root[data-theme="catppuccin"] {
-  --bg:#1e1e2e; --panel:#181825; --panel-alt:#313244; --panel-hover:#45475a;
-  --border:#313244; --border-hover:#89b4fa;
-  --text:#bac2de; --text-strong:#cdd6f4; --muted:#a6adc8;
-  --accent:#89b4fa; --accent-soft:rgba(137,180,250,.15);
-  --green:#a6e3a1; --yellow:#f9e2af; --red:#f38ba8;
-  --glow1:rgba(137,180,250,.08); --glow2:rgba(166,227,161,.05);
-  --hl-comment:#6c7086; --hl-string:#a6e3a1; --hl-char:#f9e2af; --hl-preproc:#f38ba8;
-  --hl-keyword:#cba6f7; --hl-type:#f9e2af; --hl-number:#fab387; --hl-func:#89b4fa;
-  --code-block-bg:#11111b; --table-header:#313244;
-  --shadow:0 4px 20px -8px rgba(0,0,0,.7); --shadow-hover:0 8px 30px -8px rgba(0,0,0,.9);
-  --yellow-dim:#7a6a3a; --reveal-hover:rgba(249,226,175,.08);
-  --green-dim:#4d6b4b; --done-hover:rgba(166,227,161,.08);
-}
+        /* ---- Catppuccin ---- */
+        :root[data-theme="catppuccin"] {
+            --bg:#1e1e2e; --panel:#181825; --panel-alt:#313244; --panel-hover:#45475a;
+            --border:#313244; --border-hover:#89b4fa;
+            --text:#bac2de; --text-strong:#cdd6f4; --muted:#a6adc8;
+            --accent:#89b4fa; --accent-soft:rgba(137,180,250,.15);
+            --green:#a6e3a1; --yellow:#f9e2af; --red:#f38ba8;
+            --glow1:rgba(137,180,250,.08); --glow2:rgba(166,227,161,.05);
+            --hl-comment:#6c7086; --hl-string:#a6e3a1; --hl-char:#f9e2af; --hl-preproc:#f38ba8;
+            --hl-keyword:#cba6f7; --hl-type:#f9e2af; --hl-number:#fab387; --hl-func:#89b4fa;
+            --code-block-bg:#11111b; --table-header:#313244;
+            --shadow:0 4px 20px -8px rgba(0,0,0,.7); --shadow-hover:0 8px 30px -8px rgba(0,0,0,.9);
+            --yellow-dim:#7a6a3a; --reveal-hover:rgba(249,226,175,.08);
+            --green-dim:#4d6b4b; --done-hover:rgba(166,227,161,.08);
+        }
 
-/* ---- Kanagawa ---- */
-:root[data-theme="kanagawa"] {
-  --bg:#1F1F28; --panel:#2A2A37; --panel-alt:#363646; --panel-hover:#54546D;
-  --border:#363646; --border-hover:#7E9CD8;
-  --text:#DCD7BA; --text-strong:#F2E9DE; --muted:#957FB8;
-  --accent:#7FB4CA; --accent-soft:rgba(127,180,202,.15);
-  --green:#98BB6C; --yellow:#E6C384; --red:#E82424;
-  --glow1:rgba(126,156,216,.07); --glow2:rgba(152,187,108,.05);
-  --hl-comment:#727169; --hl-string:#98BB6C; --hl-char:#E6C384; --hl-preproc:#FF5D62;
-  --hl-keyword:#957FB8; --hl-type:#7AA89F; --hl-number:#D27E99; --hl-func:#7E9CD8;
-  --code-block-bg:#16161D; --table-header:#363646;
-  --shadow:0 4px 20px -8px rgba(0,0,0,.6); --shadow-hover:0 8px 30px -8px rgba(0,0,0,.8);
-  --yellow-dim:#5b4e33; --reveal-hover:rgba(230,195,132,.08);
-  --green-dim:#4a5b35; --done-hover:rgba(152,187,108,.08);
-}
+        /* ---- Kanagawa ---- */
+        :root[data-theme="kanagawa"] {
+            --bg:#1F1F28; --panel:#2A2A37; --panel-alt:#363646; --panel-hover:#54546D;
+            --border:#363646; --border-hover:#7E9CD8;
+            --text:#DCD7BA; --text-strong:#F2E9DE; --muted:#957FB8;
+            --accent:#7FB4CA; --accent-soft:rgba(127,180,202,.15);
+            --green:#98BB6C; --yellow:#E6C384; --red:#E82424;
+            --glow1:rgba(126,156,216,.07); --glow2:rgba(152,187,108,.05);
+            --hl-comment:#727169; --hl-string:#98BB6C; --hl-char:#E6C384; --hl-preproc:#FF5D62;
+            --hl-keyword:#957FB8; --hl-type:#7AA89F; --hl-number:#D27E99; --hl-func:#7E9CD8;
+            --code-block-bg:#16161D; --table-header:#363646;
+            --shadow:0 4px 20px -8px rgba(0,0,0,.6); --shadow-hover:0 8px 30px -8px rgba(0,0,0,.8);
+            --yellow-dim:#5b4e33; --reveal-hover:rgba(230,195,132,.08);
+            --green-dim:#4a5b35; --done-hover:rgba(152,187,108,.08);
+        }
 
-/* ---- Nord ---- */
-:root[data-theme="nord"] {
-  --bg:#2E3440; --panel:#3B4252; --panel-alt:#434C5E; --panel-hover:#4C566A;
-  --border:#434C5E; --border-hover:#5E81AC;
-  --text:#E5E9F0; --text-strong:#ECEFF4; --muted:#8FA1B3;
-  --accent:#88C0D0; --accent-soft:rgba(136,192,208,.15);
-  --green:#A3BE8C; --yellow:#EBCB8B; --red:#BF616A;
-  --glow1:rgba(94,129,172,.15); --glow2:rgba(163,190,140,.08);
-  --hl-comment:#616E88; --hl-string:#A3BE8C; --hl-char:#EBCB8B; --hl-preproc:#B48EAD;
-  --hl-keyword:#81A1C1; --hl-type:#8FBCBB; --hl-number:#B48EAD; --hl-func:#88C0D0;
-  --code-block-bg:#292E39; --table-header:#434C5E;
-  --shadow:0 4px 20px -8px rgba(0,0,0,.5); --shadow-hover:0 8px 30px -8px rgba(0,0,0,.7);
-  --yellow-dim:#7a6a3a; --reveal-hover:rgba(235,203,139,.08);
-  --green-dim:#4d6b3f; --done-hover:rgba(163,190,140,.08);
-}
+        /* ---- Nord ---- */
+        :root[data-theme="nord"] {
+            --bg:#2E3440; --panel:#3B4252; --panel-alt:#434C5E; --panel-hover:#4C566A;
+            --border:#434C5E; --border-hover:#5E81AC;
+            --text:#E5E9F0; --text-strong:#ECEFF4; --muted:#8FA1B3;
+            --accent:#88C0D0; --accent-soft:rgba(136,192,208,.15);
+            --green:#A3BE8C; --yellow:#EBCB8B; --red:#BF616A;
+            --glow1:rgba(94,129,172,.15); --glow2:rgba(163,190,140,.08);
+            --hl-comment:#616E88; --hl-string:#A3BE8C; --hl-char:#EBCB8B; --hl-preproc:#B48EAD;
+            --hl-keyword:#81A1C1; --hl-type:#8FBCBB; --hl-number:#B48EAD; --hl-func:#88C0D0;
+            --code-block-bg:#292E39; --table-header:#434C5E;
+            --shadow:0 4px 20px -8px rgba(0,0,0,.5); --shadow-hover:0 8px 30px -8px rgba(0,0,0,.7);
+            --yellow-dim:#7a6a3a; --reveal-hover:rgba(235,203,139,.08);
+            --green-dim:#4d6b3f; --done-hover:rgba(163,190,140,.08);
+        }
 
-/* ---- Dracula ---- */
-:root[data-theme="dracula"] {
-  --bg:#282A36; --panel:#343746; --panel-alt:#44475A; --panel-hover:#50536B;
-  --border:#44475A; --border-hover:#BD93F9;
-  --text:#F8F8F2; --text-strong:#FFFFFF; --muted:#A9B1C6;
-  --accent:#BD93F9; --accent-soft:rgba(189,147,249,.15);
-  --green:#50FA7B; --yellow:#F1FA8C; --red:#FF5555;
-  --glow1:rgba(189,147,249,.10); --glow2:rgba(80,250,123,.06);
-  --hl-comment:#6272A4; --hl-string:#F1FA8C; --hl-char:#F1FA8C; --hl-preproc:#FF79C6;
-  --hl-keyword:#FF79C6; --hl-type:#8BE9FD; --hl-number:#BD93F9; --hl-func:#50FA7B;
-  --code-block-bg:#21222C; --table-header:#44475A;
-  --shadow:0 4px 20px -8px rgba(0,0,0,.7); --shadow-hover:0 8px 30px -8px rgba(0,0,0,.85);
-  --yellow-dim:#63663a; --reveal-hover:rgba(241,250,140,.08);
-  --green-dim:#2f7040; --done-hover:rgba(80,250,123,.08);
-}
+        /* ---- Dracula ---- */
+        :root[data-theme="dracula"] {
+            --bg:#282A36; --panel:#343746; --panel-alt:#44475A; --panel-hover:#50536B;
+            --border:#44475A; --border-hover:#BD93F9;
+            --text:#F8F8F2; --text-strong:#FFFFFF; --muted:#A9B1C6;
+            --accent:#BD93F9; --accent-soft:rgba(189,147,249,.15);
+            --green:#50FA7B; --yellow:#F1FA8C; --red:#FF5555;
+            --glow1:rgba(189,147,249,.10); --glow2:rgba(80,250,123,.06);
+            --hl-comment:#6272A4; --hl-string:#F1FA8C; --hl-char:#F1FA8C; --hl-preproc:#FF79C6;
+            --hl-keyword:#FF79C6; --hl-type:#8BE9FD; --hl-number:#BD93F9; --hl-func:#50FA7B;
+            --code-block-bg:#21222C; --table-header:#44475A;
+            --shadow:0 4px 20px -8px rgba(0,0,0,.7); --shadow-hover:0 8px 30px -8px rgba(0,0,0,.85);
+            --yellow-dim:#63663a; --reveal-hover:rgba(241,250,140,.08);
+            --green-dim:#2f7040; --done-hover:rgba(80,250,123,.08);
+        }
 
-/* ---- GitHub Dark ---- */
-:root[data-theme="dark"] {
-  --bg:#0D1117; --panel:#161B22; --panel-alt:#1C222C; --panel-hover:#262C36;
-  --border:#30363D; --border-hover:#58A6FF;
-  --text:#C9D1D9; --text-strong:#F0F6FC; --muted:#8B949E;
-  --accent:#58A6FF; --accent-soft:rgba(88,166,255,.15);
-  --green:#56D364; --yellow:#E3B341; --red:#F85149;
-  --glow1:rgba(88,166,255,.08); --glow2:rgba(86,211,100,.05);
-  --hl-comment:#8B949E; --hl-string:#A5D6FF; --hl-char:#A5D6FF; --hl-preproc:#FF7B72;
-  --hl-keyword:#FF7B72; --hl-type:#FFA657; --hl-number:#79C0FF; --hl-func:#D2A8FF;
-  --code-block-bg:#010409; --table-header:#161B22;
-  --shadow:0 4px 20px -8px rgba(0,0,0,.8); --shadow-hover:0 8px 30px -8px rgba(0,0,0,.95);
-  --yellow-dim:#6b5c30; --reveal-hover:rgba(227,179,65,.08);
-  --green-dim:#2d6b35; --done-hover:rgba(86,211,100,.08);
-}
+        /* ---- GitHub Dark ---- */
+        :root[data-theme="dark"] {
+            --bg:#0D1117; --panel:#161B22; --panel-alt:#1C222C; --panel-hover:#262C36;
+            --border:#30363D; --border-hover:#58A6FF;
+            --text:#C9D1D9; --text-strong:#F0F6FC; --muted:#8B949E;
+            --accent:#58A6FF; --accent-soft:rgba(88,166,255,.15);
+            --green:#56D364; --yellow:#E3B341; --red:#F85149;
+            --glow1:rgba(88,166,255,.08); --glow2:rgba(86,211,100,.05);
+            --hl-comment:#8B949E; --hl-string:#A5D6FF; --hl-char:#A5D6FF; --hl-preproc:#FF7B72;
+            --hl-keyword:#FF7B72; --hl-type:#FFA657; --hl-number:#79C0FF; --hl-func:#D2A8FF;
+            --code-block-bg:#010409; --table-header:#161B22;
+            --shadow:0 4px 20px -8px rgba(0,0,0,.8); --shadow-hover:0 8px 30px -8px rgba(0,0,0,.95);
+            --yellow-dim:#6b5c30; --reveal-hover:rgba(227,179,65,.08);
+            --green-dim:#2d6b35; --done-hover:rgba(86,211,100,.08);
+        }
 
-/* ---- GitHub Light ---- */
-:root[data-theme="light"] {
-  --bg:#FFFFFF; --panel:#F6F8FA; --panel-alt:#EAEEF2; --panel-hover:#D0D7DE;
-  --border:#D0D7DE; --border-hover:#0969DA;
-  --text:#1F2328; --text-strong:#0E1116; --muted:#59636E;
-  --accent:#0969DA; --accent-soft:rgba(9,105,218,.12);
-  --green:#1A7F37; --yellow:#9A6700; --red:#CF222E;
-  --glow1:rgba(9,105,218,.05); --glow2:rgba(26,127,55,.04);
-  --hl-comment:#6E7781; --hl-string:#0A3069; --hl-char:#0A3069; --hl-preproc:#CF222E;
-  --hl-keyword:#CF222E; --hl-type:#953800; --hl-number:#0550AE; --hl-func:#8250DF;
-  --code-block-bg:#F6F8FA; --table-header:#F6F8FA;
-  --shadow:0 1px 3px rgba(0,0,0,.08); --shadow-hover:0 6px 20px -4px rgba(0,0,0,.16);
-  --yellow-dim:#D4A72C; --reveal-hover:rgba(154,103,0,.08);
-  --green-dim:#4AC26B; --done-hover:rgba(26,127,55,.07);
-}
+        /* ---- GitHub Light ---- */
+        :root[data-theme="light"] {
+            --bg:#FFFFFF; --panel:#F6F8FA; --panel-alt:#EAEEF2; --panel-hover:#D0D7DE;
+            --border:#D0D7DE; --border-hover:#0969DA;
+            --text:#1F2328; --text-strong:#0E1116; --muted:#59636E;
+            --accent:#0969DA; --accent-soft:rgba(9,105,218,.12);
+            --green:#1A7F37; --yellow:#9A6700; --red:#CF222E;
+            --glow1:rgba(9,105,218,.05); --glow2:rgba(26,127,55,.04);
+            --hl-comment:#6E7781; --hl-string:#0A3069; --hl-char:#0A3069; --hl-preproc:#CF222E;
+            --hl-keyword:#CF222E; --hl-type:#953800; --hl-number:#0550AE; --hl-func:#8250DF;
+            --code-block-bg:#F6F8FA; --table-header:#F6F8FA;
+            --shadow:0 1px 3px rgba(0,0,0,.08); --shadow-hover:0 6px 20px -4px rgba(0,0,0,.16);
+            --yellow-dim:#D4A72C; --reveal-hover:rgba(154,103,0,.08);
+            --green-dim:#4AC26B; --done-hover:rgba(26,127,55,.07);
+        }
 
 
-/* ============================================
-   IDE BASE
-   ============================================ */
-* { box-sizing:border-box; margin:0; padding:0; }
-html, body { width:100%; height:100%; }
-body {
-  min-height:100vh;
-  color:var(--text);
-  background:
-    radial-gradient(ellipse at 6% -10%, var(--glow1), transparent 45%),
-    radial-gradient(ellipse at 100% 8%, var(--glow2), transparent 42%),
-    var(--bg);
-  font-family:var(--font-main);
-  font-size:var(--fs-ui);
-  line-height:1.55;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-  text-rendering:optimizeLegibility;
-  transition:background .3s ease, color .3s ease;
-  overflow:hidden;
-}
-button, input, select { font:inherit; }
-button {
-  border:1px solid var(--border);
-  border-radius:var(--radius-sm);
-  padding:8px 12px;
-  background:var(--panel-alt);
-  color:var(--text);
-  cursor:pointer;
-  font-size:calc(var(--fs-ui) - 1px);
-  font-weight:600;
-  transition:background .2s, border-color .2s, color .2s, transform .15s, filter .2s;
-}
-button:hover:not(:disabled) { background:var(--panel-hover); border-color:var(--accent); }
-button:active:not(:disabled) { transform:scale(.97); }
-button:disabled { opacity:.4; cursor:not-allowed; }
-button:focus-visible,
-select:focus-visible,
-input:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
-a { color:var(--accent); }
-code, pre { font-family:var(--font-code); }
+        /* ============================================
+           IDE BASE
+           ============================================ */
+        * { box-sizing:border-box; margin:0; padding:0; }
+        html, body { width:100%; height:100%; }
+        body {
+            min-height:100vh;
+            color:var(--text);
+            background:
+                    radial-gradient(ellipse at 6% -10%, var(--glow1), transparent 45%),
+                    radial-gradient(ellipse at 100% 8%, var(--glow2), transparent 42%),
+                    var(--bg);
+            font-family:var(--font-main);
+            font-size:var(--fs-ui);
+            line-height:1.55;
+            -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale;
+            text-rendering:optimizeLegibility;
+            transition:background .3s ease, color .3s ease;
+            overflow:hidden;
+        }
+        button, input, select { font:inherit; }
+        button {
+            border:1px solid var(--border);
+            border-radius:var(--radius-sm);
+            padding:8px 12px;
+            background:var(--panel-alt);
+            color:var(--text);
+            cursor:pointer;
+            font-size:calc(var(--fs-ui) - 1px);
+            font-weight:600;
+            transition:background .2s, border-color .2s, color .2s, transform .15s, filter .2s;
+        }
+        button:hover:not(:disabled) { background:var(--panel-hover); border-color:var(--accent); }
+        button:active:not(:disabled) { transform:scale(.97); }
+        button:disabled { opacity:.4; cursor:not-allowed; }
+        button:focus-visible,
+        select:focus-visible,
+        input:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+        a { color:var(--accent); }
+        code, pre { font-family:var(--font-code); }
 
-::-webkit-scrollbar { width:8px; height:8px; }
-::-webkit-scrollbar-track { background:transparent; }
-::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
-::-webkit-scrollbar-thumb:hover { background:var(--muted); }
+        ::-webkit-scrollbar { width:8px; height:8px; }
+        ::-webkit-scrollbar-track { background:transparent; }
+        ::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
+        ::-webkit-scrollbar-thumb:hover { background:var(--muted); }
 
-/* ============================================
-   APP / SIDEBAR
-   ============================================ */
-.app { display:flex; width:100%; height:100vh; overflow:hidden; }
+        /* ============================================
+           APP / SIDEBAR
+           ============================================ */
+        .app { display:flex; width:100%; height:100vh; overflow:hidden; }
 
-.nav {
-  position:relative;
-  width:320px;
-  min-width:320px;
-  max-width:320px;
-  border-right:1px solid var(--border);
-  background:color-mix(in srgb, var(--panel) 94%, transparent);
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-  flex-shrink:0;
-  z-index:10;
-  box-shadow:var(--shadow);
-  transition:margin-left .3s cubic-bezier(.4,0,.2,1);
-}
-.nav.collapsed { margin-left:-320px; }
+        .nav {
+            position:relative;
+            width:320px;
+            min-width:320px;
+            max-width:320px;
+            border-right:1px solid var(--border);
+            background:color-mix(in srgb, var(--panel) 94%, transparent);
+            display:flex;
+            flex-direction:column;
+            overflow:hidden;
+            flex-shrink:0;
+            z-index:10;
+            box-shadow:var(--shadow);
+            transition:margin-left .3s cubic-bezier(.4,0,.2,1);
+        }
+        .nav.collapsed { margin-left:-320px; }
 
-.nav-header {
-  padding:16px;
-  border-bottom:1px solid var(--border);
-  background:var(--panel);
-}
-.nav-header-top {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-}
-.nav-header h1 {
-  min-width:0;
-  color:var(--text-strong);
-  font-size:calc(var(--fs-ui) + 2px);
-  letter-spacing:-.02em;
-  font-weight:700;
-}
-.nav-btn {
-  flex:0 0 auto;
-  border-radius:var(--radius-sm);
-  padding:8px 12px;
-  background:var(--panel-alt);
-  color:var(--text);
-  border-color:var(--border);
-  white-space:nowrap;
-}
-.nav-btn:hover { background:var(--panel-hover); border-color:var(--accent); }
+        .nav-header {
+            padding:16px;
+            border-bottom:1px solid var(--border);
+            background:var(--panel);
+        }
+        .nav-header-top {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+        }
+        .nav-header h1 {
+            min-width:0;
+            color:var(--text-strong);
+            font-size:calc(var(--fs-ui) + 2px);
+            letter-spacing:-.02em;
+            font-weight:700;
+        }
+        .nav-btn {
+            flex:0 0 auto;
+            border-radius:var(--radius-sm);
+            padding:8px 12px;
+            background:var(--panel-alt);
+            color:var(--text);
+            border-color:var(--border);
+            white-space:nowrap;
+        }
+        .nav-btn:hover { background:var(--panel-hover); border-color:var(--accent); }
 
-.settings-bar {
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  margin-top:14px;
-  padding:12px;
-  border:1px solid var(--border);
-  border-radius:var(--radius-md);
-  background:color-mix(in srgb, var(--panel-alt) 55%, transparent);
-}
-.settings-row {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  min-height:28px;
-  color:var(--muted);
-  font-size:calc(var(--fs-ui) - 2px);
-}
-.settings-row > span { white-space:nowrap; }
+        .settings-bar {
+            display:flex;
+            flex-direction:column;
+            gap:10px;
+            margin-top:14px;
+            padding:12px;
+            border:1px solid var(--border);
+            border-radius:var(--radius-md);
+            background:color-mix(in srgb, var(--panel-alt) 55%, transparent);
+        }
+        .settings-row {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:12px;
+            min-height:28px;
+            color:var(--muted);
+            font-size:calc(var(--fs-ui) - 2px);
+        }
+        .settings-row > span { white-space:nowrap; }
 
-.theme-select {
-  min-width:145px;
-  padding:6px 9px;
-  background:var(--panel-alt);
-  color:var(--text);
-  border:1px solid var(--border);
-  border-radius:var(--radius-sm);
-  font-size:calc(var(--fs-ui) - 2px);
-  cursor:pointer;
-  outline:none;
-}
-.theme-select:hover { border-color:var(--accent); }
+        .theme-select {
+            min-width:145px;
+            padding:6px 9px;
+            background:var(--panel-alt);
+            color:var(--text);
+            border:1px solid var(--border);
+            border-radius:var(--radius-sm);
+            font-size:calc(var(--fs-ui) - 2px);
+            cursor:pointer;
+            outline:none;
+        }
+        .theme-select:hover { border-color:var(--accent); }
 
-.font-slider {
-  width:104px;
-  height:4px;
-  -webkit-appearance:none;
-  appearance:none;
-  background:var(--border);
-  border-radius:2px;
-  outline:none;
-}
-.font-slider::-webkit-slider-thumb {
-  width:14px; height:14px;
-  -webkit-appearance:none; appearance:none;
-  border-radius:50%;
-  background:var(--accent);
-  cursor:pointer;
-}
-.font-slider::-moz-range-thumb {
-  width:14px; height:14px;
-  border:none;
-  border-radius:50%;
-  background:var(--accent);
-  cursor:pointer;
-}
+        .font-slider {
+            width:104px;
+            height:4px;
+            -webkit-appearance:none;
+            appearance:none;
+            background:var(--border);
+            border-radius:2px;
+            outline:none;
+        }
+        .font-slider::-webkit-slider-thumb {
+            width:14px; height:14px;
+            -webkit-appearance:none; appearance:none;
+            border-radius:50%;
+            background:var(--accent);
+            cursor:pointer;
+        }
+        .font-slider::-moz-range-thumb {
+            width:14px; height:14px;
+            border:none;
+            border-radius:50%;
+            background:var(--accent);
+            cursor:pointer;
+        }
 
-.nav-status {
-  margin:12px 12px 10px;
-  padding:10px 12px;
-  border:1px solid var(--border);
-  border-radius:var(--radius-md);
-  color:var(--muted);
-  background:var(--panel);
-  font-size:calc(var(--fs-ui) - 2px);
-  line-height:1.45;
-  overflow-wrap:anywhere;
-}
-.nav-status.error {
-  color:var(--red);
-  border-color:color-mix(in srgb, var(--red) 40%, transparent);
-  background:color-mix(in srgb, var(--red) 8%, transparent);
-}
-.nav-status.success {
-  color:var(--green);
-  border-color:var(--green-dim);
-  background:var(--done-hover);
-}
+        .nav-status {
+            margin:12px 12px 10px;
+            padding:10px 12px;
+            border:1px solid var(--border);
+            border-radius:var(--radius-md);
+            color:var(--muted);
+            background:var(--panel);
+            font-size:calc(var(--fs-ui) - 2px);
+            line-height:1.45;
+            overflow-wrap:anywhere;
+        }
+        .nav-status[hidden] { display:none; }
+        .nav-status.error {
+            color:var(--red);
+            border-color:color-mix(in srgb, var(--red) 40%, transparent);
+            background:color-mix(in srgb, var(--red) 8%, transparent);
+        }
+        .nav-status.success {
+            color:var(--green);
+            border-color:var(--green-dim);
+            background:var(--done-hover);
+        }
 
-/* ============================================
-   TREE
-   ============================================ */
-.tree {
-  flex:1;
-  overflow-y:auto;
-  padding:8px 8px 14px;
-}
-.tree-empty-state {
-  padding:4px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-.tree-empty-card {
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  padding:16px;
-  background:var(--panel);
-  border:1px dashed var(--border);
-  border-radius:var(--radius-md);
-  box-shadow:var(--shadow);
-  color:var(--muted);
-  font-size:calc(var(--fs-ui) - 1px);
-  line-height:1.55;
-}
-.tree-empty-icon {
-  font-size:30px;
-  line-height:1;
-  color:var(--accent);
-}
-.tree-empty-card strong { color:var(--text-strong); }
-.tree-empty-card p { margin:0; }
-.tree-empty-note {
-  padding-top:2px;
-  color:var(--muted);
-  font-size:calc(var(--fs-ui) - 3px);
-  opacity:.9;
-}
-.tree-section { margin-bottom:4px; }
-.tree-section-title {
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:8px 12px;
-  font-size:calc(var(--fs-ui) - 3px);
-  font-weight:700;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  color:var(--accent);
-  cursor:pointer;
-  user-select:none;
-  border-radius:var(--radius-sm);
-}
-.tree-section-title:hover { background:var(--panel-alt); }
-.tree-section-title::before {
-  content:"▶";
-  font-size:8px;
-  transition:transform .15s;
-  color:var(--muted);
-}
-.tree-section.open > .tree-section-title::before { transform:rotate(90deg); }
-.tree-section-body { display:none; }
-.tree-section.open > .tree-section-body { display:block; padding-top:2px; }
+        /* ============================================
+           TREE
+           ============================================ */
+        .tree {
+            flex:1;
+            overflow-y:auto;
+            padding:8px 8px 14px;
+        }
+        .tree-empty-state {
+            padding:4px;
+            display:flex;
+            flex-direction:column;
+            gap:10px;
+        }
+        .tree-empty-card {
+            display:flex;
+            flex-direction:column;
+            gap:10px;
+            padding:16px;
+            background:var(--panel);
+            border:1px dashed var(--border);
+            border-radius:var(--radius-md);
+            box-shadow:var(--shadow);
+            color:var(--muted);
+            font-size:calc(var(--fs-ui) - 1px);
+            line-height:1.55;
+        }
+        .tree-empty-icon {
+            font-size:30px;
+            line-height:1;
+            color:var(--accent);
+        }
+        .tree-empty-card strong { color:var(--text-strong); }
+        .tree-empty-card p { margin:0; }
+        .tree-empty-note {
+            padding-top:2px;
+            color:var(--muted);
+            font-size:calc(var(--fs-ui) - 3px);
+            opacity:.9;
+        }
+        .tree-section { margin-bottom:4px; }
+        .tree-section-title {
+            display:flex;
+            align-items:center;
+            gap:8px;
+            padding:8px 12px;
+            font-size:calc(var(--fs-ui) - 3px);
+            font-weight:700;
+            text-transform:uppercase;
+            letter-spacing:.08em;
+            color:var(--accent);
+            cursor:pointer;
+            user-select:none;
+            border-radius:var(--radius-sm);
+        }
+        .tree-section-title:hover { background:var(--panel-alt); }
+        .tree-section-title::before {
+            content:"▶";
+            font-size:8px;
+            transition:transform .15s;
+            color:var(--muted);
+        }
+        .tree-section.open > .tree-section-title::before { transform:rotate(90deg); }
+        .tree-section-body { display:none; }
+        .tree-section.open > .tree-section-body { display:block; padding-top:2px; }
 
-.tree-task {
-  position:relative;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:7px 10px 7px 24px;
-  margin-bottom:2px;
-  font-size:calc(var(--fs-ui) - 2px);
-  color:var(--muted);
-  cursor:pointer;
-  user-select:none;
-  border-radius:var(--radius-sm);
-  border-left:3px solid transparent;
-  transition:background .2s, color .2s, border-color .2s;
-}
-.tree-task:hover { background:var(--panel-alt); color:var(--text); }
-.tree-task.active {
-  background:var(--accent-soft);
-  color:var(--accent);
-  font-weight:600;
-  border-left-color:var(--accent);
-}
-.tree-task-icon { opacity:.7; }
-.tree-task.active .tree-task-icon { opacity:1; }
-.tree-badge {
-  margin-left:auto;
-  padding:2px 6px;
-  border:1px solid var(--border);
-  border-radius:var(--radius-sm);
-  color:var(--muted);
-  background:var(--panel-alt);
-  font-size:10px;
-  text-transform:uppercase;
-  font-weight:600;
-}
+        .tree-task {
+            position:relative;
+            display:flex;
+            align-items:center;
+            gap:8px;
+            padding:7px 10px 7px 24px;
+            margin-bottom:2px;
+            font-size:calc(var(--fs-ui) - 2px);
+            color:var(--muted);
+            cursor:pointer;
+            user-select:none;
+            border-radius:var(--radius-sm);
+            border-left:3px solid transparent;
+            transition:background .2s, color .2s, border-color .2s;
+        }
+        .tree-task:hover { background:var(--panel-alt); color:var(--text); }
+        .tree-task.active {
+            background:var(--accent-soft);
+            color:var(--accent);
+            font-weight:600;
+            border-left-color:var(--accent);
+        }
+        .tree-task-icon { opacity:.7; }
+        .tree-task.active .tree-task-icon { opacity:1; }
+        .tree-badge {
+            margin-left:auto;
+            padding:2px 6px;
+            border:1px solid var(--border);
+            border-radius:var(--radius-sm);
+            color:var(--muted);
+            background:var(--panel-alt);
+            font-size:10px;
+            text-transform:uppercase;
+            font-weight:600;
+        }
 
-/* ============================================
-   CONTENT / TASK BAR
-   ============================================ */
-.content-area {
-  flex:1;
-  min-width:0;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-}
+        /* ============================================
+           CONTENT / TASK BAR
+           ============================================ */
+        .content-area {
+            flex:1;
+            min-width:0;
+            display:flex;
+            flex-direction:column;
+            overflow:hidden;
+        }
 
-.task-bar {
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:10px 18px;
-  border-bottom:1px solid var(--border);
-  background:color-mix(in srgb, var(--panel) 92%, transparent);
-  backdrop-filter:blur(14px);
-  flex-wrap:wrap;
-  min-height:58px;
-  flex-shrink:0;
-}
-.sidebar-toggle-btn {
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  width:34px;
-  height:34px;
-  background:transparent;
-  color:var(--muted);
-  border:1px solid transparent;
-  border-radius:var(--radius-sm);
-  padding:0;
-  cursor:pointer;
-  transition:all .2s;
-  flex-shrink:0;
-}
-.sidebar-toggle-btn:hover {
-  background:var(--panel-alt);
-  color:var(--text-strong);
-  border-color:var(--border);
-}
-.sidebar-toggle-btn:active { transform:scale(.95); }
-.task-bar-title {
-  min-width:0;
-  margin-right:auto;
-  color:var(--text-strong);
-  font-size:calc(var(--fs-ui) + 1px);
-  font-weight:700;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-/* Быстрый переключатель второго окна */
-.second-window-toggle {
-  margin-left:auto;
-  border:1px solid var(--border);
-  border-radius:var(--radius-sm);
-  padding:7px 12px;
-  background:var(--panel-alt);
-  color:var(--text);
-  cursor:pointer;
-  font-size:calc(var(--fs-ui) - 1px);
-  font-weight:600;
-  transition:background .2s, border-color .2s, color .2s;
-  white-space:nowrap;
-}
-.second-window-toggle:hover:not(:disabled) {
-  background:var(--panel-hover);
-  border-color:var(--accent);
-  color:var(--text-strong);
-}
-.second-window-toggle.active {
-  color:var(--accent);
-  border-color:var(--accent);
-  background:var(--accent-soft);
-}
-.second-window-toggle:disabled { opacity:.45; cursor:not-allowed; }
+        .task-bar {
+            display:flex;
+            align-items:center;
+            gap:8px;
+            padding:10px 18px;
+            border-bottom:1px solid var(--border);
+            background:color-mix(in srgb, var(--panel) 92%, transparent);
+            backdrop-filter:blur(14px);
+            flex-wrap:wrap;
+            min-height:58px;
+            flex-shrink:0;
+        }
+        .sidebar-toggle-btn {
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            width:34px;
+            height:34px;
+            background:transparent;
+            color:var(--muted);
+            border:1px solid transparent;
+            border-radius:var(--radius-sm);
+            padding:0;
+            cursor:pointer;
+            transition:all .2s;
+            flex-shrink:0;
+        }
+        .sidebar-toggle-btn:hover {
+            background:var(--panel-alt);
+            color:var(--text-strong);
+            border-color:var(--border);
+        }
+        .sidebar-toggle-btn:active { transform:scale(.95); }
+        .task-bar-title {
+            min-width:0;
+            margin-right:auto;
+            color:var(--text-strong);
+            font-size:calc(var(--fs-ui) + 1px);
+            font-weight:700;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+        }
+        .second-window-toggle {
+            margin-left:auto;
+            border:1px solid var(--border);
+            border-radius:var(--radius-sm);
+            padding:7px 12px;
+            background:var(--panel-alt);
+            color:var(--text);
+            cursor:pointer;
+            font-size:calc(var(--fs-ui) - 1px);
+            font-weight:600;
+            transition:background .2s, border-color .2s, color .2s;
+            white-space:nowrap;
+        }
+        .second-window-toggle:hover:not(:disabled) {
+            background:var(--panel-hover);
+            border-color:var(--accent);
+            color:var(--text-strong);
+        }
+        .second-window-toggle.active {
+            color:var(--accent);
+            border-color:var(--accent);
+            background:var(--accent-soft);
+        }
+        .second-window-toggle:disabled { opacity:.45; cursor:not-allowed; }
 
-.layout-toggle {
-  width:34px;
-  height:34px;
-  padding:0;
-  border:1px solid var(--border);
-  border-radius:var(--radius-sm);
-  background:var(--panel-alt);
-  color:var(--muted);
-  cursor:pointer;
-  font-size:calc(var(--fs-ui) - 1px);
-}
-.layout-toggle:hover { background:var(--panel-hover); color:var(--text); border-color:var(--accent); }
+        .layout-toggle {
+            width:34px;
+            height:34px;
+            padding:0;
+            border:1px solid var(--border);
+            border-radius:var(--radius-sm);
+            background:var(--panel-alt);
+            color:var(--muted);
+            cursor:pointer;
+            font-size:calc(var(--fs-ui) - 1px);
+        }
+        .layout-toggle:hover { background:var(--panel-hover); color:var(--text); border-color:var(--accent); }
 
-/* ============================================
-   RESIZABLE PANELS
-   ============================================ */
-.panels-container {
-  flex:1;
-  min-height:0;
-  display:flex;
-  padding:16px;
-  overflow:hidden;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--bg) 50%, transparent), transparent 30%),
-    color-mix(in srgb, var(--bg) 30%, transparent);
-}
-.panels-container.vertical { flex-direction:column; }
+        /* ============================================
+           RESIZABLE PANELS
+           ============================================ */
+        .panels-container {
+            flex:1;
+            min-height:0;
+            display:flex;
+            padding:16px;
+            overflow:hidden;
+            background:
+                    linear-gradient(180deg, color-mix(in srgb, var(--bg) 50%, transparent), transparent 30%),
+                    color-mix(in srgb, var(--bg) 30%, transparent);
+        }
+        .panels-container.vertical { flex-direction:column; }
 
-.panel {
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:var(--radius-lg);
-  box-shadow:var(--shadow);
-  transition:border-color .2s, box-shadow .2s;
-  min-width:0;
-  min-height:0;
-}
+        .panel {
+            display:flex;
+            flex-direction:column;
+            overflow:hidden;
+            background:var(--panel);
+            border:1px solid var(--border);
+            border-radius:var(--radius-lg);
+            box-shadow:var(--shadow);
+            transition:border-color .2s, box-shadow .2s;
+            min-width:0;
+            min-height:0;
+        }
 
-.resizer {
-  flex:0 0 16px;
-  background:transparent;
-  cursor:col-resize;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-}
-.panels-container.vertical .resizer { flex:0 0 16px; cursor:row-resize; }
-.resizer::after {
-  content:"";
-  display:block;
-  width:4px;
-  height:40px;
-  background:var(--border);
-  border-radius:2px;
-  transition:background .2s, transform .2s;
-}
-.panels-container.vertical .resizer::after { width:40px; height:4px; }
-.resizer:hover::after { background:var(--accent); transform:scaleY(1.2); }
-.panels-container.vertical .resizer:hover::after { transform:scaleX(1.2); }
-.resizer.dragging::after { background:var(--accent); }
+        .resizer {
+            flex:0 0 16px;
+            background:transparent;
+            cursor:col-resize;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            position:relative;
+        }
+        .panels-container.vertical .resizer { flex:0 0 16px; cursor:row-resize; }
+        .resizer::after {
+            content:"";
+            display:block;
+            width:4px;
+            height:40px;
+            background:var(--border);
+            border-radius:2px;
+            transition:background .2s, transform .2s;
+        }
+        .panels-container.vertical .resizer::after { width:40px; height:4px; }
+        .resizer:hover::after { background:var(--accent); transform:scaleY(1.2); }
+        .panels-container.vertical .resizer:hover::after { transform:scaleX(1.2); }
+        .resizer.dragging::after { background:var(--accent); }
 
-.panel-topbar {
-  display:flex;
-  align-items:center;
-  gap:10px;
-  min-height:48px;
-  padding:7px 10px 7px 14px;
-  border-bottom:1px solid var(--border);
-  background:var(--panel-alt);
-  flex-shrink:0;
-}
-.panel-topbar-title {
-  min-width:0;
-  flex:1 1 auto;
-  color:var(--accent);
-  font-size:calc(var(--fs-ui) - 3px);
-  font-weight:700;
-  text-transform:uppercase;
-  letter-spacing:.06em;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.panel-topbar.secondary .panel-topbar-title { color:var(--yellow); }
-.panel-view-select {
-  flex:0 1 190px;
-  min-width:120px;
-  max-width:230px;
-  padding:6px 28px 6px 9px;
-  border:1px solid var(--border);
-  border-radius:var(--radius-sm);
-  background:var(--panel);
-  color:var(--text);
-  font-family:var(--font-main);
-  font-size:calc(var(--fs-ui) - 2px);
-  font-weight:600;
-  cursor:pointer;
-  outline:none;
-}
-.panel-view-select:hover,
-.panel-view-select:focus { border-color:var(--accent); }
+        .panel-topbar {
+            display:flex;
+            align-items:center;
+            gap:10px;
+            min-height:48px;
+            padding:7px 10px 7px 14px;
+            border-bottom:1px solid var(--border);
+            background:var(--panel-alt);
+            flex-shrink:0;
+        }
+        .panel-topbar-title {
+            min-width:0;
+            flex:1 1 auto;
+            color:var(--accent);
+            font-size:calc(var(--fs-ui) - 3px);
+            font-weight:700;
+            text-transform:uppercase;
+            letter-spacing:.06em;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+        }
+        .panel-topbar.secondary .panel-topbar-title { color:var(--yellow); }
+        .panel-view-select {
+            flex:0 1 190px;
+            min-width:120px;
+            max-width:230px;
+            padding:6px 28px 6px 9px;
+            border:1px solid var(--border);
+            border-radius:var(--radius-sm);
+            background:var(--panel);
+            color:var(--text);
+            font-family:var(--font-main);
+            font-size:calc(var(--fs-ui) - 2px);
+            font-weight:600;
+            cursor:pointer;
+            outline:none;
+        }
+        .panel-view-select:hover,
+        .panel-view-select:focus { border-color:var(--accent); }
 
-.panel-body {
-  flex:1;
-  overflow-y:auto;
-  padding:20px 24px 40px;
-}
-.panel-empty {
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  height:100%;
-  min-height:240px;
-  text-align:center;
-  color:var(--muted);
-  padding:24px;
-  font-size:var(--fs-base);
-}
-.panel-empty-icon {
-  margin-bottom:12px;
-  font-size:40px;
-  color:var(--accent);
-  opacity:.7;
-}
-.panel-empty-text { max-width:340px; line-height:1.55; }
+        .panel-body {
+            flex:1;
+            overflow-y:auto;
+            padding:20px 24px 40px;
+        }
+        .panel-empty {
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            height:100%;
+            min-height:240px;
+            text-align:center;
+            color:var(--muted);
+            padding:24px;
+            font-size:var(--fs-base);
+        }
+        .panel-empty-icon {
+            margin-bottom:12px;
+            font-size:40px;
+            color:var(--accent);
+            opacity:.7;
+        }
+        .panel-empty-text { max-width:340px; line-height:1.55; }
 
-/* ============================================
-   MARKDOWN / DOCUMENT
-   ============================================ */
-.breadcrumb {
-  margin-bottom:20px;
-  font-size:calc(var(--fs-ui) - 3px);
-  color:var(--muted);
-  font-family:var(--font-code);
-  opacity:.72;
-  overflow-wrap:anywhere;
-}
-.document {
-  max-width:900px;
-  font-size:var(--fs-base);
-  overflow-wrap:anywhere;
-}
-.document h1, .document h2, .document h3,
-.document h4, .document h5, .document h6 {
-  margin:1.5em 0 .5em;
-  color:var(--text-strong);
-  font-weight:700;
-  line-height:1.35;
-  letter-spacing:-.02em;
-}
-.document h1 { font-size:1.6em; padding-bottom:.3em; border-bottom:1px solid var(--border); }
-.document h2 { font-size:1.35em; padding-bottom:.3em; border-bottom:1px solid var(--border); }
-.document h3 { font-size:1.15em; }
-.document h1:first-child, .document h2:first-child { margin-top:0; }
-.document p { margin:.8em 0; }
-.document ul, .document ol { margin:.8em 0; padding-left:1.5em; }
-.document li { margin:.3em 0; }
-.document strong { color:var(--text-strong); font-weight:700; }
-.document code {
-  padding:.15em .4em;
-  border-radius:var(--radius-sm);
-  background:color-mix(in srgb, var(--text) 12%, transparent);
-  color:var(--text-strong);
-  font-family:var(--font-code);
-  font-size:.88em;
-  font-weight:500;
-}
-.document pre {
-  margin:1em 0;
-  padding:1.2em;
-  border:1px solid var(--border);
-  border-radius:var(--radius-md);
-  overflow:auto;
-  background:var(--code-block-bg);
-  font-family:var(--font-code);
-  line-height:1.6;
-  white-space:pre;
-}
-.document pre code {
-  padding:0;
-  background:transparent;
-  border:none;
-  color:var(--text);
-  font-size:.92em;
-  font-weight:normal;
-}
-.hl-comment { color:var(--hl-comment); font-style:italic; }
-.hl-string { color:var(--hl-string); }
-.hl-char { color:var(--hl-char); }
-.hl-preproc { color:var(--hl-preproc); font-weight:600; }
-.hl-keyword { color:var(--hl-keyword); font-weight:600; }
-.hl-type { color:var(--hl-type); font-weight:500; }
-.hl-number { color:var(--hl-number); }
-.hl-func { color:var(--hl-func); }
+        /* ============================================
+           MARKDOWN / DOCUMENT
+           ============================================ */
+        .breadcrumb {
+            margin-bottom:20px;
+            font-size:calc(var(--fs-ui) - 3px);
+            color:var(--muted);
+            font-family:var(--font-code);
+            opacity:.72;
+            overflow-wrap:anywhere;
+        }
+        .document {
+            max-width:900px;
+            font-size:var(--fs-base);
+            overflow-wrap:anywhere;
+        }
+        .document h1, .document h2, .document h3,
+        .document h4, .document h5, .document h6 {
+            margin:1.5em 0 .5em;
+            color:var(--text-strong);
+            font-weight:700;
+            line-height:1.35;
+            letter-spacing:-.02em;
+        }
+        .document h1 { font-size:1.6em; padding-bottom:.3em; border-bottom:1px solid var(--border); }
+        .document h2 { font-size:1.35em; padding-bottom:.3em; border-bottom:1px solid var(--border); }
+        .document h3 { font-size:1.15em; }
+        .document h1:first-child, .document h2:first-child { margin-top:0; }
+        .document p { margin:.8em 0; }
+        .document ul, .document ol { margin:.8em 0; padding-left:1.5em; }
+        .document li { margin:.3em 0; }
+        .document strong { color:var(--text-strong); font-weight:700; }
+        .document code {
+            padding:.15em .4em;
+            border-radius:var(--radius-sm);
+            background:color-mix(in srgb, var(--text) 12%, transparent);
+            color:var(--text-strong);
+            font-family:var(--font-code);
+            font-size:.88em;
+            font-weight:500;
+        }
+        .document pre {
+            margin:1em 0;
+            padding:1.2em;
+            border:1px solid var(--border);
+            border-radius:var(--radius-md);
+            overflow:auto;
+            background:var(--code-block-bg);
+            font-family:var(--font-code);
+            line-height:1.6;
+            white-space:pre;
+        }
+        .document pre code {
+            padding:0;
+            background:transparent;
+            border:none;
+            color:var(--text);
+            font-size:.92em;
+            font-weight:normal;
+        }
+        .hl-comment { color:var(--hl-comment); font-style:italic; }
+        .hl-string { color:var(--hl-string); }
+        .hl-char { color:var(--hl-char); }
+        .hl-preproc { color:var(--hl-preproc); font-weight:600; }
+        .hl-keyword { color:var(--hl-keyword); font-weight:600; }
+        .hl-type { color:var(--hl-type); font-weight:500; }
+        .hl-number { color:var(--hl-number); }
+        .hl-func { color:var(--hl-func); }
 
-.document blockquote {
-  margin:1em 0;
-  padding:.5em 1em;
-  border-left:3px solid var(--accent);
-  border-radius:0 var(--radius-md) var(--radius-md) 0;
-  color:var(--text);
-  background:var(--accent-soft);
-}
-.document blockquote p:first-child { margin-top:0; }
-.document blockquote p:last-child { margin-bottom:0; }
-.document details {
-  margin:1em 0;
-  padding:.8em 1em;
-  border:1px solid var(--border);
-  border-radius:var(--radius-md);
-  background:var(--panel-alt);
-}
-.document details summary { color:var(--accent); cursor:pointer; font-weight:600; }
-.document details[open] summary { margin-bottom:8px; }
+        .document blockquote {
+            margin:1em 0;
+            padding:.5em 1em;
+            border-left:3px solid var(--accent);
+            border-radius:0 var(--radius-md) var(--radius-md) 0;
+            color:var(--text);
+            background:var(--accent-soft);
+        }
+        .document blockquote p:first-child { margin-top:0; }
+        .document blockquote p:last-child { margin-bottom:0; }
+        .document details {
+            margin:1em 0;
+            padding:.8em 1em;
+            border:1px solid var(--border);
+            border-radius:var(--radius-md);
+            background:var(--panel-alt);
+        }
+        .document details summary { color:var(--accent); cursor:pointer; font-weight:600; }
+        .document details[open] summary { margin-bottom:8px; }
 
-.table-wrap {
-  margin:1em 0;
-  overflow-x:auto;
-  border:1px solid var(--border);
-  border-radius:var(--radius-md);
-}
-.document table { width:100%; border-collapse:collapse; font-size:.95em; }
-.document th, .document td {
-  padding:.7em 1em;
-  border-bottom:1px solid var(--border);
-  border-right:1px solid var(--border);
-  text-align:left;
-  vertical-align:top;
-}
-.document th:last-child, .document td:last-child { border-right:none; }
-.document tbody tr:last-child td { border-bottom:none; }
-.document th { color:var(--text-strong); background:var(--table-header); font-weight:700; }
-.document tbody tr:hover { background:var(--panel-alt); }
-.document hr { margin:1.5em 0; border:0; border-top:1px solid var(--border); }
-.document img { max-width:100%; border-radius:var(--radius-sm); }
-.document a {
-  color:var(--accent);
-  text-decoration:underline;
-  text-decoration-thickness:1px;
-  text-underline-offset:3px;
-}
+        .table-wrap {
+            margin:1em 0;
+            overflow-x:auto;
+            border:1px solid var(--border);
+            border-radius:var(--radius-md);
+        }
+        .document table { width:100%; border-collapse:collapse; font-size:.95em; }
+        .document th, .document td {
+            padding:.7em 1em;
+            border-bottom:1px solid var(--border);
+            border-right:1px solid var(--border);
+            text-align:left;
+            vertical-align:top;
+        }
+        .document th:last-child, .document td:last-child { border-right:none; }
+        .document tbody tr:last-child td { border-bottom:none; }
+        .document th { color:var(--text-strong); background:var(--table-header); font-weight:700; }
+        .document tbody tr:hover { background:var(--panel-alt); }
+        .document hr { margin:1.5em 0; border:0; border-top:1px solid var(--border); }
+        .document img { max-width:100%; border-radius:var(--radius-sm); }
+        .document a {
+            color:var(--accent);
+            text-decoration:underline;
+            text-decoration-thickness:1px;
+            text-underline-offset:3px;
+        }
 
-/* ============================================
-   EMPTY / ONBOARDING
-   ============================================ */
-.tree-empty-card {
-  position:relative;
-}
-.tree-empty-card::before {
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:inherit;
-  pointer-events:none;
-  box-shadow:inset 0 1px 0 color-mix(in srgb, var(--text) 4%, transparent);
-}
-.empty-action {
-  width:100%;
-  margin-top:2px;
-  padding:10px 12px;
-}
-.modal-backdrop {
-  position:fixed;
-  inset:0;
-  z-index:100;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:24px;
-  background:rgba(0,0,0,.60);
-  backdrop-filter:blur(7px);
-  animation:fadeIn .2s ease both;
-}
-.modal-backdrop[hidden] { display:none; }
-@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+        /* ============================================
+           EMPTY / ONBOARDING
+           ============================================ */
+        .tree-empty-card {
+            position:relative;
+        }
+        .tree-empty-card::before {
+            content:"";
+            position:absolute;
+            inset:0;
+            border-radius:inherit;
+            pointer-events:none;
+            box-shadow:inset 0 1px 0 color-mix(in srgb, var(--text) 4%, transparent);
+        }
+        .empty-action {
+            width:100%;
+            margin-top:2px;
+            padding:10px 12px;
+        }
+        .modal-backdrop {
+            position:fixed;
+            inset:0;
+            z-index:100;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:24px;
+            background:rgba(0,0,0,.60);
+            backdrop-filter:blur(7px);
+            animation:fadeIn .2s ease both;
+        }
+        .modal-backdrop[hidden] { display:none; }
+        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 
-.modal-card {
-  position:relative;
-  width:min(560px,100%);
-  max-height:90vh;
-  overflow-y:auto;
-  padding:34px 32px 30px;
-  border:1px solid var(--border);
-  border-radius:var(--radius-md);
-  background:var(--panel);
-  box-shadow:var(--shadow-hover);
-}
-.modal-close {
-  position:absolute;
-  top:14px;
-  right:14px;
-  width:32px;
-  height:32px;
-  padding:0;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  background:transparent;
-  border-color:transparent;
-  color:var(--muted);
-}
-.modal-close:hover {
-  background:var(--panel-alt);
-  color:var(--text);
-  border-color:var(--border);
-}
-.modal-icon { font-size:32px; margin-bottom:14px; }
-.modal-card h2 {
-  color:var(--text-strong);
-  font-size:21px;
-  margin-bottom:14px;
-  letter-spacing:-.02em;
-}
-.modal-card p {
-  color:var(--muted);
-  font-size:calc(var(--fs-ui) + 1px);
-  line-height:1.6;
-}
-.modal-card p + p { margin-top:10px; }
-.modal-card code {
-  color:var(--text-strong);
-  background:color-mix(in srgb, var(--text) 12%, transparent);
-  padding:.1em .4em;
-  border-radius:5px;
-  font-size:.92em;
-}
-.modal-cta {
-  width:100%;
-  margin-top:24px;
-  padding:13px 18px;
-  font-size:calc(var(--fs-ui) + 1px);
-}
+        .modal-card {
+            position:relative;
+            width:min(560px,100%);
+            max-height:90vh;
+            overflow-y:auto;
+            padding:34px 32px 30px;
+            border:1px solid var(--border);
+            border-radius:var(--radius-md);
+            background:var(--panel);
+            box-shadow:var(--shadow-hover);
+        }
+        .modal-close {
+            position:absolute;
+            top:14px;
+            right:14px;
+            width:32px;
+            height:32px;
+            padding:0;
+            border-radius:50%;
+            display:grid;
+            place-items:center;
+            background:transparent;
+            border-color:transparent;
+            color:var(--muted);
+        }
+        .modal-close:hover {
+            background:var(--panel-alt);
+            color:var(--text);
+            border-color:var(--border);
+        }
+        .modal-icon { font-size:32px; margin-bottom:14px; }
+        .modal-card h2 {
+            color:var(--text-strong);
+            font-size:21px;
+            margin-bottom:14px;
+            letter-spacing:-.02em;
+        }
+        .modal-card p {
+            color:var(--muted);
+            font-size:calc(var(--fs-ui) + 1px);
+            line-height:1.6;
+        }
+        .modal-card p + p { margin-top:10px; }
+        .modal-card code {
+            color:var(--text-strong);
+            background:color-mix(in srgb, var(--text) 12%, transparent);
+            padding:.1em .4em;
+            border-radius:5px;
+            font-size:.92em;
+        }
+        .modal-cta {
+            width:100%;
+            margin-top:24px;
+            padding:13px 18px;
+            font-size:calc(var(--fs-ui) + 1px);
+        }
 
-/* ============================================
-   RESPONSIVE
-   ============================================ */
-@media (max-width:900px) {
-  .nav {
-    width:280px;
-    min-width:280px;
-    max-width:280px;
-  }
-  .nav.collapsed { margin-left:-280px; }
-  .panels-container {
-    flex-direction:column;
-  }
-  .panels-container .panel {
-    min-height:180px;
-  }
-  .resizer {
-    flex:0 0 16px !important;
-    cursor:row-resize !important;
-  }
-  .resizer::after {
-    width:40px !important;
-    height:4px !important;
-  }
-}
-@media (max-width:680px) {
-  .task-bar { padding:9px 12px; }
-  .task-bar-title { width:100%; order:2; margin-right:0; }
-  .layout-toggle { margin-left:auto; }
-  .panels-container { padding:10px; }
-  .panel-body { padding:16px 16px 28px; }
-  .modal-card { padding:28px 20px 24px; }
-}
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (max-width:900px) {
+            .nav {
+                width:280px;
+                min-width:280px;
+                max-width:280px;
+            }
+            .nav.collapsed { margin-left:-280px; }
+            .panels-container {
+                flex-direction:column;
+            }
+            .panels-container .panel {
+                min-height:180px;
+            }
+            .resizer {
+                flex:0 0 16px !important;
+                cursor:row-resize !important;
+            }
+            .resizer::after {
+                width:40px !important;
+                height:4px !important;
+            }
+        }
+        @media (max-width:680px) {
+            .task-bar { padding:9px 12px; }
+            .task-bar-title { width:100%; order:2; margin-right:0; }
+            .layout-toggle { margin-left:auto; }
+            .panels-container { padding:10px; }
+            .panel-body { padding:16px 16px 28px; }
+            .modal-card { padding:28px 20px 24px; }
+        }
 
     </style>
 </head>
@@ -898,6 +897,7 @@ code, pre { font-family:var(--font-code); }
                         <option value="light">☀️ GitHub Light</option>
                     </select>
                 </div>
+
                 <div class="settings-row">
                     <span>Размер текста: <span id="fontVal">15</span>px</span>
                     <input type="range" id="fontSlider" class="font-slider" min="12" max="26" value="15" step="1">
@@ -905,7 +905,9 @@ code, pre { font-family:var(--font-code); }
             </div>
         </div>
 
-        <div id="navStatus" class="nav-status">Выбери корень проекта для загрузки.</div>
+        <div id="navStatus" class="nav-status">
+            Выбери корень проекта для загрузки.
+        </div>
 
         <nav class="tree" id="tree">
             <div class="tree-empty-state">
@@ -913,7 +915,9 @@ code, pre { font-family:var(--font-code); }
                     <div class="tree-empty-icon">📁</div>
                     <p><strong>Подключи папку проекта</strong></p>
                     <p>Выбери корень проекта — папку, внутри которой лежит <code>tasks</code>.</p>
-                    <button class="nav-btn empty-action" id="emptyChooseBtn" type="button">📁 Выбрать папку проекта</button>
+                    <button class="nav-btn empty-action" id="emptyChooseBtn" type="button">
+                        📁 Выбрать папку проекта
+                    </button>
                     <p class="tree-empty-note">
                         Всё читается локально через File System Access API. Файлы никуда не отправляются.
                     </p>
@@ -924,183 +928,397 @@ code, pre { font-family:var(--font-code); }
 
     <div class="content-area">
         <div class="task-bar" id="taskBar">
-            <button class="sidebar-toggle-btn" id="sidebarToggle" title="Скрыть/показать меню">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+
+            <button class="sidebar-toggle-btn"
+                    id="sidebarToggle"
+                    title="Скрыть/показать меню">
+
+                <svg width="20"
+                     height="20"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+
+                    <rect x="3" y="3" width="18" height="18" rx="2"></rect>
                     <line x1="9" y1="3" x2="9" y2="21"></line>
                 </svg>
             </button>
-            <span class="task-bar-title" id="taskBarTitle">Выбери задание слева</span>
-            <button class="second-window-toggle" id="secondWindowToggle" type="button" title="Показать или скрыть второе окно" disabled>Показать второе окно</button>
-            <button class="layout-toggle" id="layoutToggle" title="Сменить раскладку окон">⬜</button>
+
+            <span class="task-bar-title" id="taskBarTitle">
+                Выбери задание слева
+            </span>
+
+            <button class="second-window-toggle"
+                    id="secondWindowToggle"
+                    type="button"
+                    title="Показать или скрыть второе окно"
+                    disabled>
+                Показать второе окно
+            </button>
+
+            <button class="layout-toggle"
+                    id="layoutToggle"
+                    title="Сменить раскладку окон">
+                ⬜
+            </button>
         </div>
 
         <div class="panels-container" id="panelsContainer">
-            <div class="panel" id="panelLeft" style="flex: 1 1 0%;">
+
+            <div class="panel" id="panelLeft" style="flex:1 1 0%;">
                 <div class="panel-empty">
                     <div class="panel-empty-icon">📋</div>
-                    <div class="panel-empty-text">Выбери задание.<br>Условие появится здесь.</div>
+                    <div class="panel-empty-text">
+                        Выбери задание.<br>
+                        Материал появится здесь.
+                    </div>
                 </div>
             </div>
 
-            <div class="resizer" id="resizer" style="display: none;" title="Потяни для изменения размера"></div>
+            <div class="resizer"
+                 id="resizer"
+                 style="display:none;"
+                 title="Потяни для изменения размера">
+            </div>
 
-            <div class="panel" id="panelRight" style="display: none; flex: 1 1 0%;">
+            <div class="panel"
+                 id="panelRight"
+                 style="display:none; flex:1 1 0%;">
                 <div class="panel-empty">
                     <div class="panel-empty-icon">💡</div>
-                    <div class="panel-empty-text">Здесь будет теория.</div>
+                    <div class="panel-empty-text">
+                        Здесь будет дополнительный материал.
+                    </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
 
 
 <div class="modal-backdrop" id="onboardModal" hidden>
-    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="onboardTitle">
-        <button class="modal-close" id="onboardClose" type="button" title="Закрыть" aria-label="Закрыть">✕</button>
+    <div class="modal-card"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="onboardTitle">
+
+        <button class="modal-close"
+                id="onboardClose"
+                type="button"
+                title="Закрыть"
+                aria-label="Закрыть">
+            ✕
+        </button>
+
         <div class="modal-icon">📁</div>
-        <h2 id="onboardTitle">Подключи папку с проектом</h2>
-        <p>Чтобы загрузить задания, выбери корень репозитория — папку, внутри которой находится <code>tasks</code>.</p>
-        <p>Браузер читает структуру прямо с твоего компьютера. Файлы никуда не отправляются.</p>
-        <button class="nav-btn modal-cta" id="onboardChoose" type="button">📁 Выбрать папку проекта</button>
+
+        <h2 id="onboardTitle">
+            Подключи папку с проектом
+        </h2>
+
+        <p>
+            Чтобы загрузить задания, выбери корень репозитория —
+            папку, внутри которой находится <code>tasks</code>.
+        </p>
+
+        <p>
+            Браузер читает структуру прямо с твоего компьютера.
+            Файлы никуда не отправляются.
+        </p>
+
+        <button class="nav-btn modal-cta"
+                id="onboardChoose"
+                type="button">
+            📁 Выбрать папку проекта
+        </button>
     </div>
 </div>
+
 
 <script>
     "use strict";
 
+    /* ============================================
+       CONFIG
+       ============================================ */
+
     var SECONDARY_FILES = [
-        { name: "theory.md",            icon: "💡", label: "Теория",            reveal: true },
-        { name: "tests.md",             icon: "🧪", label: "Тесты",             reveal: false },
-        { name: "solution.c",           icon: "✅", label: "Решение",            reveal: true },
-        { name: "solution_commented.c", icon: "💬", label: "С комментариями",   reveal: true }
+        { name:"theory.md",            icon:"💡", label:"Теория",          reveal:true  },
+        { name:"tests.md",             icon:"🧪", label:"Тесты",           reveal:false },
+        { name:"solution.c",           icon:"✅", label:"Решение",         reveal:true  },
+        { name:"solution_commented.c", icon:"💬", label:"С комментариями", reveal:true  }
     ];
 
     var SECTION_NAMES = {
         "01_basics":          "Основы C",
         "02_input_output":    "Ввод и вывод",
         "03_expressions":     "Выражения и вычисления",
-        "04_loops":           "Циклы и последовательности",
+        "04_loops":            "Циклы и последовательности",
         "05_dynamic_arrays":  "Динамические массивы",
-        "06_strings":         "Строки и символы",
-        "07_matrices":        "Матрицы",
-        "08_structures":      "Структуры"
+        "06_strings":          "Строки и символы",
+        "07_matrices":         "Матрицы",
+        "08_structures":       "Структуры"
     };
 
-    var chooseBtn    = document.getElementById("chooseBtn");
-    var emptyChooseBtn = document.getElementById("emptyChooseBtn");
-    var onboardModal = document.getElementById("onboardModal");
-    var onboardClose = document.getElementById("onboardClose");
-    var onboardChoose = document.getElementById("onboardChoose");
-    var navStatus    = document.getElementById("navStatus");
-    var treeEl       = document.getElementById("tree");
-    var taskBarTitle = document.getElementById("taskBarTitle");
-    var layoutToggle = document.getElementById("layoutToggle");
+
+    /* ============================================
+       DOM
+       ============================================ */
+
+    var chooseBtn       = document.getElementById("chooseBtn");
+    var emptyChooseBtn  = document.getElementById("emptyChooseBtn");
+    var onboardModal    = document.getElementById("onboardModal");
+    var onboardClose    = document.getElementById("onboardClose");
+    var onboardChoose   = document.getElementById("onboardChoose");
+    var navStatus       = document.getElementById("navStatus");
+    var treeEl          = document.getElementById("tree");
+    var taskBarTitle    = document.getElementById("taskBarTitle");
+    var layoutToggle    = document.getElementById("layoutToggle");
     var secondWindowToggle = document.getElementById("secondWindowToggle");
-    var sidebarToggle= document.getElementById("sidebarToggle");
-    var sidebar      = document.getElementById("sidebar");
+    var sidebarToggle   = document.getElementById("sidebarToggle");
+    var sidebar         = document.getElementById("sidebar");
 
     var panelsContainer = document.getElementById("panelsContainer");
     var panelLeft       = document.getElementById("panelLeft");
     var panelRight      = document.getElementById("panelRight");
     var resizer         = document.getElementById("resizer");
 
-    var themeSelect  = document.getElementById("themeSelect");
-    var fontSlider   = document.getElementById("fontSlider");
-    var fontVal      = document.getElementById("fontVal");
+    var themeSelect     = document.getElementById("themeSelect");
+    var fontSlider      = document.getElementById("fontSlider");
+    var fontVal         = document.getElementById("fontVal");
 
-    var activeTaskEl = null, activeTask = null;
-    var panelViews = { left: "README.md", right: "theory.md" };
+
+    /* ============================================
+       STATE
+       ============================================ */
+
+    var activeTaskEl = null;
+    var activeTask = null;
+
+    /*
+     * Что пользователь выбирал в каждом окне.
+     *
+     * Первый запуск:
+     * левое окно = theory.md
+     * правое окно = README.md
+     */
+    var panelViews = {
+        left: "README.md",
+        right: "theory.md"
+    };
+
+    /*
+     * Второе окно изначально скрыто.
+     * После первого ручного открытия это состояние
+     * сохраняется при переходе между заданиями.
+     */
+    var secondWindowVisible = false;
+
     var isVertical = false;
 
+
+    /* ============================================
+       VIEW HELPERS
+       ============================================ */
+
     function viewConfig(filename) {
-        if (filename === "README.md") return { name: filename, icon: "📋", label: "Условие", reveal: false };
-        for (var i = 0; i < SECONDARY_FILES.length; i++) {
-            if (SECONDARY_FILES[i].name === filename) return SECONDARY_FILES[i];
+        if (filename === "README.md") {
+            return {
+                name: filename,
+                icon: "📋",
+                label: "Условие",
+                reveal: false
+            };
         }
-        return { name: filename, icon: "📄", label: filename, reveal: false };
+
+        for (var i = 0; i < SECONDARY_FILES.length; i++) {
+            if (SECONDARY_FILES[i].name === filename) {
+                return SECONDARY_FILES[i];
+            }
+        }
+
+        return {
+            name: filename,
+            icon: "📄",
+            label: filename,
+            reveal: false
+        };
     }
 
     function availableViews(task) {
-        return [{ name: "README.md", icon: "📋", label: "Условие", reveal: false }].concat(task.secondary || []);
+        return [
+            {
+                name: "README.md",
+                icon: "📋",
+                label: "Условие",
+                reveal: false
+            }
+        ].concat(task.secondary || []);
     }
 
-    // --- Настройки (Тема и Глобальный Шрифт) ---
+    /*
+     * Возвращает preferred, если файл существует.
+     * Иначе пробует fallback.
+     * Иначе берёт первый доступный файл.
+     */
+    function resolvePanelView(task, preferred, fallback) {
+        var views = availableViews(task);
+
+        for (var i = 0; i < views.length; i++) {
+            if (views[i].name === preferred) {
+                return preferred;
+            }
+        }
+
+        for (var j = 0; j < views.length; j++) {
+            if (views[j].name === fallback) {
+                return fallback;
+            }
+        }
+
+        return views.length ? views[0].name : null;
+    }
+
+
+    /* ============================================
+       THEME / FONT
+       ============================================ */
+
     function setTheme(theme) {
         document.documentElement.setAttribute("data-theme", theme);
         themeSelect.value = theme;
-        try { localStorage.setItem("c-practice-theme", theme); } catch (e) {}
+
+        try {
+            localStorage.setItem("c-practice-theme", theme);
+        } catch (e) {}
     }
 
     function setFontSize(val) {
-        document.documentElement.style.setProperty('--fs-base', val + 'px');
+        document.documentElement.style.setProperty(
+            "--fs-base",
+            val + "px"
+        );
+
         fontVal.textContent = val;
         fontSlider.value = val;
-        try { localStorage.setItem("c-practice-font", val); } catch (e) {}
+
+        try {
+            localStorage.setItem("c-practice-font", val);
+        } catch (e) {}
     }
 
-    themeSelect.addEventListener("change", function () { setTheme(this.value); });
-    fontSlider.addEventListener("input", function () { setFontSize(this.value); });
+    themeSelect.addEventListener("change", function () {
+        setTheme(this.value);
+    });
+
+    fontSlider.addEventListener("input", function () {
+        setFontSize(this.value);
+    });
 
     (function () {
         var sTheme = localStorage.getItem("c-practice-theme") || "gruvbox";
-        var sFont  = localStorage.getItem("c-practice-font") || "15";
+        var sFont = localStorage.getItem("c-practice-font") || "15";
+
         setTheme(sTheme);
         setFontSize(sFont);
     })();
 
-    // --- Скрытие меню ---
-    sidebarToggle.addEventListener("click", function() {
+
+    /* ============================================
+       SIDEBAR
+       ============================================ */
+
+    sidebarToggle.addEventListener("click", function () {
         sidebar.classList.toggle("collapsed");
     });
 
-    // --- Ресайзер ---
-    let isResizing = false;
 
-    resizer.addEventListener('mousedown', function(e) {
+    /* ============================================
+       RESIZER
+       ============================================ */
+
+    var isResizing = false;
+
+    resizer.addEventListener("mousedown", function (e) {
         isResizing = true;
-        resizer.classList.add('dragging');
-        document.body.style.cursor = isVertical ? 'row-resize' : 'col-resize';
-        document.body.style.userSelect = 'none';
+
+        resizer.classList.add("dragging");
+
+        document.body.style.cursor =
+            isVertical ? "row-resize" : "col-resize";
+
+        document.body.style.userSelect = "none";
+
         e.preventDefault();
     });
 
-    window.addEventListener('mousemove', function(e) {
+    window.addEventListener("mousemove", function (e) {
         if (!isResizing) return;
 
-        const rect = panelsContainer.getBoundingClientRect();
+        var rect = panelsContainer.getBoundingClientRect();
+
         if (!isVertical) {
-            let newWidth = ((e.clientX - rect.left) / rect.width) * 100;
+            var newWidth =
+                ((e.clientX - rect.left) / rect.width) * 100;
+
             if (newWidth > 15 && newWidth < 85) {
-                panelLeft.style.flex = `0 0 calc(${newWidth}% - 8px)`;
-                panelRight.style.flex = `1 1 0%`;
+                panelLeft.style.flex =
+                    "0 0 calc(" + newWidth + "% - 8px)";
+
+                panelRight.style.flex = "1 1 0%";
             }
         } else {
-            let newHeight = ((e.clientY - rect.top) / rect.height) * 100;
+            var newHeight =
+                ((e.clientY - rect.top) / rect.height) * 100;
+
             if (newHeight > 15 && newHeight < 85) {
-                panelLeft.style.flex = `0 0 calc(${newHeight}% - 8px)`;
-                panelRight.style.flex = `1 1 0%`;
+                panelLeft.style.flex =
+                    "0 0 calc(" + newHeight + "% - 8px)";
+
+                panelRight.style.flex = "1 1 0%";
             }
         }
     });
 
-    window.addEventListener('mouseup', function() {
-        if (isResizing) {
-            isResizing = false;
-            resizer.classList.remove('dragging');
-            document.body.style.cursor = 'default';
-            document.body.style.userSelect = 'auto';
-        }
+    window.addEventListener("mouseup", function () {
+        if (!isResizing) return;
+
+        isResizing = false;
+
+        resizer.classList.remove("dragging");
+
+        document.body.style.cursor = "default";
+        document.body.style.userSelect = "auto";
     });
+
+
+    /* ============================================
+       LAYOUT
+       ============================================ */
 
     layoutToggle.addEventListener("click", function () {
         isVertical = !isVertical;
-        panelsContainer.classList.toggle("vertical", isVertical);
-        layoutToggle.textContent = isVertical ? "⬛" : "⬜";
+
+        panelsContainer.classList.toggle(
+            "vertical",
+            isVertical
+        );
+
+        layoutToggle.textContent =
+            isVertical ? "⬛" : "⬜";
+
         panelLeft.style.flex = "1 1 0%";
         panelRight.style.flex = "1 1 0%";
     });
+
+
+    /* ============================================
+       ONBOARDING
+       ============================================ */
 
     function closeOnboard() {
         onboardModal.hidden = true;
@@ -1111,360 +1329,1634 @@ code, pre { font-family:var(--font-code); }
     }
 
     onboardClose.addEventListener("click", closeOnboard);
-    onboardModal.addEventListener("click", function(e) {
-        if (e.target === onboardModal) closeOnboard();
+
+    onboardModal.addEventListener("click", function (e) {
+        if (e.target === onboardModal) {
+            closeOnboard();
+        }
     });
 
-    onboardChoose.addEventListener("click", function() {
-        pickProject().catch(function(e) {
+
+    /* ============================================
+       NAV STATUS
+       ============================================ */
+
+    function showNav(msg, isErr) {
+        navStatus.hidden = false;
+
+        navStatus.textContent = msg;
+
+        navStatus.className =
+            "nav-status" + (isErr ? " error" : "");
+    }
+
+    function hideNavStatus() {
+        navStatus.hidden = true;
+    }
+
+
+    /* ============================================
+       PICK PROJECT
+       ============================================ */
+
+    onboardChoose.addEventListener("click", function () {
+        pickProject().catch(function (e) {
             console.error(e);
-            showNav("Ошибка: " + e.message, true);
+
+            showNav(
+                "Ошибка: " + e.message,
+                true
+            );
         });
     });
 
     if (emptyChooseBtn) {
-        emptyChooseBtn.addEventListener("click", function() {
-            pickProject().catch(function(e) {
+        emptyChooseBtn.addEventListener("click", function () {
+            pickProject().catch(function (e) {
                 console.error(e);
-                showNav("Ошибка: " + e.message, true);
+
+                showNav(
+                    "Ошибка: " + e.message,
+                    true
+                );
             });
         });
     }
 
     async function pickProject() {
-        if (!window.isSecureContext || typeof window.showDirectoryPicker !== "function") {
-            showNav("Нужен Chrome или Edge.", true); return;
-        }
-        var root, tasksDir;
-        try { root = await window.showDirectoryPicker({ id: "c-practice-preview", mode: "read" }); }
-        catch (e) { if (e.name === "AbortError") return; throw e; }
+        if (
+            !window.isSecureContext ||
+            typeof window.showDirectoryPicker !== "function"
+        ) {
+            showNav(
+                "Нужен Chrome или Edge.",
+                true
+            );
 
-        try { tasksDir = await root.getDirectoryHandle("tasks"); }
-        catch (e) { showNav("В выбранной папке нет tasks.", true); return; }
+            return;
+        }
+
+        var root;
+        var tasksDir;
+
+        try {
+            root = await window.showDirectoryPicker({
+                id: "c-practice-preview",
+                mode: "read"
+            });
+        } catch (e) {
+            if (e.name === "AbortError") return;
+            throw e;
+        }
+
+        try {
+            tasksDir =
+                await root.getDirectoryHandle("tasks");
+        } catch (e) {
+            showNav(
+                "В выбранной папке нет tasks.",
+                true
+            );
+
+            return;
+        }
 
         showNav("Читаю структуру…");
-        var structure = await scanTasks(tasksDir);
-        if (structure.length === 0) { showNav("Не найдено ни одного задания.", true); return; }
 
-        var total = 0; for (var i = 0; i < structure.length; i++) total += structure[i].tasks.length;
+        var structure =
+            await scanTasks(tasksDir);
+
+        if (structure.length === 0) {
+            showNav(
+                "Не найдено ни одного задания.",
+                true
+            );
+
+            return;
+        }
+
         buildTree(structure);
-        showNav("Загружено " + total + " заданий.");
-        navStatus.classList.add("success");
+
+        /*
+         * Больше не показываем
+         * "Загружено 50 заданий."
+         */
+        hideNavStatus();
+
         closeOnboard();
     }
 
+
+    /* ============================================
+       SCAN TASKS
+       ============================================ */
+
     async function scanTasks(tasksDir) {
         var sections = [];
+
         for await (var sEntry of tasksDir.values()) {
             if (sEntry.kind !== "directory") continue;
+
             var tasks = [];
+
             for await (var tEntry of sEntry.values()) {
                 if (tEntry.kind !== "directory") continue;
+
                 var hasReadme = false;
-                try { await tEntry.getFileHandle("README.md"); hasReadme = true; } catch (e) {}
+
+                try {
+                    await tEntry.getFileHandle("README.md");
+                    hasReadme = true;
+                } catch (e) {}
+
                 if (!hasReadme) continue;
+
                 var available = [];
-                for (var f = 0; f < SECONDARY_FILES.length; f++) {
-                    try { await tEntry.getFileHandle(SECONDARY_FILES[f].name); available.push(SECONDARY_FILES[f]); } catch (e) {}
+
+                for (
+                    var f = 0;
+                    f < SECONDARY_FILES.length;
+                    f++
+                ) {
+                    try {
+                        await tEntry.getFileHandle(
+                            SECONDARY_FILES[f].name
+                        );
+
+                        available.push(
+                            SECONDARY_FILES[f]
+                        );
+                    } catch (e) {}
                 }
-                tasks.push({ name: tEntry.name, directory: tEntry, section: sEntry.name, secondary: available });
+
+                tasks.push({
+                    name: tEntry.name,
+                    directory: tEntry,
+                    section: sEntry.name,
+                    secondary: available
+                });
             }
-            tasks.sort((a, b) => a.name.localeCompare(b.name));
-            if (tasks.length > 0) sections.push({ name: sEntry.name, tasks: tasks });
+
+            tasks.sort(function (a, b) {
+                return a.name.localeCompare(b.name);
+            });
+
+            if (tasks.length > 0) {
+                sections.push({
+                    name: sEntry.name,
+                    tasks: tasks
+                });
+            }
         }
-        sections.sort((a, b) => a.name.localeCompare(b.name));
+
+        sections.sort(function (a, b) {
+            return a.name.localeCompare(b.name);
+        });
+
         return sections;
     }
+
+
+    /* ============================================
+       FILE READING
+       ============================================ */
 
     async function readFile(dir, name) {
         var h = await dir.getFileHandle(name);
         var f = await h.getFile();
+
         return await f.text();
     }
 
-    function showNav(msg, isErr) {
-        navStatus.textContent = msg;
-        navStatus.className = "nav-status" + (isErr ? " error" : "");
-    }
+
+    /* ============================================
+       TREE
+       ============================================ */
 
     function prettyName(dirName) {
-        var n = dirName.replace(/^\d+_/, ""), extra = n.endsWith("_extra");
-        if (extra) n = n.replace(/_extra$/, "");
-        n = n.replace(/_/g, " "); n = n.charAt(0).toUpperCase() + n.slice(1);
-        return { name: n, extra: extra };
+        var n = dirName.replace(/^\d+_/, "");
+        var extra = n.endsWith("_extra");
+
+        if (extra) {
+            n = n.replace(/_extra$/, "");
+        }
+
+        n = n.replace(/_/g, " ");
+
+        n =
+            n.charAt(0).toUpperCase() +
+            n.slice(1);
+
+        return {
+            name: n,
+            extra: extra
+        };
     }
 
     function buildTree(sections) {
         treeEl.replaceChildren();
-        for (var s = 0; s < sections.length; s++) {
-            var sec = sections[s], secNum = s + 1;
-            var secEl = document.createElement("div"); secEl.className = "tree-section";
-            var secTitle = document.createElement("div"); secTitle.className = "tree-section-title";
-            secTitle.textContent = secNum + ". " + (SECTION_NAMES[sec.name] || sec.name);
-            secTitle.addEventListener("click", (function(el){ return function(){ el.classList.toggle("open"); }; })(secEl));
-            var secBody = document.createElement("div"); secBody.className = "tree-section-body";
 
-            for (var t = 0; t < sec.tasks.length; t++) {
-                var task = sec.tasks[t], info = prettyName(task.name), taskNum = t + 1;
-                var displayTaskName = secNum + "." + taskNum + ". " + info.name;
-                var taskEl = document.createElement("div"); taskEl.className = "tree-task";
-                var icon = document.createElement("span"); icon.className = "tree-task-icon"; icon.textContent = "📄";
-                var nameSpan = document.createElement("span"); nameSpan.textContent = displayTaskName;
-                taskEl.append(icon, nameSpan);
+        for (var s = 0; s < sections.length; s++) {
+            var sec = sections[s];
+            var secNum = s + 1;
+
+            var secEl =
+                document.createElement("div");
+
+            secEl.className = "tree-section";
+
+            var secTitle =
+                document.createElement("div");
+
+            secTitle.className =
+                "tree-section-title";
+
+            secTitle.textContent =
+                secNum +
+                ". " +
+                (SECTION_NAMES[sec.name] || sec.name);
+
+            secTitle.addEventListener(
+                "click",
+                (function (el) {
+                    return function () {
+                        el.classList.toggle("open");
+                    };
+                })(secEl)
+            );
+
+            var secBody =
+                document.createElement("div");
+
+            secBody.className =
+                "tree-section-body";
+
+            for (
+                var t = 0;
+                t < sec.tasks.length;
+                t++
+            ) {
+                var task = sec.tasks[t];
+
+                var info =
+                    prettyName(task.name);
+
+                var taskNum = t + 1;
+
+                var displayTaskName =
+                    secNum +
+                    "." +
+                    taskNum +
+                    ". " +
+                    info.name;
+
+                var taskEl =
+                    document.createElement("div");
+
+                taskEl.className =
+                    "tree-task";
+
+                var icon =
+                    document.createElement("span");
+
+                icon.className =
+                    "tree-task-icon";
+
+                icon.textContent = "📄";
+
+                var nameSpan =
+                    document.createElement("span");
+
+                nameSpan.textContent =
+                    displayTaskName;
+
+                taskEl.append(
+                    icon,
+                    nameSpan
+                );
+
                 if (info.extra) {
-                    var badge = document.createElement("span"); badge.className = "tree-badge"; badge.textContent = "extra"; taskEl.appendChild(badge);
+                    var badge =
+                        document.createElement("span");
+
+                    badge.className =
+                        "tree-badge";
+
+                    badge.textContent =
+                        "extra";
+
+                    taskEl.appendChild(badge);
                 }
-                taskEl.addEventListener("click", (function(tData, el, dName, iExt) {
-                    return function() { selectTask(tData, el, dName, iExt); };
-                })(task, taskEl, displayTaskName, info.extra));
+
+                taskEl.addEventListener(
+                    "click",
+                    (function (
+                        tData,
+                        el,
+                        dName,
+                        iExt
+                    ) {
+                        return function () {
+                            selectTask(
+                                tData,
+                                el,
+                                dName,
+                                iExt
+                            );
+                        };
+                    })(
+                        task,
+                        taskEl,
+                        displayTaskName,
+                        info.extra
+                    )
+                );
+
                 secBody.appendChild(taskEl);
             }
-            secEl.append(secTitle, secBody); treeEl.appendChild(secEl);
+
+            secEl.append(
+                secTitle,
+                secBody
+            );
+
+            treeEl.appendChild(secEl);
         }
-        var first = treeEl.querySelector(".tree-section"); if (first) first.classList.add("open");
+
+        var first =
+            treeEl.querySelector(
+                ".tree-section"
+            );
+
+        if (first) {
+            first.classList.add("open");
+        }
     }
 
-    async function selectTask(task, el, dName, isExtra) {
-        if (activeTaskEl) activeTaskEl.classList.remove("active");
-        el.classList.add("active"); activeTaskEl = el; activeTask = task;
-        taskBarTitle.textContent = dName + (isExtra ? " (extra)" : "");
 
-        var secondary = task.secondary || [];
-        var defaultRight = null;
-        for (var i = 0; i < secondary.length; i++) {
-            if (secondary[i].name === "theory.md") { defaultRight = "theory.md"; break; }
+    /* ============================================
+       SELECT TASK
+       ============================================ */
+
+    async function selectTask(
+        task,
+        el,
+        dName,
+        isExtra
+    ) {
+        if (activeTaskEl) {
+            activeTaskEl.classList.remove("active");
         }
-        if (!defaultRight && secondary.length) defaultRight = secondary[0].name;
 
-        panelViews.left = "README.md";
-        panelViews.right = defaultRight;
-        panelLeft.style.flex = "1 1 0%";
-        panelRight.style.flex = "1 1 0%";
-        panelRight.style.display = defaultRight ? "flex" : "none";
-        resizer.style.display = defaultRight ? "flex" : "none";
-        secondWindowToggle.disabled = !defaultRight;
-        updateSecondWindowToggle();
+        el.classList.add("active");
 
-        await loadPanel(panelLeft, task.directory, "README.md", task.section, task.name, "primary", task);
-        if (defaultRight) {
-            await loadPanel(panelRight, task.directory, defaultRight, task.section, task.name, "secondary", task);
+        activeTaskEl = el;
+        activeTask = task;
+
+        taskBarTitle.textContent =
+            dName + (isExtra ? " (extra)" : "");
+
+
+        /*
+         * ВАЖНО:
+         *
+         * Здесь ничего не сбрасываем.
+         *
+         * Если пользователь до этого выбрал:
+         * left  = solution.c
+         * right = solution_commented.c
+         *
+         * то именно эти представления будут
+         * использоваться для нового задания.
+         *
+         * Если файла нет — resolvePanelView()
+         * сама найдёт подходящую замену.
+         */
+
+        var resolvedLeft =
+            resolvePanelView(
+                task,
+                panelViews.left,
+                "theory.md"
+            );
+
+        var resolvedRight =
+            resolvePanelView(
+                task,
+                panelViews.right,
+                "README.md"
+            );
+
+        /*
+         * Сохраняем реальные значения,
+         * которые существуют в новом задании.
+         */
+        panelViews.left =
+            resolvedLeft || "README.md";
+
+        panelViews.right =
+            resolvedRight;
+
+
+        /* ========================================
+           LEFT PANEL
+           ======================================== */
+
+        await loadPanel(
+            panelLeft,
+            task.directory,
+            panelViews.left,
+            task.section,
+            task.name,
+            "primary",
+            task
+        );
+
+
+        /* ========================================
+           SECOND PANEL
+           ======================================== */
+
+        var hasRight =
+            !!resolvedRight;
+
+        secondWindowToggle.disabled =
+            !hasRight;
+
+        if (
+            hasRight &&
+            secondWindowVisible
+        ) {
+            panelRight.style.display =
+                "flex";
+
+            resizer.style.display =
+                "flex";
+
+            panelLeft.style.flex =
+                "1 1 0%";
+
+            panelRight.style.flex =
+                "1 1 0%";
+
+            await loadPanel(
+                panelRight,
+                task.directory,
+                panelViews.right,
+                task.section,
+                task.name,
+                "secondary",
+                task
+            );
         } else {
-            panelRight.replaceChildren();
-            var empty = document.createElement("div");
-            empty.className = "panel-empty";
-            empty.innerHTML = '<div class="panel-empty-icon">💡</div><div class="panel-empty-text">Для этого задания нет дополнительных материалов.</div>';
-            panelRight.appendChild(empty);
+            panelRight.style.display =
+                "none";
+
+            resizer.style.display =
+                "none";
         }
+
+        updateSecondWindowToggle();
     }
+
+
+    /* ============================================
+       SECOND WINDOW
+       ============================================ */
 
     function updateSecondWindowToggle() {
-        var visible = panelRight.style.display !== "none";
-        secondWindowToggle.textContent = visible ? "Скрыть второе окно" : "Показать второе окно";
-        secondWindowToggle.classList.toggle("active", visible);
-        secondWindowToggle.setAttribute("aria-pressed", visible ? "true" : "false");
+        var visible =
+            secondWindowVisible &&
+            !secondWindowToggle.disabled;
+
+        secondWindowToggle.textContent =
+            visible
+                ? "Скрыть второе окно"
+                : "Показать второе окно";
+
+        secondWindowToggle.classList.toggle(
+            "active",
+            visible
+        );
+
+        secondWindowToggle.setAttribute(
+            "aria-pressed",
+            visible ? "true" : "false"
+        );
     }
 
     function setSecondWindowVisible(visible) {
-        if (!activeTask || !panelViews.right) return;
-        panelRight.style.display = visible ? "flex" : "none";
-        resizer.style.display = visible ? "flex" : "none";
-        if (visible) {
-            panelLeft.style.flex = "1 1 0%";
-            panelRight.style.flex = "1 1 0%";
-        } else {
-            panelLeft.style.flex = "1 1 0%";
+        if (!activeTask || !panelViews.right) {
+            return;
         }
+
+        var resolvedRight =
+            resolvePanelView(
+                activeTask,
+                panelViews.right,
+                "README.md"
+            );
+
+        if (!resolvedRight) {
+            secondWindowVisible = false;
+
+            panelRight.style.display =
+                "none";
+
+            resizer.style.display =
+                "none";
+
+            secondWindowToggle.disabled =
+                true;
+
+            updateSecondWindowToggle();
+
+            return;
+        }
+
+        panelViews.right =
+            resolvedRight;
+
+        secondWindowVisible =
+            visible;
+
+        panelRight.style.display =
+            secondWindowVisible
+                ? "flex"
+                : "none";
+
+        resizer.style.display =
+            secondWindowVisible
+                ? "flex"
+                : "none";
+
+        if (secondWindowVisible) {
+            panelLeft.style.flex =
+                "1 1 0%";
+
+            panelRight.style.flex =
+                "1 1 0%";
+
+            loadPanel(
+                panelRight,
+                activeTask.directory,
+                panelViews.right,
+                activeTask.section,
+                activeTask.name,
+                "secondary",
+                activeTask
+            );
+        } else {
+            panelLeft.style.flex =
+                "1 1 0%";
+        }
+
         updateSecondWindowToggle();
     }
 
-    secondWindowToggle.addEventListener("click", function () {
-        var visible = panelRight.style.display !== "none";
-        setSecondWindowVisible(!visible);
-    });
+    secondWindowToggle.addEventListener(
+        "click",
+        function () {
+            setSecondWindowVisible(
+                !secondWindowVisible
+            );
+        }
+    );
 
-    async function loadPanel(panel, dir, filename, sectionName, taskName, labelClass, task) {
+
+    /* ============================================
+       LOAD PANEL
+       ============================================ */
+
+    async function loadPanel(
+        panel,
+        dir,
+        filename,
+        sectionName,
+        taskName,
+        labelClass,
+        task
+    ) {
         var content;
-        try { content = await readFile(dir, filename); }
-        catch (e) { panel.replaceChildren(); var err = document.createElement("p"); err.style.color = "var(--red)"; err.style.padding = "20px"; err.textContent = "Ошибка: " + e.message; panel.appendChild(err); return; }
 
-        var isLeft = panel === panelLeft;
-        var configs = availableViews(task);
-        var selected = viewConfig(filename);
+        try {
+            content =
+                await readFile(
+                    dir,
+                    filename
+                );
+        } catch (e) {
+            panel.replaceChildren();
+
+            var err =
+                document.createElement("p");
+
+            err.style.color =
+                "var(--red)";
+
+            err.style.padding =
+                "20px";
+
+            err.textContent =
+                "Ошибка: " + e.message;
+
+            panel.appendChild(err);
+
+            return;
+        }
+
+        var isLeft =
+            panel === panelLeft;
+
+        var configs =
+            availableViews(task);
+
+        var selected =
+            viewConfig(filename);
 
         panel.replaceChildren();
 
-        var topbar = document.createElement("div");
-        topbar.className = "panel-topbar " + labelClass;
 
-        var title = document.createElement("span");
-        title.className = "panel-topbar-title";
-        title.textContent = selected.icon + " " + selected.label;
+        /* ========================================
+           TOPBAR
+           ======================================== */
 
-        var select = document.createElement("select");
-        select.className = "panel-view-select";
-        select.setAttribute("aria-label", isLeft ? "Что показывать в левом окне" : "Что показывать в правом окне");
-        for (var i = 0; i < configs.length; i++) {
-            var option = document.createElement("option");
-            option.value = configs[i].name;
-            option.textContent = configs[i].icon + " " + configs[i].label;
-            option.selected = configs[i].name === filename;
+        var topbar =
+            document.createElement("div");
+
+        topbar.className =
+            "panel-topbar " +
+            labelClass;
+
+        var title =
+            document.createElement("span");
+
+        title.className =
+            "panel-topbar-title";
+
+        title.textContent =
+            selected.icon +
+            " " +
+            selected.label;
+
+
+        /* ========================================
+           VIEW SELECT
+           ======================================== */
+
+        var select =
+            document.createElement("select");
+
+        select.className =
+            "panel-view-select";
+
+        select.setAttribute(
+            "aria-label",
+            isLeft
+                ? "Что показывать в левом окне"
+                : "Что показывать в правом окне"
+        );
+
+        for (
+            var i = 0;
+            i < configs.length;
+            i++
+        ) {
+            var option =
+                document.createElement("option");
+
+            option.value =
+                configs[i].name;
+
+            option.textContent =
+                configs[i].icon +
+                " " +
+                configs[i].label;
+
+            option.selected =
+                configs[i].name === filename;
+
             select.appendChild(option);
         }
-        select.addEventListener("change", function () {
-            var next = this.value;
-            if (isLeft) {
-                panelViews.left = next;
-            } else {
-                panelViews.right = next;
-            }
-            loadPanel(panel, dir, next, sectionName, taskName, labelClass, task);
-        });
 
-        topbar.append(title, select);
+        select.addEventListener(
+            "change",
+            function () {
+                var next =
+                    this.value;
+
+                if (isLeft) {
+                    panelViews.left =
+                        next;
+                } else {
+                    panelViews.right =
+                        next;
+                }
+
+                loadPanel(
+                    panel,
+                    dir,
+                    next,
+                    sectionName,
+                    taskName,
+                    labelClass,
+                    task
+                );
+            }
+        );
+
+        topbar.append(
+            title,
+            select
+        );
+
         panel.appendChild(topbar);
 
-        var body = document.createElement("div"); body.className = "panel-body";
-        var bc = document.createElement("div"); bc.className = "breadcrumb"; bc.textContent = "tasks/" + sectionName + "/" + taskName + "/" + filename; body.appendChild(bc);
 
-        var wrap = document.createElement("div"); wrap.className = "content-wrap document";
+        /* ========================================
+           BODY
+           ======================================== */
+
+        var body =
+            document.createElement("div");
+
+        body.className =
+            "panel-body";
+
+        var bc =
+            document.createElement("div");
+
+        bc.className =
+            "breadcrumb";
+
+        bc.textContent =
+            "tasks/" +
+            sectionName +
+            "/" +
+            taskName +
+            "/" +
+            filename;
+
+        body.appendChild(bc);
+
+
+        var wrap =
+            document.createElement("div");
+
+        wrap.className =
+            "content-wrap document";
+
 
         if (filename.endsWith(".md")) {
-            wrap.appendChild(renderMarkdown(content));
+            wrap.appendChild(
+                renderMarkdown(content)
+            );
         } else {
-            var pre = document.createElement("pre"), code = document.createElement("code");
-            if (filename.endsWith(".c") || filename.endsWith(".h")) code.innerHTML = highlightC(content);
-            else code.textContent = content;
-            pre.appendChild(code); wrap.appendChild(pre);
+            var pre =
+                document.createElement("pre");
+
+            var code =
+                document.createElement("code");
+
+            if (
+                filename.endsWith(".c") ||
+                filename.endsWith(".h")
+            ) {
+                code.innerHTML =
+                    highlightC(content);
+            } else {
+                code.textContent =
+                    content;
+            }
+
+            pre.appendChild(code);
+
+            wrap.appendChild(pre);
         }
+
         body.appendChild(wrap);
+
         panel.appendChild(body);
+
         body.scrollTop = 0;
     }
 
-    function escapeHtml(str) { return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+    /* ============================================
+       C HIGHLIGHT
+       ============================================ */
+
+    function escapeHtml(str) {
+        return str
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+    }
 
     function highlightC(code) {
-        var regex = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\])*")|('(?:\\.|[^'\\])*')|(^\s*#[a-zA-Z_]+)|(\b(?:break|case|char|const|continue|default|do|double|else|enum|extern|float|for|goto|if|inline|int|long|register|restrict|return|short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|volatile|while)\b)|(\b(?:size_t|ssize_t|uintptr_t|intptr_t|FILE|NULL|stdin|stdout|stderr|[a-zA-Z0-9_]+_t)\b)|(\b0x[0-9a-fA-F]+\b|\b\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[fFlL]?\b)|(\b[a-zA-Z_][a-zA-Z0-9_]*(?=\s*\())/gm;
-        let last = 0, html = '';
-        code.replace(regex, function(match, c, s, ch, p, k, t, n, f, idx) {
-            if (idx > last) html += escapeHtml(code.slice(last, idx));
-            if (c) html += '<span class="hl-comment">' + escapeHtml(c) + '</span>';
-            else if (s) html += '<span class="hl-string">' + escapeHtml(s) + '</span>';
-            else if (ch) html += '<span class="hl-char">' + escapeHtml(ch) + '</span>';
-            else if (p) html += '<span class="hl-preproc">' + escapeHtml(p) + '</span>';
-            else if (k) html += '<span class="hl-keyword">' + escapeHtml(k) + '</span>';
-            else if (t) html += '<span class="hl-type">' + escapeHtml(t) + '</span>';
-            else if (n) html += '<span class="hl-number">' + escapeHtml(n) + '</span>';
-            else if (f) html += '<span class="hl-func">' + escapeHtml(f) + '</span>';
-            last = idx + match.length;
-        });
-        if (last < code.length) html += escapeHtml(code.slice(last));
+        var regex =
+            /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\])*")|('(?:\\.|[^'\\])*')|(^\s*#[a-zA-Z_]+)|(\b(?:break|case|char|const|continue|default|do|double|else|enum|extern|float|for|goto|if|inline|int|long|register|restrict|return|short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|volatile|while)\b)|(\b(?:size_t|ssize_t|uintptr_t|intptr_t|FILE|NULL|stdin|stdout|stderr|[a-zA-Z0-9_]+_t)\b)|(\b0x[0-9a-fA-F]+\b|\b\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[fFlL]?\b)|(\b[a-zA-Z_][a-zA-Z0-9_]*(?=\s*\())/gm;
+
+        var last = 0;
+        var html = "";
+
+        code.replace(
+            regex,
+            function (
+                match,
+                c,
+                s,
+                ch,
+                p,
+                k,
+                t,
+                n,
+                f,
+                idx
+            ) {
+                if (idx > last) {
+                    html +=
+                        escapeHtml(
+                            code.slice(last, idx)
+                        );
+                }
+
+                if (c) {
+                    html +=
+                        '<span class="hl-comment">' +
+                        escapeHtml(c) +
+                        "</span>";
+                }
+                else if (s) {
+                    html +=
+                        '<span class="hl-string">' +
+                        escapeHtml(s) +
+                        "</span>";
+                }
+                else if (ch) {
+                    html +=
+                        '<span class="hl-char">' +
+                        escapeHtml(ch) +
+                        "</span>";
+                }
+                else if (p) {
+                    html +=
+                        '<span class="hl-preproc">' +
+                        escapeHtml(p) +
+                        "</span>";
+                }
+                else if (k) {
+                    html +=
+                        '<span class="hl-keyword">' +
+                        escapeHtml(k) +
+                        "</span>";
+                }
+                else if (t) {
+                    html +=
+                        '<span class="hl-type">' +
+                        escapeHtml(t) +
+                        "</span>";
+                }
+                else if (n) {
+                    html +=
+                        '<span class="hl-number">' +
+                        escapeHtml(n) +
+                        "</span>";
+                }
+                else if (f) {
+                    html +=
+                        '<span class="hl-func">' +
+                        escapeHtml(f) +
+                        "</span>";
+                }
+
+                last =
+                    idx +
+                    match.length;
+            }
+        );
+
+        if (last < code.length) {
+            html +=
+                escapeHtml(
+                    code.slice(last)
+                );
+        }
+
         return html;
     }
 
-    function element(tag, cls) { var n = document.createElement(tag); if (cls) n.className = cls; return n; }
+
+    /* ============================================
+       MARKDOWN
+       ============================================ */
+
+    function element(tag, cls) {
+        var n =
+            document.createElement(tag);
+
+        if (cls) {
+            n.className = cls;
+        }
+
+        return n;
+    }
 
     function appendInline(parent, text) {
-        var pat = /(`[^`\n]+`|\*\*[^*\n]+\*\*|\*[^*\n]+\*|\[[^\]]*\]\([^)]*\)|<br\s*\/?>|<b>.*?<\/b>|<strong>.*?<\/strong>|<i>.*?<\/i>|<em>.*?<\/em>|<u>.*?<\/u>|<code>.*?<\/code>)/gi;
-        var pos = 0, m;
-        while ((m = pat.exec(text)) !== null) {
-            if (m.index > pos) parent.appendChild(document.createTextNode(text.slice(pos, m.index)));
-            var t = m[0], tl = t.toLowerCase();
-            if (t.startsWith("`")) { var c = element("code"); c.textContent = t.slice(1, -1); parent.appendChild(c); }
-            else if (t.startsWith("**")) { var s=element("strong"); appendInline(s, t.slice(2,-2)); parent.appendChild(s); }
-            else if (t.startsWith("*")) { var e=element("em"); appendInline(e, t.slice(1,-1)); parent.appendChild(e); }
-            else if (t.startsWith("[")) { var lm=t.match(/^\[([^\]]*)\]\(([^)]*)\)$/); if(lm){var a=element("a");a.href=lm[2];a.target="_blank";a.rel="noopener noreferrer";appendInline(a,lm[1]);parent.appendChild(a);} }
-            else if (tl.startsWith("<br")) parent.appendChild(document.createElement("br"));
-            else if (tl.startsWith("<b>")||tl.startsWith("<strong>")) { var b=element("strong"); appendInline(b, t.replace(/^<[^>]+>|<\/[^>]+>$/g,"")); parent.appendChild(b); }
-            else if (tl.startsWith("<i>")||tl.startsWith("<em>")) { var i=element("em"); appendInline(i, t.replace(/^<[^>]+>|<\/[^>]+>$/g,"")); parent.appendChild(i); }
-            else if (tl.startsWith("<u>")) { var u=element("u"); appendInline(u, t.replace(/^<[^>]+>|<\/[^>]+>$/g,"")); parent.appendChild(u); }
-            else if (tl.startsWith("<code>")) { var cc = element("code"); cc.textContent = t.replace(/^<code>|<\/code>$/gi,""); parent.appendChild(cc); }
-            pos = pat.lastIndex;
+        var pat =
+            /(`[^`\n]+`|\*\*[^*\n]+\*\*|\*[^*\n]+\*|\[[^\]]*\]\([^)]*\)|<br\s*\/?>|<b>.*?<\/b>|<strong>.*?<\/strong>|<i>.*?<\/i>|<em>.*?<\/em>|<u>.*?<\/u>|<code>.*?<\/code>)/gi;
+
+        var pos = 0;
+        var m;
+
+        while (
+            (m = pat.exec(text)) !== null
+            ) {
+            if (m.index > pos) {
+                parent.appendChild(
+                    document.createTextNode(
+                        text.slice(
+                            pos,
+                            m.index
+                        )
+                    )
+                );
+            }
+
+            var t = m[0];
+            var tl = t.toLowerCase();
+
+            if (t.startsWith("`")) {
+                var c =
+                    element("code");
+
+                c.textContent =
+                    t.slice(1, -1);
+
+                parent.appendChild(c);
+            }
+
+            else if (
+                t.startsWith("**")
+            ) {
+                var s =
+                    element("strong");
+
+                appendInline(
+                    s,
+                    t.slice(2, -2)
+                );
+
+                parent.appendChild(s);
+            }
+
+            else if (
+                t.startsWith("*")
+            ) {
+                var e =
+                    element("em");
+
+                appendInline(
+                    e,
+                    t.slice(1, -1)
+                );
+
+                parent.appendChild(e);
+            }
+
+            else if (
+                t.startsWith("[")
+            ) {
+                var lm =
+                    t.match(
+                        /^\[([^\]]*)\]\(([^)]*)\)$/
+                    );
+
+                if (lm) {
+                    var a =
+                        element("a");
+
+                    a.href =
+                        lm[2];
+
+                    a.target =
+                        "_blank";
+
+                    a.rel =
+                        "noopener noreferrer";
+
+                    appendInline(
+                        a,
+                        lm[1]
+                    );
+
+                    parent.appendChild(a);
+                }
+            }
+
+            else if (
+                tl.startsWith("<br")
+            ) {
+                parent.appendChild(
+                    document.createElement("br")
+                );
+            }
+
+            else if (
+                tl.startsWith("<b>") ||
+                tl.startsWith("<strong>")
+            ) {
+                var b =
+                    element("strong");
+
+                appendInline(
+                    b,
+                    t.replace(
+                        /^<[^>]+>|<\/[^>]+>$/g,
+                        ""
+                    )
+                );
+
+                parent.appendChild(b);
+            }
+
+            else if (
+                tl.startsWith("<i>") ||
+                tl.startsWith("<em>")
+            ) {
+                var i =
+                    element("em");
+
+                appendInline(
+                    i,
+                    t.replace(
+                        /^<[^>]+>|<\/[^>]+>$/g,
+                        ""
+                    )
+                );
+
+                parent.appendChild(i);
+            }
+
+            else if (
+                tl.startsWith("<u>")
+            ) {
+                var u =
+                    element("u");
+
+                appendInline(
+                    u,
+                    t.replace(
+                        /^<[^>]+>|<\/[^>]+>$/g,
+                        ""
+                    )
+                );
+
+                parent.appendChild(u);
+            }
+
+            else if (
+                tl.startsWith("<code>")
+            ) {
+                var cc =
+                    element("code");
+
+                cc.textContent =
+                    t.replace(
+                        /^<code>|<\/code>$/gi,
+                        ""
+                    );
+
+                parent.appendChild(cc);
+            }
+
+            pos =
+                pat.lastIndex;
         }
-        if (pos < text.length) parent.appendChild(document.createTextNode(text.slice(pos)));
+
+        if (pos < text.length) {
+            parent.appendChild(
+                document.createTextNode(
+                    text.slice(pos)
+                )
+            );
+        }
     }
+
 
     function tableCells(line) {
-        var v = line.trim().replace(/\\\|/g, "\u0001");
-        if (v.startsWith("|")) v = v.slice(1); if (v.endsWith("|")) v = v.slice(0, -1);
-        return v.split("|").map(c => c.trim().replace(/\u0001/g, "|"));
-    }
-    function isTableDiv(l) { if(!l||!l.includes("|"))return false; var c=tableCells(l); return c.length>0&&c.every(x=>/^:?-{3,}:?$/.test(x)); }
-    function isBlockStart(ls, idx) {
-        if(idx>=ls.length) return true; var l=ls[idx];
-        return /^\s*$/.test(l) || /^\s*(`{3,}|~{3,})/.test(l) || /^#{1,6}\s+/.test(l) || /^\s*>/.test(l) || /^\s*[-+*]\s+/.test(l) || /^\s*\d+[.)]\s+/.test(l) || /^\s*([-*_])(?:\s*\1){2,}\s*$/.test(l) || /^\s*<details/i.test(l) || /^\s*<\/details/i.test(l) || (l.includes("|")&&isTableDiv(ls[idx+1]));
+        var v =
+            line
+                .trim()
+                .replace(
+                    /\\\|/g,
+                    "\u0001"
+                );
+
+        if (v.startsWith("|")) {
+            v = v.slice(1);
+        }
+
+        if (v.endsWith("|")) {
+            v = v.slice(0, -1);
+        }
+
+        return v
+            .split("|")
+            .map(function (c) {
+                return c
+                    .trim()
+                    .replace(
+                        /\u0001/g,
+                        "|"
+                    );
+            });
     }
 
-    function renderMarkdown(md) {
-        var frag = document.createDocumentFragment(), lines = md.replace(/\r\n?/g, "\n").split("\n"), i = 0;
-        while (i < lines.length) {
-            var l = lines[i]; if (!l.trim()) { i++; continue; }
-            var f = l.match(/^\s*(`{3,}|~{3,})(.*)$/);
-            if (f) {
-                var mk = f[1], lang = f[2].trim().toLowerCase(), cl = []; i++;
-                while (i < lines.length) { if (lines[i].trim().startsWith(mk)) { i++; break; } cl.push(lines[i]); i++; }
-                var pre = element("pre"), cod = element("code");
-                if (lang === "c" || lang === "cpp") cod.innerHTML = highlightC(cl.join("\n")); else cod.textContent = cl.join("\n");
-                pre.appendChild(cod); frag.appendChild(pre); continue;
-            }
-            var hd = l.match(/^(#{1,6})\s+(.*)$/);
-            if (hd) { var h = element("h"+hd[1].length); appendInline(h, hd[2]); frag.appendChild(h); i++; continue; }
-            if (/^\s*<details/i.test(l)) {
-                var det = document.createElement("details"); if (/open/i.test(l)) det.open = true;
-                var dc = []; if (l.replace(/^\s*<details[^>]*>/i, "").trim()) dc.push(l.replace(/^\s*<details[^>]*>/i, "")); i++;
-                while (i < lines.length && !/^\s*<\/details/i.test(lines[i])) { dc.push(lines[i]); i++; }
-                if (i < lines.length) { var ll = lines[i].replace(/<\/details\s*>\s*$/i, ""); if (ll.trim()) dc.push(ll); i++; }
-                var dStr = dc.join("\n"), sm = dStr.match(/<summary>([\s\S]*?)<\/summary>/i);
-                if (sm) { var sn = document.createElement("summary"); appendInline(sn, sm[1].trim()); det.appendChild(sn); dStr = dStr.replace(/<summary>[\s\S]*?<\/summary>/i, ""); }
-                if (dStr.trim()) det.appendChild(renderMarkdown(dStr));
-                frag.appendChild(det); continue;
-            }
-            if (l.includes("|") && isTableDiv(lines[i + 1])) {
-                var wrap = element("div", "table-wrap"), tbl = element("table"), thd = element("thead"), tr = element("tr"), hc = tableCells(l);
-                for (var hi=0; hi<hc.length; hi++){ var th=element("th"); appendInline(th, hc[hi]); tr.appendChild(th); }
-                thd.appendChild(tr); tbl.appendChild(thd); i+=2; var tb = element("tbody");
-                while (i < lines.length && lines[i].trim() && lines[i].includes("|")) {
-                    var dr=element("tr"), dc=tableCells(lines[i]);
-                    for (var di=0; di<dc.length; di++){ var td=element("td"); if (dc[di]) appendInline(td, dc[di]); dr.appendChild(td); }
-                    tb.appendChild(dr); i++;
-                }
-                tbl.appendChild(tb); wrap.appendChild(tbl); frag.appendChild(wrap); continue;
-            }
-            if (/^\s*>/.test(l)) {
-                var ql = []; while (i < lines.length && /^\s*>/.test(lines[i])) { ql.push(lines[i].replace(/^\s*>\s?/, "")); i++; }
-                var bq = element("blockquote"); bq.appendChild(renderMarkdown(ql.join("\n"))); frag.appendChild(bq); continue;
-            }
-            if (/^\s*([-*_])(?:\s*\1){2,}\s*$/.test(l)) { frag.appendChild(element("hr")); i++; continue; }
-            var uo = /^\s*[-+*]\s+/.test(l), od = /^\s*\d+[.)]\s+/.test(l);
-            if (uo || od) {
-                var lst = element(od ? "ol" : "ul"), ip = od ? /^\s*\d+[.)]\s+(.*)$/ : /^\s*[-+*]\s+(.*)$/;
-                while (i < lines.length) {
-                    var im = lines[i].match(ip); if (!im) break;
-                    var lt = [im[1]]; i++;
-                    while (i < lines.length && lines[i].trim() && !ip.test(lines[i]) && !isBlockStart(lines, i)) { lt.push(lines[i].trim()); i++; }
-                    var li = element("li"); appendInline(li, lt.join(" ")); lst.appendChild(li);
-                }
-                frag.appendChild(lst); continue;
-            }
-            var pl = [l]; i++;
-            while (i < lines.length && !isBlockStart(lines, i)) { pl.push(lines[i]); i++; }
-            var p = element("p"); appendInline(p, pl.join("\n")); frag.appendChild(p);
+    function isTableDiv(l) {
+        if (!l || !l.includes("|")) {
+            return false;
         }
+
+        var c =
+            tableCells(l);
+
+        return (
+            c.length > 0 &&
+            c.every(function (x) {
+                return /^:?-{3,}:?$/.test(x);
+            })
+        );
+    }
+
+    function isBlockStart(ls, idx) {
+        if (idx >= ls.length) {
+            return true;
+        }
+
+        var l = ls[idx];
+
+        return (
+            /^\s*$/.test(l) ||
+            /^\s*(`{3,}|~{3,})/.test(l) ||
+            /^#{1,6}\s+/.test(l) ||
+            /^\s*>/.test(l) ||
+            /^\s*[-+*]\s+/.test(l) ||
+            /^\s*\d+[.)]\s+/.test(l) ||
+            /^\s*([-*_])(?:\s*\1){2,}\s*$/.test(l) ||
+            /^\s*<details/i.test(l) ||
+            /^\s*<\/details/i.test(l) ||
+            (
+                l.includes("|") &&
+                isTableDiv(ls[idx + 1])
+            )
+        );
+    }
+
+
+    function renderMarkdown(md) {
+        var frag =
+            document.createDocumentFragment();
+
+        var lines =
+            md
+                .replace(/\r\n?/g, "\n")
+                .split("\n");
+
+        var i = 0;
+
+        while (i < lines.length) {
+            var l = lines[i];
+
+            if (!l.trim()) {
+                i++;
+                continue;
+            }
+
+            var f =
+                l.match(
+                    /^\s*(`{3,}|~{3,})(.*)$/
+                );
+
+            if (f) {
+                var mk = f[1];
+                var lang = f[2]
+                    .trim()
+                    .toLowerCase();
+
+                var cl = [];
+
+                i++;
+
+                while (i < lines.length) {
+                    if (
+                        lines[i]
+                            .trim()
+                            .startsWith(mk)
+                    ) {
+                        i++;
+                        break;
+                    }
+
+                    cl.push(lines[i]);
+                    i++;
+                }
+
+                var pre =
+                    element("pre");
+
+                var cod =
+                    element("code");
+
+                if (
+                    lang === "c" ||
+                    lang === "cpp"
+                ) {
+                    cod.innerHTML =
+                        highlightC(
+                            cl.join("\n")
+                        );
+                } else {
+                    cod.textContent =
+                        cl.join("\n");
+                }
+
+                pre.appendChild(cod);
+
+                frag.appendChild(pre);
+
+                continue;
+            }
+
+            var hd =
+                l.match(
+                    /^(#{1,6})\s+(.*)$/
+                );
+
+            if (hd) {
+                var h =
+                    element(
+                        "h" + hd[1].length
+                    );
+
+                appendInline(
+                    h,
+                    hd[2]
+                );
+
+                frag.appendChild(h);
+
+                i++;
+
+                continue;
+            }
+
+            if (
+                /^\s*<details/i.test(l)
+            ) {
+                var det =
+                    document.createElement(
+                        "details"
+                    );
+
+                if (/open/i.test(l)) {
+                    det.open = true;
+                }
+
+                var dc = [];
+
+                if (
+                    l.replace(
+                        /^\s*<details[^>]*>/i,
+                        ""
+                    ).trim()
+                ) {
+                    dc.push(
+                        l.replace(
+                            /^\s*<details[^>]*>/i,
+                            ""
+                        )
+                    );
+                }
+
+                i++;
+
+                while (
+                    i < lines.length &&
+                    !/^\s*<\/details/i.test(
+                        lines[i]
+                    )
+                    ) {
+                    dc.push(lines[i]);
+                    i++;
+                }
+
+                if (i < lines.length) {
+                    var ll =
+                        lines[i].replace(
+                            /<\/details\s*>\s*$/i,
+                            ""
+                        );
+
+                    if (ll.trim()) {
+                        dc.push(ll);
+                    }
+
+                    i++;
+                }
+
+                var dStr =
+                    dc.join("\n");
+
+                var sm =
+                    dStr.match(
+                        /<summary>([\s\S]*?)<\/summary>/i
+                    );
+
+                if (sm) {
+                    var sn =
+                        document.createElement(
+                            "summary"
+                        );
+
+                    appendInline(
+                        sn,
+                        sm[1].trim()
+                    );
+
+                    det.appendChild(sn);
+
+                    dStr =
+                        dStr.replace(
+                            /<summary>[\s\S]*?<\/summary>/i,
+                            ""
+                        );
+                }
+
+                if (dStr.trim()) {
+                    det.appendChild(
+                        renderMarkdown(dStr)
+                    );
+                }
+
+                frag.appendChild(det);
+
+                continue;
+            }
+
+            if (
+                l.includes("|") &&
+                isTableDiv(lines[i + 1])
+            ) {
+                var wrap =
+                    element(
+                        "div",
+                        "table-wrap"
+                    );
+
+                var tbl =
+                    element("table");
+
+                var thd =
+                    element("thead");
+
+                var tr =
+                    element("tr");
+
+                var hc =
+                    tableCells(l);
+
+                for (
+                    var hi = 0;
+                    hi < hc.length;
+                    hi++
+                ) {
+                    var th =
+                        element("th");
+
+                    appendInline(
+                        th,
+                        hc[hi]
+                    );
+
+                    tr.appendChild(th);
+                }
+
+                thd.appendChild(tr);
+
+                tbl.appendChild(thd);
+
+                i += 2;
+
+                var tb =
+                    element("tbody");
+
+                while (
+                    i < lines.length &&
+                    lines[i].trim() &&
+                    lines[i].includes("|")
+                    ) {
+                    var dr =
+                        element("tr");
+
+                    var dc =
+                        tableCells(lines[i]);
+
+                    for (
+                        var di = 0;
+                        di < dc.length;
+                        di++
+                    ) {
+                        var td =
+                            element("td");
+
+                        if (dc[di]) {
+                            appendInline(
+                                td,
+                                dc[di]
+                            );
+                        }
+
+                        dr.appendChild(td);
+                    }
+
+                    tb.appendChild(dr);
+
+                    i++;
+                }
+
+                tbl.appendChild(tb);
+
+                wrap.appendChild(tbl);
+
+                frag.appendChild(wrap);
+
+                continue;
+            }
+
+            if (/^\s*>/.test(l)) {
+                var ql = [];
+
+                while (
+                    i < lines.length &&
+                    /^\s*>/.test(lines[i])
+                    ) {
+                    ql.push(
+                        lines[i].replace(
+                            /^\s*>\s?/,
+                            ""
+                        )
+                    );
+
+                    i++;
+                }
+
+                var bq =
+                    element("blockquote");
+
+                bq.appendChild(
+                    renderMarkdown(
+                        ql.join("\n")
+                    )
+                );
+
+                frag.appendChild(bq);
+
+                continue;
+            }
+
+            if (
+                /^\s*([-*_])(?:\s*\1){2,}\s*$/.test(l)
+            ) {
+                frag.appendChild(
+                    element("hr")
+                );
+
+                i++;
+
+                continue;
+            }
+
+            var uo =
+                /^\s*[-+*]\s+/.test(l);
+
+            var od =
+                /^\s*\d+[.)]\s+/.test(l);
+
+            if (uo || od) {
+                var lst =
+                    element(
+                        od ? "ol" : "ul"
+                    );
+
+                var ip =
+                    od
+                        ? /^\s*\d+[.)]\s+(.*)$/
+                        : /^\s*[-+*]\s+(.*)$/;
+
+                while (i < lines.length) {
+                    var im =
+                        lines[i].match(ip);
+
+                    if (!im) {
+                        break;
+                    }
+
+                    var lt = [im[1]];
+
+                    i++;
+
+                    while (
+                        i < lines.length &&
+                        lines[i].trim() &&
+                        !ip.test(lines[i]) &&
+                        !isBlockStart(lines, i)
+                        ) {
+                        lt.push(
+                            lines[i].trim()
+                        );
+
+                        i++;
+                    }
+
+                    var li =
+                        element("li");
+
+                    appendInline(
+                        li,
+                        lt.join(" ")
+                    );
+
+                    lst.appendChild(li);
+                }
+
+                frag.appendChild(lst);
+
+                continue;
+            }
+
+            var pl = [l];
+
+            i++;
+
+            while (
+                i < lines.length &&
+                !isBlockStart(lines, i)
+                ) {
+                pl.push(lines[i]);
+                i++;
+            }
+
+            var p =
+                element("p");
+
+            appendInline(
+                p,
+                pl.join("\n")
+            );
+
+            frag.appendChild(p);
+        }
+
         return frag;
     }
 
-    chooseBtn.onclick = function() {
-        pickProject().catch(e => {
+
+    /* ============================================
+       FILE PICKER BUTTON
+       ============================================ */
+
+    chooseBtn.onclick = function () {
+        pickProject().catch(function (e) {
             console.error(e);
-            showNav("Ошибка: " + e.message, true);
+
+            showNav(
+                "Ошибка: " + e.message,
+                true
+            );
         });
     };
 
-    if (!window.isSecureContext || typeof window.showDirectoryPicker !== "function") {
-        showNav("Нужен Chrome/Edge (File System Access API).", true);
+
+    /* ============================================
+       INITIAL ENVIRONMENT CHECK
+       ============================================ */
+
+    if (
+        !window.isSecureContext ||
+        typeof window.showDirectoryPicker !== "function"
+    ) {
+        showNav(
+            "Нужен Chrome/Edge (File System Access API).",
+            true
+        );
     } else {
-        setTimeout(openOnboard, 180);
+        setTimeout(
+            openOnboard,
+            180
+        );
     }
+
 </script>
 </body>
 </html>
