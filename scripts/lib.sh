@@ -1,21 +1,24 @@
 #!/usr/bin/env bash
 # scripts/lib.sh — общие функции для run_tests.sh во всех папках заданий.
 # Кладётся один раз в корень репозитория, в scripts/lib.sh.
-
+# find tasks -name "solution*.c" -exec clang-format -i {} \;
 # compile [доп. флаги gcc]
 # Флаги передаются явно на каждый вызов (например "-std=c11" или "-lm"),
 # потому что не все задания собираются одинаково — 3.1/3.2 нужен -lm БЕЗ
 # -std=c11 (иначе M_PI не виден), большинство остальных — со -std=c11.
 compile() {
-  gcc -Wall -Wextra -Werror main.c -o main "$@"
+  local src="${SOURCE_FILE:-main.c}"
+  gcc -Wall -Wextra -Werror "$src" -o main "$@"
 }
 
 check_style() {
-  clang-format -n -Werror main.c
+  local src="${SOURCE_FILE:-main.c}"
+  clang-format -n -Werror "$src"
 }
 
 check_static() {
-  cppcheck --enable=all --suppress=missingIncludeSystem main.c
+  local src="${SOURCE_FILE:-main.c}"
+  cppcheck --enable=all --suppress=missingIncludeSystem "$src"
 }
 
 # Внутренний помощник: сравнивает /tmp/actual.out (уже записанный вызывающей

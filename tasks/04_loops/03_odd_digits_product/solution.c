@@ -2,22 +2,28 @@
 
 int main(void) {
     int n;
+    int c;
 
     if (scanf("%d", &n) != 1) {
         printf("n/a");
         return 0;
     }
 
+    while ((c = getchar()) != EOF && c != '\n') {
+        if (c != ' ' && c != '\t' && c != '\r') {
+            printf("n/a");
+            return 0;
+        }
+    }
+
     int product = 1;
     int has_odd = 0;
-    int digit;
 
     do {
-        digit = n % 10;
+        int digit = n % 10;
         if (digit < 0) {
             digit = -digit;
         }
-
         if (digit % 2 != 0) {
             product *= digit;
             has_odd = 1;

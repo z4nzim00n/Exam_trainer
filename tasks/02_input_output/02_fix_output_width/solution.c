@@ -8,7 +8,7 @@ int main(void) {
         return 0;
     }
 
-    printf("%03d", x);
+    printf("%05d", x);
 
     return 0;
 }
