@@ -10,7 +10,7 @@
 #include <stdlib.h>
 
 int main(void) {
-    int *array = NULL;
+    int* array = NULL;
     int size = 0;
     int value = 0;
 
@@ -31,7 +31,7 @@ int main(void) {
          * Всегда сохраняем результат во временный указатель temp:
          * если памяти не хватит, старый array не потеряется.
          */
-        int *temp = realloc(array, (size + 1) * sizeof(int));
+        int* temp = realloc(array, (size + 1) * sizeof(int));
 
         if (temp == NULL) {
             free(array);

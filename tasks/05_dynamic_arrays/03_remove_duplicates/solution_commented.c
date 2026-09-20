@@ -11,7 +11,7 @@
 
 int main(void) {
     /* Пока память не выделена, указатель равен NULL. */
-    int *array = NULL;
+    int* array = NULL;
 
     /* Количество сохранённых уникальных чисел. */
     int size = 0;
@@ -49,7 +49,7 @@ int main(void) {
              * Временный указатель нужен, чтобы при ошибке
              * не потерять адрес ранее выделенной памяти.
              */
-            int *temp = realloc(array, (size + 1) * sizeof(int));
+            int* temp = realloc(array, (size + 1) * sizeof(int));
 
             if (temp == NULL) {
                 free(array);

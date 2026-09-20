@@ -19,7 +19,7 @@ int main(void) {
     while ((ch = getchar()) != EOF && ch != '\n') {
     }
 
-    struct student *students = malloc((size_t)n * sizeof(*students));
+    struct student* students = malloc((size_t)n * sizeof(*students));
     if (students == NULL) {
         return 1;
     }

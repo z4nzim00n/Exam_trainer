@@ -9,7 +9,7 @@ int main(void) {
         return 0;
     }
 
-    int *matrix = malloc((size_t)m * n * sizeof(int));
+    int* matrix = malloc((size_t)m * n * sizeof(int));
 
     if (matrix == NULL) {
         printf("n/a");
@@ -29,12 +29,12 @@ int main(void) {
             if (j > 0) {
                 printf(" ");
             }
-            
+
             int orig_row = m - 1 - j;
             int orig_col = i;
             printf("%d", matrix[orig_row * n + orig_col]);
         }
-        
+
         if (i < n - 1) {
             printf("\n");
         }

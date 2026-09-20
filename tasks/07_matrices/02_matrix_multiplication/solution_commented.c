@@ -22,9 +22,9 @@ int main(void) {
      * Выделяем память под n*n элементов для каждой матрицы.
      * Приведение (size_t) защищает от переполнения int при больших n.
      */
-    int *a = malloc((size_t)n * n * sizeof(int));
-    int *b = malloc((size_t)n * n * sizeof(int));
-    int *c = malloc((size_t)n * n * sizeof(int));
+    int* a = malloc((size_t)n * n * sizeof(int));
+    int* b = malloc((size_t)n * n * sizeof(int));
+    int* c = malloc((size_t)n * n * sizeof(int));
 
     /* Если хотя бы один массив не удалось создать — освобождаем всё и выходим. */
     if (a == NULL || b == NULL || c == NULL) {
@@ -38,7 +38,9 @@ int main(void) {
     /* Читаем элементы матрицы A */
     for (int i = 0; i < n * n; i++) {
         if (scanf("%d", &a[i]) != 1) {
-            free(a); free(b); free(c);
+            free(a);
+            free(b);
+            free(c);
             printf("n/a");
             return 0;
         }
@@ -47,7 +49,9 @@ int main(void) {
     /* Читаем элементы матрицы B */
     for (int i = 0; i < n * n; i++) {
         if (scanf("%d", &b[i]) != 1) {
-            free(a); free(b); free(c);
+            free(a);
+            free(b);
+            free(c);
             printf("n/a");
             return 0;
         }

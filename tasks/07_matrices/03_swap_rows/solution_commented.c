@@ -19,7 +19,7 @@ int main(void) {
     }
 
     /* Выделяем память под M * N элементов. (size_t) защищает от переполнения. */
-    int *matrix = malloc((size_t)m * n * sizeof(int));
+    int* matrix = malloc((size_t)m * n * sizeof(int));
 
     if (matrix == NULL) {
         printf("n/a");

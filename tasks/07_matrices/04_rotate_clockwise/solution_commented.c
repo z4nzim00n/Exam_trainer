@@ -20,7 +20,7 @@ int main(void) {
     }
 
     /* Выделяем память под M * N элементов. */
-    int *matrix = malloc((size_t)m * n * sizeof(int));
+    int* matrix = malloc((size_t)m * n * sizeof(int));
 
     if (matrix == NULL) {
         printf("n/a");
@@ -46,7 +46,7 @@ int main(void) {
             if (j > 0) {
                 printf(" ");
             }
-            
+
             /*
              * Вычисляем, откуда взять элемент из ИСХОДНОЙ матрицы:
              * Столбец новой матрицы (i) становится строкой старой.
@@ -54,11 +54,11 @@ int main(void) {
              */
             int orig_row = m - 1 - j;
             int orig_col = i;
-            
+
             /* Формула индекса для одномерного массива: row * N + col */
             printf("%d", matrix[orig_row * n + orig_col]);
         }
-        
+
         /* Перенос строки после каждой строки, кроме последней */
         if (i < n - 1) {
             printf("\n");

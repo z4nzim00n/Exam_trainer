@@ -9,9 +9,9 @@ int main(void) {
         return 0;
     }
 
-    int *a = malloc((size_t)n * n * sizeof(int));
-    int *b = malloc((size_t)n * n * sizeof(int));
-    int *c = malloc((size_t)n * n * sizeof(int));
+    int* a = malloc((size_t)n * n * sizeof(int));
+    int* b = malloc((size_t)n * n * sizeof(int));
+    int* c = malloc((size_t)n * n * sizeof(int));
 
     if (a == NULL || b == NULL || c == NULL) {
         free(a);

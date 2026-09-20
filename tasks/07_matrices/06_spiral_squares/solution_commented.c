@@ -17,7 +17,7 @@ int main(void) {
         return 0;
     }
 
-    int *matrix = malloc((size_t)n * n * sizeof(int));
+    int* matrix = malloc((size_t)n * n * sizeof(int));
 
     if (matrix == NULL) {
         printf("n/a");
@@ -29,7 +29,7 @@ int main(void) {
     int bottom = n - 1;
     int left = 0;
     int right = n - 1;
-    
+
     /* Число, квадрат которого будем записывать в ячейки */
     int num = 0;
 

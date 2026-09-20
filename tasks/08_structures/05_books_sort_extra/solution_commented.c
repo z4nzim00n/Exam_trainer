@@ -20,7 +20,7 @@ int main(void) {
     while ((ch = getchar()) != EOF && ch != '\n') {
     }
 
-    struct book *books = malloc((size_t)n * sizeof(*books));
+    struct book* books = malloc((size_t)n * sizeof(*books));
     if (books == NULL) {
         return 1;
     }

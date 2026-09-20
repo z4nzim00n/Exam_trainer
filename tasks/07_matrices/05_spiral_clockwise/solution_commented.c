@@ -16,7 +16,7 @@ int main(void) {
         return 0;
     }
 
-    int *matrix = malloc((size_t)n * n * sizeof(int));
+    int* matrix = malloc((size_t)n * n * sizeof(int));
 
     if (matrix == NULL) {
         printf("n/a");

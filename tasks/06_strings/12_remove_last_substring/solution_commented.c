@@ -58,11 +58,9 @@ int main(void) {
      * Если ничего не нашли, last_match == -1 и условие пропуска не сработает.
      */
     for (int i = 0; i < text_length; i++) {
-        if (last_match != -1
-            && i >= last_match
-            && i < last_match + pattern_length) {
+        if (last_match != -1 && i >= last_match && i < last_match + pattern_length) {
             continue;
-            }
+        }
         putchar(text[i]);
     }
 

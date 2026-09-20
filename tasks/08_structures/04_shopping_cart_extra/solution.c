@@ -20,7 +20,7 @@ int main(void) {
     while ((ch = getchar()) != EOF && ch != '\n') {
     }
 
-    struct product *products = malloc((size_t)n * sizeof(*products));
+    struct product* products = malloc((size_t)n * sizeof(*products));
     if (products == NULL) {
         return 1;
     }
@@ -57,8 +57,7 @@ int main(void) {
         if (i > 0) {
             putchar('\n');
         }
-        printf("%s %d %d %lld", products[i].name, products[i].price,
-               products[i].quantity, line_sum);
+        printf("%s %d %d %lld", products[i].name, products[i].price, products[i].quantity, line_sum);
     }
 
     printf("\nTotal %lld", total);

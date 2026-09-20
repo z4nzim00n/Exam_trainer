@@ -9,7 +9,7 @@ int main(void) {
         return 0;
     }
 
-    int *a = malloc(n * sizeof(int));
+    int* a = malloc(n * sizeof(int));
 
     if (a == NULL) {
         printf("n/a");

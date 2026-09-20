@@ -26,7 +26,7 @@ int main(void) {
     }
 
     /* Выделяем массив под N студентов. */
-    struct student *students = malloc((size_t)n * sizeof(*students));
+    struct student* students = malloc((size_t)n * sizeof(*students));
     if (students == NULL) {
         return 1;
     }
