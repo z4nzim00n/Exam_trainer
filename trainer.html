@@ -366,6 +366,9 @@ a { color:var(--accent); }
 .extra-badge { margin-left:8px; color:var(--muted); font-style:italic; font-size:11px; }
 .extra-badge[hidden] { display:none; }
 
+.autotest-note { margin-top:4px; color:var(--yellow); font-family:var(--font-code); font-size:11px; opacity:.9; overflow-wrap:anywhere; }
+.autotest-note[hidden] { display:none; }
+
 .source-details { margin-top:10px; font-size:11px; color:var(--muted); }
 .source-details summary { cursor:pointer; list-style:none; display:inline-flex; align-items:center; gap:6px; color:var(--muted); }
 .source-details summary::-webkit-details-marker { display:none; }
@@ -618,7 +621,7 @@ a { color:var(--accent); }
       <ol>
         <li>При первом запуске появится окно — нажми «Выбрать папку проекта» и укажи корень репозитория (папку, в которой лежит <code>tasks</code>, а не её саму).</li>
         <li>Нажми «Получить 3 задания» — тренажёр подберёт лёгкое, среднее и сложное задание и создаст для них рабочие копии.</li>
-        <li>В корне проекта появится <code>Your_tasks</code>, а внутри — папка текущей попытки с <code>README.md</code> и пустым <code>main.c</code> для каждого задания.</li>
+        <li>В корне проекта появится <code>Your_tasks</code>, а внутри — папка текущей попытки с <code>README.md</code> и пустым <code>main.c</code> для каждого задания. Если у задания в <code>tasks/</code> есть файл автотеста, а в корне проекта — <code>scripts/lib.sh</code>, рядом появятся его копия под именем <code>run_tests.sh</code> и скрытый <code>.lib.sh</code> — сразу готовые к запуску.</li>
         <li>Первое задание открыто сразу, второе и третье помечены 🔒 — они откроются, когда решишь предыдущее. Можно открыть их и раньше кнопкой «Открыть всё равно».</li>
         <li>Кнопка «Материалы» у номера задания открывает всё (условие, тесты, теория, решение) в отдельной вкладке — сразу, без спойлер-заглушек.</li>
         <li>Кнопка «Заменить» подбирает другое задание того же уровня — пока оно не закрыто и не решено.</li>
@@ -630,7 +633,11 @@ gcc -Wall -Wextra -Werror -std=c11 main.c -o main
 ./main
 
 # С математическими функциями:
-gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm</pre>
+gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm
+
+# Если рядом лежит run_tests.sh — запускай его через bash, а не через ./:
+# File System Access API не умеет ставить файлам права на исполнение.
+bash run_tests.sh</pre>
     </details>
 
     <p class="footer">Не запоминай билет. Разбирайся, почему работает решение.</p>
@@ -718,10 +725,11 @@ const TASKS = [
 ];
 
 const LEVELS = [
-  {id:"easy",label:"Лёгкое",number:"01"},
-  {id:"medium",label:"Среднее",number:"02"},
-  {id:"hard",label:"Сложное",number:"03"}
+  {id:"easy",label:"Лёгкое",number:"01",dir:"1_easy"},
+  {id:"medium",label:"Среднее",number:"02",dir:"2_medium"},
+  {id:"hard",label:"Сложное",number:"03",dir:"3_hard"}
 ];
+const LEVEL_DIR = Object.fromEntries(LEVELS.map(level => [level.id, level.dir]));
 
 const PATH_ALIASES = {
   "03_expressions/05_boolean_expression":"03_expressions/05_boolean_expressio",
@@ -775,6 +783,7 @@ const state = {
 
   available: [],
   missing: [],
+  libAvailable: false,
 
   busy: false,
   attempt: null,
@@ -858,7 +867,8 @@ function refreshControls() {
       "Найдено " + state.available.length + "/" + TASKS.length +
       " (лёгких " + poolFor("easy").length +
       ", средних " + poolFor("medium").length +
-      ", сложных " + poolFor("hard").length + ")";
+      ", сложных " + poolFor("hard").length + ") · " +
+      (state.libAvailable ? "автотесты подключены" : "scripts/lib.sh не найден — без автотестов");
   } else {
     ui.catalog.textContent = "Каталог не подключён";
   }
@@ -1065,19 +1075,102 @@ async function readFileFromTask(task, filename) {
   }
 }
 
+async function readOptionalText(dir, filename) {
+  try {
+    const handle = await dir.getFileHandle(filename);
+    const file = await handle.getFile();
+    return await file.text();
+  } catch (e) {
+    if (e.name === "NotFoundError") return null;
+    throw e;
+  }
+}
+
+// В tasks/<задание>/run_tests*.sh путь до lib.sh зашит как ../../../scripts/lib.sh
+// (ровно 3 уровня — так и есть в tasks/). Рабочая копия в Your_tasks лежит на
+// уровень глубже (Your_tasks/попытка/уровень/задание/), так что тот же относительный
+// путь уже никуда не приведёт. Проще всего класть lib.sh рядом с самим run_tests.sh
+// и переписывать строку source на локальную — тогда копия ничего не ищет наружу.
+// Кладём её как .lib.sh (скрытый файл), чтобы не мозолила глаза рядом с main.c.
+function localizeRunTests(source) {
+  return source.replace(/^source\s+\S*lib\.sh\s*$/m, 'source "$(dirname "$0")/.lib.sh"');
+}
+
+async function findLibSource() {
+  try {
+    const scriptsDir = await state.root.getDirectoryHandle("scripts");
+    return await readOptionalText(scriptsDir, "lib.sh");
+  } catch (e) {
+    if (e.name === "NotFoundError") return null;
+    throw e;
+  }
+}
+
+// Имя файла может быть как run_tests.sh, так и run_tests1_1.sh и т.п. —
+// в репозитории они всё ещё лежат под именами из батчей (run_tests3_4.sh
+// и подобные), а не переименованы вручную в run_tests.sh. Поэтому ищем
+// по маске, а не по точному имени.
+async function findRunTestsFile(dir) {
+  for await (const [name, handle] of dir.entries()) {
+    if (handle.kind === "file" && /^run_tests.*\.sh$/i.test(name)) {
+      const file = await handle.getFile();
+      return await file.text();
+    }
+  }
+  return null;
+}
+
+async function copyAutotest(task, destinationDir) {
+  const runTestsSource = await findRunTestsFile(task.directory);
+  if (!runTestsSource) {
+    return { ok:false, reason:"в tasks/" + task.actualPath + " нет файла run_tests*.sh" };
+  }
+
+  const libSource = await findLibSource();
+  if (!libSource) {
+    return { ok:false, reason:"не найден scripts/lib.sh в корне проекта" };
+  }
+
+  await writeFile(destinationDir, "run_tests.sh", localizeRunTests(runTestsSource));
+  await writeFile(destinationDir, ".lib.sh", libSource);
+  return { ok:true };
+}
+
+// Копирует все файлы задания, кроме main.c (нужен пустым), README.md
+// (уже записан отдельно, из уже прочитанного markdown) и run_tests*.sh
+// (своя логика: переименование + правка source). Остальное — tests.md,
+// theory.md, solution.c, solution_commented.c, .clang-format и что угодно
+// ещё — копируется как есть.
+async function copyAllTaskFiles(task, destinationDir) {
+  for await (const [name, handle] of task.directory.entries()) {
+    if (handle.kind !== "file") continue;
+    if (name === "main.c" || name === "README.md") continue;
+    if (/^run_tests.*\.sh$/i.test(name)) continue;
+
+    const file = await handle.getFile();
+    const content = await file.text();
+    await writeFile(destinationDir, name, content);
+  }
+}
+
 async function saveSelection(attempt, level, task, markdown) {
-  const levelDir = await attempt.directory.getDirectoryHandle(level, { create:true });
+  const dirName = LEVEL_DIR[level] || level;
+  const levelDir = await attempt.directory.getDirectoryHandle(dirName, { create:true });
   const leaf = task.path.split("/").pop();
   const selection = await createUniqueDirectory(levelDir, leaf);
 
   await writeFile(selection.directory, "README.md", markdown);
   await writeFile(selection.directory, "main.c", "");
+  await copyAllTaskFiles(task, selection.directory);
+  const autotestResult = await copyAutotest(task, selection.directory);
 
   return {
     task,
     markdown,
     directory: selection.directory,
-    relativePath: "Your_tasks/" + attempt.name + "/" + level + "/" + selection.name
+    relativePath: "Your_tasks/" + attempt.name + "/" + dirName + "/" + selection.name,
+    autotest: autotestResult.ok,
+    autotestReason: autotestResult.reason || null
   };
 }
 
@@ -1116,6 +1209,7 @@ async function chooseProject() {
   state.available = available;
   state.missing = missing;
   state.attempt = null;
+  state.libAvailable = Boolean(await findLibSource());
 
   state.locked.easy = true;
   state.locked.medium = true;
@@ -1134,11 +1228,16 @@ async function chooseProject() {
   resetTimer(false);
   ui.attempt.textContent = "Набор ещё не создан";
 
+  const missingNote = missing.length
+    ? " Не найдены " + missing.length + " задания: " + missing.join(", ") + "."
+    : " Все " + TASKS.length + " заданий найдены.";
+  const libNote = state.libAvailable
+    ? " Автотесты (run_tests.sh + scripts/lib.sh) подключены."
+    : " scripts/lib.sh не найден — автотесты копироваться не будут, только README.md и main.c.";
+
   setStatus(
-    missing.length
-      ? "Подключён проект «" + root.name + "». Не найдены " + missing.length + " задания: " + missing.join(", ")
-      : "Проект «" + root.name + "» подключён. Все " + TASKS.length + " заданий найдены.",
-    missing.length ? undefined : "success"
+    "Проект «" + root.name + "» подключён." + missingNote + libNote,
+    (!missing.length && state.libAvailable) ? "success" : undefined
   );
 
   hideOnboard();
@@ -1689,6 +1788,8 @@ function createCards() {
     const extra = el("span", "extra-badge", "доп.");
     extra.hidden = true;
     const path = el("div", "task-path", "Рабочая папка появится после создания набора");
+    const autotestNote = el("div", "autotest-note", "");
+    autotestNote.hidden = true;
 
     const sourceRow = document.createElement("details");
     sourceRow.className = "source-details";
@@ -1697,7 +1798,7 @@ function createCards() {
     const sourcePath = el("span", "source-path", "");
     sourceRow.append(sourceSummary, sourcePath);
 
-    header.append(title, extra, path, sourceRow);
+    header.append(title, extra, path, autotestNote, sourceRow);
 
     const completedStrip = el("div", "completed-strip", "✅ Это задание отмечено как решённое.");
     completedStrip.hidden = true;
@@ -1713,6 +1814,7 @@ function createCards() {
       title,
       extra,
       path,
+      autotestNote,
       sourcePath,
       completedStrip,
       document: documentBody,
@@ -1748,6 +1850,7 @@ function renderCard(level) {
     card.title.textContent = "Ждёт своего часа";
     card.extra.hidden = true;
     card.path.textContent = "Папка появится после создания набора";
+    card.autotestNote.hidden = true;
     card.sourcePath.textContent = "";
     card.completedStrip.hidden = true;
     card.document.className = "document empty";
@@ -1765,6 +1868,7 @@ function renderCard(level) {
     card.title.textContent = "Задание скрыто";
     card.extra.hidden = true;
     card.path.textContent = "Папка создана: " + selection.relativePath;
+    card.autotestNote.hidden = true;
     card.sourcePath.textContent = "tasks/" + selection.task.actualPath + "/";
     card.completedStrip.hidden = true;
     card.document.className = "document empty locked";
@@ -1784,6 +1888,10 @@ function renderCard(level) {
   card.title.textContent = selection.task.title;
   card.extra.hidden = !selection.task.extra;
   card.path.textContent = selection.relativePath;
+  card.autotestNote.hidden = selection.autotest;
+  if (!selection.autotest) {
+    card.autotestNote.textContent = "⚠️ автотест не подключён: " + selection.autotestReason;
+  }
   card.sourcePath.textContent = "tasks/" + selection.task.actualPath + "/";
 
   const tooltip = materialsTooltip(selection.task);
