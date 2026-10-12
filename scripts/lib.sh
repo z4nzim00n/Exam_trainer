@@ -62,12 +62,32 @@ run_case_devnull() {
 }
 
 # check_memory "вход"
+
 check_memory() {
   local input="$1"
-  if echo "$input" | valgrind --leak-check=full --error-exitcode=1 ./main > /dev/null 2>/tmp/valgrind.log; then
+  local log
+  log=$(mktemp) || {
+    echo "FAIL: не удалось создать временный лог Valgrind"
+    FAILED=1
+    return
+  }
+
+  if printf '%s\n' "$input" | valgrind --leak-check=full --error-exitcode=99 ./main >/dev/null 2>"$log"; then
     :
   else
-    echo "FAIL: valgrind нашёл проблему на входе '$input' (см. /tmp/valgrind.log)"
-    FAILED=1
+    local status=$?
+    if [ "$status" -eq 99 ]; then
+      echo "FAIL: Valgrind обнаружил ошибку памяти на входе '$input'"
+      FAILED=1
+    elif grep -Eq 'ERROR SUMMARY: [1-9][0-9]* errors?' "$log"; then
+      echo "FAIL: Valgrind обнаружил ошибку памяти на входе '$input'"
+      FAILED=1
+    else
+      echo "FAIL: программа завершилась с кодом $status на входе '$input', но ошибки памяти не подтверждены"
+      FAILED=1
+    fi
   fi
+
+  rm -f "$log"
 }
+
