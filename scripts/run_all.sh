@@ -1,18 +1,5 @@
 #!/usr/bin/env bash
-# scripts/run_all.sh — прогоняет run_tests.sh во всех папках заданий разом.
-#
-# Использование (запускать из корня репозитория или откуда угодно):
-#   ./scripts/run_all.sh              — проверяет main.c (решение студента)
-#   ./scripts/run_all.sh --solution   — проверяет solution.c (эталон школы)
-#   ./scripts/run_all.sh --commented  — проверяет solution_commented.c
-#
-# Для --solution/--commented может не быть файла в части папок (например
-# solution_commented.c есть не везде) — тогда gcc сам сообщит "No such file
-# or directory", и папка честно попадёт в список провалившихся.
 
-
-#find tasks -type f -name main -delete удаляет
-#find tasks -type f -name main  проверить что точно все удалилось
 cd "$(dirname "$0")/.."
 
 case "$1" in

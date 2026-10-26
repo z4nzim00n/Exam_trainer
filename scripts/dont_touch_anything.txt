@@ -1,0 +1,14 @@
+Не трогайте
+Сами тесты запускаются из папок внутри заданий.
+
+./scripts/run_all.sh              — проверяет main.c (решение студента)
+./scripts/run_all.sh --solution   — проверяет solution.c (эталон школы)
+./scripts/run_all.sh --commented  — проверяет solution_commented.c
+
+ну либо если вы хотите проверить что все решения точно рабочие, то вот.
+
+Команда для очистки
+
+find tasks -type f -name main -delete удаляет
+find tasks -type f -name main  проверить что точно все удалилось
+(делать из корня проекта)
