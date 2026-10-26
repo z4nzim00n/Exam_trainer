@@ -9,6 +9,9 @@ int main(void) {
         printf("n/a");
         return 0;
     }
+    if (n < 0) {
+        n = -n;
+    }
 
     while ((c = getchar()) != EOF && c != '\n') {
         if (c != ' ' && c != '\t' && c != '\r') {
@@ -19,9 +22,6 @@ int main(void) {
 
     do {
         int digit = n % 10;
-        if (digit < 0) {
-            digit = -digit;
-        }
         if (digit > max) {
             max = digit;
         }

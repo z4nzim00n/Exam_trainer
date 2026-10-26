@@ -10,6 +10,11 @@ int main(void) {
         }
     }
 
+    if (x != -1) {
+        printf("n/a");
+        return 0;
+    }
+
     printf("%d", max);
     return 0;
 }
