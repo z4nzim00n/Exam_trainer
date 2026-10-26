@@ -1,6 +1,7 @@
 Источники откуда я брал задания
 https://github.com/vashking/school21_helper/tree/stable/pool/exams
 https://github.com/Rvylarr/21-Exam/tree/main
+https://github.com/RimTanaka/exam/tree/main/c
 
 И ещё пару слов о легальности этого "симулятора экзамена".
 По правилам запрещено делиться какой-либо информацией о заданиях людям вне школы, поэтому для своей безопасности я
