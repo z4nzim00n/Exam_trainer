@@ -32,6 +32,13 @@
 
 <img src="docs/images/preview.png" alt="Вот сдам экзамен, отдыхать буду" width="900">
 
+<div align="center">
+
+<p align="center">
+  <img src="docs/images/dotted-rule-dark.gif" alt="Pulsing Dot Rule, animated ASCII art" width="720">
+</p>
+
+</div>
 
 ## 🛠 Инструменты
 
@@ -60,7 +67,13 @@
 - Доступ получает только выбранная папка. Остальной диск страница не видит.
 
 ---
+<div align="center">
 
+<p align="center">
+  <img src="docs/images/dotted-rule-dark.gif" alt="Pulsing Dot Rule, animated ASCII art" width="720">
+</p>
+
+</div>
 ## 🗂 Что внутри
 Внутри каждой папки есть 8 файлов
 1. .clang-format: Надеюсь все понимают для чего он. Для удобства он находится в каждой папке.  <br>
@@ -116,8 +129,4 @@
 
 ---
 
-<div align="center">
 
-**🚀🚀🚀**
-
-</div>
