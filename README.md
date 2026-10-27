@@ -152,3 +152,10 @@
 ---
 
 
+<div align="center">
+
+<p align="center">
+  <img src="docs/images/sleeping-cat-dark.gif" alt="Pulsing Dot Rule, animated ASCII art" width="720">
+</p>
+
+</div>
