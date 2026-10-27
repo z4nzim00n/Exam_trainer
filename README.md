@@ -3,7 +3,7 @@
 # 
 
 <p align="center">
-  <img src="assets/aurora-cabin-snowfall.gif" alt="Aurora Cabin Snowfall, animated ASCII art" width="720">
+  <img src="docs/images/aurora-cabin-snowfall-dark.gif">
 </p>
 
 <h1 align="center">🎯 Тренажёр по C</h1>
