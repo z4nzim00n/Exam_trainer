@@ -1,11 +1,18 @@
 <div align="center">
 
-# 🎯 Тренажёр по C
+# 
 
-<img src="docs/images/mem.png" alt="Вот сдам экзамен, отдыхать буду" width="900">
+<p align="center">
+  <img src="assets/aurora-cabin-snowfall.gif" alt="Aurora Cabin Snowfall, animated ASCII art" width="720">
+</p>
 
-**61 задание** для подготовки к экзамену по языку Си<br>
-Если вы не ученик школы21, то уходите отсюда
+<h1 align="center">🎯 Тренажёр по C</h1>
+
+
+
+<p align="center">для подготовки к экзамену</p>
+
+
 
 </div>
 
