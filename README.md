@@ -1,14 +1,16 @@
 <div align="center">
   <img src="docs/images/aurora-cabin-snowfall-dark.gif" alt="Зимний пейзаж" width="900">
 
-# 🎯 Тренажёр по C
+# Тренажёр по C
 
 **Подготовка к экзамену в Школе 21**
 
 Условия, теория, примеры решений и автотесты — в одном месте.
 </div>
 
----
+<p align="center">
+  <img src="docs/images/dotted-rule-dark.gif" alt="Декоративный разделитель" width="720">
+</p>
 
 ## Быстрый старт
 
@@ -100,10 +102,6 @@ bash run_test.sh
 | [Структуры](tasks/08_structures/) | `struct`, массивы структур, сортировка и фильтрация | 6 |
 | [Текстовые файлы](tasks/09_text_files/) | `fopen`, `fgetc`, `fgets`, `fscanf`, справочник, калькулятор и шифр | 7 |
 | **Итого** | | **61** |
-
-<p align="center">
-  <img src="docs/images/dotted-rule-dark.gif" alt="Декоративный разделитель" width="720">
-</p>
 
 ### Что означает суффикс `_extra`
 
