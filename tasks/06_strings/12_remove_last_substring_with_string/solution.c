@@ -19,8 +19,7 @@ int main() {
         }
     }
 
-    if (last != NULL)
-        memmove(last, last + len, strlen(last + len) + 1);
+    if (last != NULL) memmove(last, last + len, strlen(last + len) + 1);
 
     printf("%s", str);
     return 0;
