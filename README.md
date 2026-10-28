@@ -1,12 +1,13 @@
 <div align="center">
   <img src="docs/images/aurora-cabin-snowfall-dark.gif" alt="Зимний пейзаж" width="900">
+</div>
 
 # Тренажёр по C
 
 **Подготовка к экзамену в Школе 21**
 
 Условия, теория, примеры решений и автотесты — в одном месте.
-</div>
+
 
 <p align="center">
   <img src="docs/images/dotted-rule-dark.gif" alt="Декоративный разделитель" width="720">
