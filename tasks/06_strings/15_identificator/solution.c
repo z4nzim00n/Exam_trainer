@@ -15,8 +15,13 @@ int main(void) {
     for (int i = 0; i < n; i++) {
         int letter = (s[i] >= 'a' && s[i] <= 'z') || (s[i] >= 'A' && s[i] <= 'Z');
         int digit = s[i] >= '0' && s[i] <= '9';
+        int underscore = s[i] == '_';
 
-        if (!(letter || s[i] == '_' || (digit && i > 0))) {
+        if (digit && i == 0) {
+            is_identifier = 0;
+            break;
+        }
+        if (!letter && !digit && !underscore) {
             is_identifier = 0;
             break;
         }
