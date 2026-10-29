@@ -580,8 +580,8 @@ a { color:var(--accent); }
 
     <section class="hero">
       <div class="hero-copy">
-        <h1>Три задачи.</h1>
-        <p class="hero-subtitle">Получай случайный набор и проходи его по порядку — от лёгкого задания к среднему, а затем к сложному.</p>
+        <h1>Две задачи.</h1>
+        <p class="hero-subtitle">Получай случайный набор и проходи его по порядку — от среднего задания к сложному.</p>
       </div>
     </section>
 
@@ -596,7 +596,7 @@ a { color:var(--accent); }
         <button id="chooseButton" type="button">📁 Выбрать папку проекта</button>
 
         <button id="generateButton" class="primary cta-generate" type="button" disabled>
-          <span class="cta-icon">🎲</span><span class="cta-label">Получить 3 задания</span>
+          <span class="cta-icon">🎲</span><span class="cta-label">Получить 2 задания</span>
         </button>
 
         <label class="switch" title="Включать дополнительные (extra) задания в случайный выбор">
@@ -620,9 +620,9 @@ a { color:var(--accent); }
       <summary>Как это работает</summary>
       <ol>
         <li>При первом запуске появится окно — нажми «Выбрать папку проекта» и укажи корень репозитория (папку, в которой лежит <code>tasks</code>, а не её саму).</li>
-        <li>Нажми «Получить 3 задания» — тренажёр подберёт лёгкое, среднее и сложное задание и создаст для них рабочие копии.</li>
+        <li>Нажми «Получить 2 задания» — тренажёр подберёт среднее и сложное задание и создаст для них рабочие копии.</li>
         <li>В корне проекта появится <code>Your_tasks</code>, а внутри — папка текущей попытки с <code>README.md</code> и пустым <code>main.c</code> для каждого задания. Если у задания в <code>tasks/</code> есть файл автотеста, а в корне проекта — <code>scripts/lib.sh</code>, рядом появятся его копия под именем <code>run_tests.sh</code> и скрытый <code>.lib.sh</code> — сразу готовые к запуску.</li>
-        <li>Первое задание открыто сразу, второе и третье помечены 🔒 — они откроются, когда решишь предыдущее. Можно открыть их и раньше кнопкой «Открыть всё равно».</li>
+        <li>Первое задание открыто сразу, второе помечено 🔒 — оно откроется, когда решишь первое. Можно открыть его и раньше кнопкой «Открыть всё равно».</li>
         <li>Кнопка «Материалы» у номера задания открывает всё (условие, тесты, теория, решение) в отдельной вкладке — сразу, без спойлер-заглушек.</li>
         <li>Кнопка «Заменить» подбирает другое задание того же уровня — пока оно не закрыто и не решено.</li>
         <li>Когда решишь задание в редакторе — нажми «Решено ✓». Карточка свернётся, следующая откроется сама. Нажал случайно — «Вернуть» отменит отметку.</li>
@@ -665,19 +665,6 @@ bash run_tests.sh</pre>
    ============================================ */
 
 const TASKS = [
-  {path:"01_basics/01_fix_int_keyword",title:"Исправление INT",level:"easy"},
-  {path:"01_basics/02_fix_declaration_separator",title:"Разделитель в объявлении",level:"easy"},
-  {path:"01_basics/03_fix_declaration_syntax",title:"Ошибка в объявлении переменных",level:"easy"},
-  {path:"01_basics/04_fix_multiple_declaration",title:"Повторный тип после запятой",level:"easy"},
-  {path:"01_basics/05_fix_missing_type",title:"Отсутствующий тип переменной",level:"easy"},
-  {path:"01_basics/06_fix_double_initialization",title:"Инициализация double",level:"easy"},
-
-  {path:"02_input_output/01_zero_padding",title:"Ведущие нули",level:"easy"},
-  {path:"02_input_output/02_fix_output_width",title:"Исправление ширины вывода",level:"easy"},
-  {path:"02_input_output/03_groot",title:"Я есть Грут!",level:"easy"},
-  {path:"02_input_output/04_windows_path",title:"Путь к Блокноту",level:"easy"},
-  {path:"02_input_output/05_print_205",title:"Вывод числа 205",level:"easy"},
-
   {path:"03_expressions/01_sphere_mass",title:"Масса шара",level:"medium"},
   {path:"03_expressions/02_radians_to_degrees",title:"Перевод радиан в градусы",level:"medium"},
   {path:"03_expressions/03_swap_edge_digits",title:"Перестановка крайних цифр",level:"medium"},
@@ -688,12 +675,14 @@ const TASKS = [
   {path:"04_loops/02_max_digit",title:"Наибольшая цифра",level:"medium"},
   {path:"04_loops/03_odd_digits_product",title:"Произведение нечётных цифр",level:"medium"},
   {path:"04_loops/04_reverse_number_extra",title:"Разворот числа",level:"medium"},
-  {path:"04_loops/05_unpaired_number_extra",title:"Число без пары",level:"medium"},
+  {path:"04_loops/05_unpaired_number",title:"Число без пары",level:"medium"},
+  {path:"04_loops/06_binomial_coefficients",title:"Биномиальные коэффициенты",level:"medium"},
 
   {path:"05_dynamic_arrays/01_dot_product",title:"Скалярное произведение",level:"hard"},
   {path:"05_dynamic_arrays/02_alternate_ends",title:"Чередование первого и последнего",level:"hard"},
   {path:"05_dynamic_arrays/03_remove_duplicates",title:"Удаление повторов",level:"hard"},
   {path:"05_dynamic_arrays/04_reverse_sequence",title:"Реверс последовательности",level:"hard"},
+  {path:"05_dynamic_arrays/05_swap_max_min",title:"Обмен наибольшего и наименьшего",level:"hard"},
 
   {path:"06_strings/01_string_length_extra",title:"Длина строки",level:"medium"},
   {path:"06_strings/02_count_letters_digits_extra",title:"Подсчёт букв и цифр",level:"medium"},
@@ -707,8 +696,10 @@ const TASKS = [
   {path:"06_strings/10_compare_strings_extra",title:"Сравнение строк",level:"medium"},
   {path:"06_strings/11_caesar_cipher_extra",title:"Шифр Цезаря",level:"medium"},
   {path:"06_strings/12_remove_last_substring",title:"Удаление последней подстроки",level:"hard"},
+  {path:"06_strings/12_remove_last_substring_with_string",title:"Удаление последней подстроки (string)",level:"hard"},
   {path:"06_strings/13_palindrome",title:"Проверка на палиндром (экзамен)",level:"medium"},
-  {path:"06_strings/14_trim_whitespace",title:"Удаление пробелов и табуляций",level:"medium"},
+  {path:"06_strings/14_trim_whitespace_extra",title:"Удаление пробелов и табуляций",level:"medium"},
+  {path:"06_strings/15_identificator",title:"Идентификатор",level:"medium"},
 
   {path:"07_matrices/01_matrix_addition_extra",title:"Сложение квадратных матриц",level:"medium"},
   {path:"07_matrices/02_matrix_multiplication",title:"Умножение квадратных матриц",level:"hard"},
@@ -719,15 +710,23 @@ const TASKS = [
 
   {path:"08_structures/01_students_above_average",title:"Студенты выше среднего балла",level:"hard"},
   {path:"08_structures/02_students_sort_by_rate",title:"Сортировка студентов по баллам",level:"hard"},
-  {path:"08_structures/03_best_student_extra",title:"Студент с наивысшим баллом",level:"medium"},
-  {path:"08_structures/04_shopping_cart_extra",title:"Товары в корзине",level:"medium"},
-  {path:"08_structures/05_books_sort_extra",title:"Книги: сортировка по году",level:"hard"}
+  {path:"08_structures/03_hollywood_stars",title:"Голливудские звёзды",level:"hard"},
+  {path:"08_structures/06_one_student_extra",title:"Один студент",level:"medium"},
+  {path:"08_structures/07_sum_rates_extra",title:"Сумма баллов",level:"medium"},
+  {path:"08_structures/08_vector_lengths",title:"Длины векторов",level:"medium"},
+
+  {path:"09_text_files/02_phone_book",title:"Телефонная книга",level:"hard"},
+  {path:"09_text_files/05_file_calculator",title:"Калькулятор из файла",level:"hard"},
+  {path:"09_text_files/06_caesar_cipher_for_file",title:"Шифр Цезаря для файла",level:"hard"},
+  {path:"09_text_files/06_caesar_cipher_for_file_extra",title:"Шифр Цезаря для файла (доп.)",level:"medium"},
+  {path:"09_text_files/07_print_file_extra",title:"Вывод файла",level:"medium"},
+  {path:"09_text_files/08_sum_numbers_file_extra",title:"Сумма чисел из файла",level:"medium"},
+  {path:"09_text_files/09_count_sentences",title:"Подсчёт предложений",level:"hard"}
 ];
 
 const LEVELS = [
-  {id:"easy",label:"Лёгкое",number:"01",dir:"1_easy"},
-  {id:"medium",label:"Среднее",number:"02",dir:"2_medium"},
-  {id:"hard",label:"Сложное",number:"03",dir:"3_hard"}
+  {id:"medium",label:"Среднее",number:"01",dir:"1_medium"},
+  {id:"hard",label:"Сложное",number:"02",dir:"2_hard"}
 ];
 const LEVEL_DIR = Object.fromEntries(LEVELS.map(level => [level.id, level.dir]));
 
@@ -788,13 +787,13 @@ const state = {
   busy: false,
   attempt: null,
 
-  current: { easy:null, medium:null, hard:null },
-  seen: { easy:new Set(), medium:new Set(), hard:new Set() },
+  current: { medium:null, hard:null },
+  seen: { medium:new Set(), hard:new Set() },
 
   timer: { running:false, startedAt:0, elapsed:0 },
 
-  locked: { easy:true, medium:true, hard:true },
-  completed: { easy:false, medium:false, hard:false }
+  locked: { medium:true, hard:true },
+  completed: { medium:false, hard:false }
 };
 
 const cardUI = {};
@@ -844,7 +843,7 @@ function refreshControls() {
     : (state.timer.elapsed > 0 ? "▶ Продолжить" : "▶ Старт");
 
   ui.generateIcon.textContent = state.attempt ? "🔀" : "🎲";
-  ui.generateLabel.textContent = state.attempt ? "Получить другие 3 задания" : "Получить 3 задания";
+  ui.generateLabel.textContent = state.attempt ? "Получить другие 2 задания" : "Получить 2 задания";
   ui.generate.disabled = state.busy || !state.root || LEVELS.some(level => poolFor(level.id).length === 0);
 
   for (const level of LEVELS) {
@@ -865,8 +864,7 @@ function refreshControls() {
   if (state.root) {
     ui.catalog.textContent =
       "Найдено " + state.available.length + "/" + TASKS.length +
-      " (лёгких " + poolFor("easy").length +
-      ", средних " + poolFor("medium").length +
+      " (средних " + poolFor("medium").length +
       ", сложных " + poolFor("hard").length + ") · " +
       (state.libAvailable ? "автотесты подключены" : "scripts/lib.sh не найден — без автотестов");
   } else {
@@ -1211,15 +1209,9 @@ async function chooseProject() {
   state.attempt = null;
   state.libAvailable = Boolean(await findLibSource());
 
-  state.locked.easy = true;
-  state.locked.medium = true;
-  state.locked.hard = true;
-
-  state.completed.easy = false;
-  state.completed.medium = false;
-  state.completed.hard = false;
-
   for (const level of LEVELS) {
+    state.locked[level.id] = true;
+    state.completed[level.id] = false;
     state.current[level.id] = null;
     state.seen[level.id].clear();
     renderCard(level.id);
@@ -1316,12 +1308,10 @@ async function generateSet() {
   }
 
   state.attempt = attempt;
-  state.locked.easy = false;
-  state.locked.medium = true;
-  state.locked.hard = true;
-  state.completed.easy = false;
-  state.completed.medium = false;
-  state.completed.hard = false;
+  LEVELS.forEach((level, i) => {
+    state.locked[level.id] = i !== 0;
+    state.completed[level.id] = false;
+  });
 
   for (const item of saved) {
     commitCandidate(item.level, item.candidate, item.selection);
@@ -1331,12 +1321,12 @@ async function generateSet() {
   resetTimer(false);
 
   ui.attempt.textContent = "Попытка: " + attempt.name;
-  setStatus("Три задания сохранены в Your_tasks/" + attempt.name + ".", "success");
+  setStatus("Задания сохранены в Your_tasks/" + attempt.name + ".", "success");
 
   LEVELS.forEach((level, index) => revealCard(level.id, index * 80));
 
   setTimeout(() => {
-    cardUI.easy.card.scrollIntoView({ behavior:"smooth", block:"start" });
+    cardUI[LEVELS[0].id].card.scrollIntoView({ behavior:"smooth", block:"start" });
   }, 100);
 }
 
@@ -1858,7 +1848,7 @@ function renderCard(level) {
     const inner = el("div", "empty-inner");
     inner.append(
       el("div", "empty-icon", "{ }"),
-      el("p", "", "Нажми «Получить 3 задания», когда подключишь проект.")
+      el("p", "", "Нажми «Получить 2 задания», когда подключишь проект.")
     );
     card.document.appendChild(inner);
     return;
@@ -1877,7 +1867,8 @@ function renderCard(level) {
     const icon = el("div", "empty-icon locked-animation", "🔒");
     const heading = el("h3", "", "Задание пока закрыто");
     heading.style.margin = "10px 0 8px";
-    const previous = level === "medium" ? "лёгкое" : "среднее";
+    const levelIndex = LEVELS.findIndex(l => l.id === level);
+    const previous = levelIndex > 0 ? LEVELS[levelIndex - 1].label.toLowerCase() : "предыдущее";
     const text = el("p", "", "Сначала реши " + previous + " задание — или открой это кнопкой «Открыть всё равно» слева.");
     text.style.cssText = "font-size:calc(var(--fs-ui) - 1px);color:var(--muted);line-height:1.5;";
     inner.append(icon, heading, text);
@@ -1934,7 +1925,7 @@ function completeTask(level) {
       cardUI[nextLevel].card.scrollIntoView({ behavior:"smooth", block:"start" });
     }, 120);
   } else if (LEVELS.every(item => state.completed[item.id])) {
-    setStatus("Все три задания выполнены. Отличная работа!", "success");
+    setStatus("Оба задания выполнены. Отличная работа!", "success");
   } else {
     setStatus("Задание отмечено решённым.", "success");
   }
