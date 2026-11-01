@@ -7,20 +7,19 @@ int main(void) {
         return 1;
     }
 
-    int value;
+    int negative_sign = 0;
     if (n < 0) {
-        value = -n;
-    } else {
-        value = n;
+        n = -n;
+        negative_sign = 1;
     }
 
-    int last = value % 10;
-    value = value / 10;
-    int middle = value % 10;
-    value = value / 10;
-    int first = value % 10;
+    int last = n % 10;
+    n = n / 10;
+    int middle = n % 10;
+    n = n / 10;
+    int first = n % 10;
 
-    if (n < 0) {
+    if (negative_sign) {
         putchar('-');
     }
 
