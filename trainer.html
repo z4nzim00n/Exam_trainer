@@ -89,7 +89,7 @@
             --done-hover: rgba(167, 192, 128, .08);
         }
 
-        
+
         /* ---- Catppuccin ---- */
         :root[data-theme="catppuccin"] {
             --bg:#1e1e2e; --panel:#181825; --panel-alt:#313244; --panel-hover:#45475a;
@@ -929,7 +929,7 @@
         <div class="nav-header">
             <div class="nav-header-top">
                 <h1>📚 Задания</h1>
-                <button class="nav-btn" id="chooseBtn" type="button">📁 Папка</button>
+                <button class="nav-btn" id="chooseBtn" type="button" title="Выбрать другую папку проекта">📁 Папка</button>
             </div>
 
             <div class="settings-bar">
@@ -963,7 +963,7 @@
                 <div class="tree-empty-card">
                     <div class="tree-empty-icon">📁</div>
                     <p><strong>Подключи папку проекта</strong></p>
-                    <p>Выбери корень проекта — папку, внутри которой лежит <code>tasks</code>.</p>
+                    <p>Выбери корень проекта — папку, внутри которой лежит <code>tasks</code>. Папка запомнится, и в следующий раз выбирать её не придётся.</p>
                     <button class="nav-btn empty-action" id="emptyChooseBtn" type="button">
                         📁 Выбрать папку проекта
                     </button>
@@ -1069,14 +1069,14 @@
             Подключи папку с проектом
         </h2>
 
-        <p>
+        <p id="onboardText1">
             Чтобы загрузить задания, выбери корень репозитория —
             папку, внутри которой находится <code>tasks</code>.
         </p>
 
-        <p>
+        <p id="onboardText2">
             Браузер читает структуру прямо с твоего компьютера.
-            Файлы никуда не отправляются.
+            Файлы никуда не отправляются. Папка запомнится.
         </p>
 
         <button class="nav-btn modal-cta"
@@ -1124,6 +1124,9 @@
     var onboardModal    = document.getElementById("onboardModal");
     var onboardClose    = document.getElementById("onboardClose");
     var onboardChoose   = document.getElementById("onboardChoose");
+    var onboardTitle    = document.getElementById("onboardTitle");
+    var onboardText1    = document.getElementById("onboardText1");
+    var onboardText2    = document.getElementById("onboardText2");
     var navStatus       = document.getElementById("navStatus");
     var treeEl          = document.getElementById("tree");
     var taskBarTitle    = document.getElementById("taskBarTitle");
@@ -1169,6 +1172,73 @@
     var secondWindowVisible = false;
 
     var isVertical = false;
+
+    /* Идёт ли сейчас выбор/подключение папки (защита от двойных кликов) */
+    var projectBusy = false;
+
+
+    /* ============================================
+       PERSISTED PROJECT HANDLE (IndexedDB)
+       Запоминает выбранную папку между запусками.
+       ============================================ */
+
+    var IDB_NAME  = "c-practice-ide";
+    var IDB_STORE = "handles";
+    var IDB_KEY   = "project-root";
+
+    function openDb() {
+        return new Promise(function (resolve, reject) {
+            var req = indexedDB.open(IDB_NAME, 1);
+
+            req.onupgradeneeded = function () {
+                req.result.createObjectStore(IDB_STORE);
+            };
+
+            req.onsuccess = function () {
+                resolve(req.result);
+            };
+
+            req.onerror = function () {
+                reject(req.error);
+            };
+        });
+    }
+
+    async function idbRun(mode, fn) {
+        var db = await openDb();
+
+        return new Promise(function (resolve, reject) {
+            var tx = db.transaction(IDB_STORE, mode);
+            var req = fn(tx.objectStore(IDB_STORE));
+
+            tx.oncomplete = function () {
+                db.close();
+                resolve(req && req.result);
+            };
+
+            tx.onerror = function () {
+                db.close();
+                reject(tx.error);
+            };
+
+            tx.onabort = function () {
+                db.close();
+                reject(tx.error);
+            };
+        });
+    }
+
+    function saveHandle(handle) {
+        return idbRun("readwrite", function (store) {
+            return store.put(handle, IDB_KEY);
+        });
+    }
+
+    function loadHandle() {
+        return idbRun("readonly", function (store) {
+            return store.get(IDB_KEY);
+        });
+    }
 
 
     /* ============================================
@@ -1386,6 +1456,34 @@
         }
     });
 
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && !onboardModal.hidden) {
+            closeOnboard();
+        }
+    });
+
+    /*
+     * Если папка уже запомнена, но браузер просит подтвердить доступ —
+     * меняем тексты так, чтобы было понятно: нужен один клик.
+     */
+    function showRememberedFolder(name) {
+        onboardTitle.textContent = "С возвращением!";
+
+        onboardText1.textContent =
+            "Папка «" + name + "» запомнена. " +
+            "Нажми кнопку и подтверди доступ — выбирать папку заново не нужно.";
+
+        onboardText2.textContent =
+            "Если хочешь использовать другую папку, закрой это окно " +
+            "и нажми «📁 Папка» слева сверху.";
+
+        onboardChoose.textContent =
+            "▶ Продолжить с «" + name + "»";
+
+        emptyChooseBtn.textContent =
+            "▶ Продолжить с «" + name + "»";
+    }
+
 
     /* ============================================
        NAV STATUS
@@ -1406,58 +1504,32 @@
 
 
     /* ============================================
-       PICK PROJECT
+       PROJECT: PICK / RESTORE / CONNECT
        ============================================ */
 
-    onboardChoose.addEventListener("click", function () {
-        pickProject().catch(function (e) {
-            console.error(e);
+    function reportError(e) {
+        console.error(e);
 
-            showNav(
-                "Ошибка: " + e.message,
-                true
-            );
-        });
-    });
-
-    if (emptyChooseBtn) {
-        emptyChooseBtn.addEventListener("click", function () {
-            pickProject().catch(function (e) {
-                console.error(e);
-
-                showNav(
-                    "Ошибка: " + e.message,
-                    true
-                );
-            });
-        });
+        showNav(
+            "Ошибка: " + e.message,
+            true
+        );
     }
 
-    async function pickProject() {
-        if (
-            !window.isSecureContext ||
-            typeof window.showDirectoryPicker !== "function"
-        ) {
-            showNav(
-                "Нужен Chrome или Edge.",
-                true
-            );
+    function fsSupported() {
+        return (
+            window.isSecureContext &&
+            typeof window.showDirectoryPicker === "function"
+        );
+    }
 
-            return;
-        }
-
-        var root;
+    /*
+     * Подключает уже имеющийся handle корня проекта:
+     * ищет tasks, сканирует задания, строит дерево.
+     * Возвращает true при успехе.
+     */
+    async function connectProject(root) {
         var tasksDir;
-
-        try {
-            root = await window.showDirectoryPicker({
-                id: "c-practice-preview",
-                mode: "read"
-            });
-        } catch (e) {
-            if (e.name === "AbortError") return;
-            throw e;
-        }
 
         try {
             tasksDir =
@@ -1468,7 +1540,7 @@
                 true
             );
 
-            return;
+            return false;
         }
 
         showNav("Читаю структуру…");
@@ -1482,19 +1554,141 @@
                 true
             );
 
-            return;
+            return false;
         }
+
+        /* Новый проект — сбрасываем выбранное задание. */
+        activeTaskEl = null;
+        activeTask = null;
 
         buildTree(structure);
 
-        /*
-         * Больше не показываем
-         * "Загружено 50 заданий."
-         */
         hideNavStatus();
 
         closeOnboard();
+
+        return true;
     }
+
+    /*
+     * Ручной выбор папки (первый запуск или «Сменить папку»).
+     */
+    async function pickProject() {
+        if (!fsSupported()) {
+            showNav(
+                "Нужен Chrome или Edge.",
+                true
+            );
+
+            return;
+        }
+
+        var root;
+
+        try {
+            root = await window.showDirectoryPicker({
+                id: "c-practice-preview",
+                mode: "read"
+            });
+        } catch (e) {
+            if (e.name === "AbortError") return;
+            throw e;
+        }
+
+        var ok = await connectProject(root);
+
+        if (!ok) return;
+
+        try {
+            await saveHandle(root);
+        } catch (e) {
+            console.warn("Не удалось сохранить папку проекта", e);
+        }
+    }
+
+    /*
+     * Восстановление сохранённой папки.
+     *
+     * interactive = false — только если разрешение уже выдано (без клика).
+     * interactive = true  — можно показать запрос разрешения
+     *                       (браузер разрешает его только по клику).
+     */
+    async function restoreProject(interactive) {
+        var root;
+
+        try {
+            root = await loadHandle();
+        } catch (e) {
+            return false;
+        }
+
+        if (!root) return false;
+
+        var options = { mode: "read" };
+
+        try {
+            var permission =
+                await root.queryPermission(options);
+
+            if (permission !== "granted") {
+                if (!interactive) return false;
+
+                permission =
+                    await root.requestPermission(options);
+
+                if (permission !== "granted") return false;
+            }
+
+            return await connectProject(root);
+        } catch (e) {
+            /*
+             * Папку удалили, переместили или она стала недоступна —
+             * просто попросим выбрать заново.
+             */
+            console.warn("Не удалось восстановить папку проекта", e);
+
+            return false;
+        }
+    }
+
+    /*
+     * Кнопки «Выбрать/Продолжить» (окно приветствия и пустое дерево):
+     * сначала пробуем сохранённую папку, потом — обычный выбор.
+     */
+    async function continueOrPick() {
+        if (projectBusy) return;
+        projectBusy = true;
+
+        try {
+            if (await restoreProject(true)) return;
+
+            await pickProject();
+        } catch (e) {
+            reportError(e);
+        } finally {
+            projectBusy = false;
+        }
+    }
+
+    /*
+     * Кнопка «📁 Папка» в шапке: всегда открывает выбор папки.
+     */
+    async function changeProject() {
+        if (projectBusy) return;
+        projectBusy = true;
+
+        try {
+            await pickProject();
+        } catch (e) {
+            reportError(e);
+        } finally {
+            projectBusy = false;
+        }
+    }
+
+    onboardChoose.addEventListener("click", continueOrPick);
+    emptyChooseBtn.addEventListener("click", continueOrPick);
+    chooseBtn.addEventListener("click", changeProject);
 
 
     /* ============================================
@@ -2809,21 +3003,21 @@
                     var dr =
                         element("tr");
 
-                    var dc =
+                    var dcells =
                         tableCells(lines[i]);
 
                     for (
                         var di = 0;
-                        di < dc.length;
+                        di < dcells.length;
                         di++
                     ) {
                         var td =
                             element("td");
 
-                        if (dc[di]) {
+                        if (dcells[di]) {
                             appendInline(
                                 td,
-                                dc[di]
+                                dcells[di]
                             );
                         }
 
@@ -2973,38 +3167,53 @@
 
 
     /* ============================================
-       FILE PICKER BUTTON
+       INITIAL ENVIRONMENT CHECK / AUTO-CONNECT
        ============================================ */
 
-    chooseBtn.onclick = function () {
-        pickProject().catch(function (e) {
-            console.error(e);
-
-            showNav(
-                "Ошибка: " + e.message,
-                true
-            );
-        });
-    };
-
-
-    /* ============================================
-       INITIAL ENVIRONMENT CHECK
-       ============================================ */
-
-    if (
-        !window.isSecureContext ||
-        typeof window.showDirectoryPicker !== "function"
-    ) {
+    if (!fsSupported()) {
         showNav(
             "Нужен Chrome/Edge (File System Access API).",
             true
         );
     } else {
-        setTimeout(
-            openOnboard,
-            180
-        );
+        (async function () {
+            projectBusy = true;
+
+            try {
+                /*
+                 * 1. Папка запомнена и разрешение уже есть —
+                 *    подключаемся молча, без единого клика.
+                 */
+                if (await restoreProject(false)) return;
+
+                /*
+                 * 2. Папка запомнена, но браузер просит подтвердить доступ —
+                 *    показываем окно с кнопкой «Продолжить» (один клик).
+                 */
+                var saved = null;
+
+                try {
+                    saved = await loadHandle();
+                } catch (e) {}
+
+                if (saved) {
+                    showRememberedFolder(saved.name);
+
+                    showNav(
+                        "Папка «" + saved.name + "» запомнена. " +
+                        "Нажми «Продолжить» и подтверди доступ."
+                    );
+                }
+
+                /*
+                 * 3. Ничего не запомнено (или папка недоступна) —
+                 *    обычное окно выбора папки.
+                 */
+                setTimeout(openOnboard, 180);
+            } finally {
+                projectBusy = false;
+            }
+        })();
     }
 
 </script>
