@@ -3,7 +3,7 @@ set -e
 cd "$(dirname "$0")"
 source ../../../scripts/lib.sh
 
-compile
+compile -std=c11
 check_style
 check_static
 

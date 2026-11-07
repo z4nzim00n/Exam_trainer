@@ -10,7 +10,7 @@ typedef struct {
 int main(void) {
     int n;
 
-    if (scanf("%d", &n) != 1 || n < 1) {
+    if (scanf("%d", &n) != 1 || n < 1 || n > 1000) {
         printf("n/a");
         return 0;
     }

@@ -18,7 +18,7 @@ int main(void) {
     char text[1001];
     size_t n = fread(text, 1, 1000, file);
 
-    if (n == 0 || n == 1000) {
+    if (ferror(file) || n == 0 || n == 1000) {
         printf("n/a");
         fclose(file);
         return 0;
@@ -37,12 +37,19 @@ int main(void) {
         }
     }
 
-    /* Если по условию нужен вывод в stdout, раскомментируйте строку ниже: */
-    /* fwrite(text, 1, n, stdout); */
-
     rewind(file);
-    fwrite(text, 1, n, file);
-    fclose(file);
+
+    int error = 0;
+    if (fwrite(text, 1, n, file) != n) {
+        error = 1;
+    }
+    if (fclose(file) != 0) {
+        error = 1;
+    }
+
+    if (error) {
+        printf("n/a");
+    }
 
     return 0;
 }

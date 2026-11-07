@@ -1,11 +1,17 @@
 #include <stdio.h>
 #include <string.h>
 
-int main() {
-    char str[1000], sub[1000];
+int main(void) {
+    char str[1000] = {0};
+    char sub[1000] = {0};
 
-    fgets(str, sizeof str, stdin);
-    fgets(sub, sizeof sub, stdin);
+    if (fgets(str, sizeof str, stdin) == NULL) {
+        return 0;
+    }
+    if (fgets(sub, sizeof sub, stdin) == NULL) {
+        sub[0] = '\0';
+    }
+
     str[strcspn(str, "\n")] = '\0';
     sub[strcspn(sub, "\n")] = '\0';
 

@@ -12,6 +12,8 @@ gcc -Wall -Wextra -Werror -std=c11 main.c -o main
 С математической библиотекой:
 
 ```bash
+# -lm нужен для sqrt, round и т.п. Если используется M_PI, уберите -std=c11:
+# при строгом стандарте эта константа не объявлена.
 gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm
 ```
 

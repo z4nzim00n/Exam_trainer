@@ -5,7 +5,12 @@
 gcc -Wall -Wextra -Werror -std=c11 main.c -o main
 ```
 
-Если в коде есть `math.h` (sqrt, round, M_PI и т.п.): `-lm` в самый конец, а `-std=c11` убрать, с ним не виден `M_PI`:
+Если в коде есть `math.h` (`sqrt`, `round` и т.п.), `-lm` добавляется в самый конец:
+```bash
+gcc -Wall -Wextra -Werror -std=c11 main.c -o main -lm
+```
+
+Исключение — `M_PI`: при `-std=c11` эта константа скрыта. Если она нужна, собери без `-std=c11` (или определи её сам):
 ```bash
 gcc -Wall -Wextra -Werror main.c -o main -lm
 ```

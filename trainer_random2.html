@@ -697,10 +697,10 @@ bash run_tests.sh</pre>
     {path:"06_strings/10_compare_strings_extra",title:"Сравнение строк",level:"medium"},
     {path:"06_strings/11_caesar_cipher_extra",title:"Шифр Цезаря",level:"medium"},
     {path:"06_strings/12_remove_last_substring",title:"Удаление последней подстроки",level:"hard"},
-    {path:"06_strings/12_remove_last_substring_with_string",title:"Удаление последней подстроки (string)",level:"hard"},
-    {path:"06_strings/13_palindrome",title:"Проверка на палиндром (экзамен)",level:"medium"},
-    {path:"06_strings/14_trim_whitespace_extra",title:"Удаление пробелов и табуляций",level:"medium"},
-    {path:"06_strings/15_identificator",title:"Идентификатор",level:"medium"},
+    {path:"06_strings/13_remove_last_substring_with_string",title:"Удаление последней подстроки (string)",level:"hard"},
+    {path:"06_strings/14_palindrome",title:"Проверка на палиндром (экзамен)",level:"medium"},
+    {path:"06_strings/15_trim_whitespace_extra",title:"Удаление пробелов и табуляций",level:"medium"},
+    {path:"06_strings/16_identificator",title:"Идентификатор",level:"medium"},
 
     {path:"07_matrices/01_matrix_addition_extra",title:"Сложение квадратных матриц",level:"medium"},
     {path:"07_matrices/02_matrix_multiplication",title:"Умножение квадратных матриц",level:"hard"},
@@ -709,20 +709,20 @@ bash run_tests.sh</pre>
     {path:"07_matrices/05_spiral_clockwise",title:"Спираль по часовой стрелке",level:"hard"},
     {path:"07_matrices/06_spiral_squares",title:"Квадраты чисел по спирали",level:"hard"},
 
-    {path:"08_structures/01_students_above_average",title:"Студенты выше среднего балла",level:"hard"},
-    {path:"08_structures/02_students_sort_by_rate",title:"Сортировка студентов по баллам",level:"hard"},
-    {path:"08_structures/03_hollywood_stars",title:"Голливудские звёзды",level:"hard"},
-    {path:"08_structures/06_one_student_extra",title:"Один студент",level:"medium"},
-    {path:"08_structures/07_sum_rates_extra",title:"Сумма баллов",level:"medium"},
-    {path:"08_structures/08_vector_lengths",title:"Длины векторов",level:"medium"},
+    {path:"08_structures/01_one_student_extra",title:"Один студент",level:"medium"},
+    {path:"08_structures/02_sum_rates_extra",title:"Сумма баллов",level:"medium"},
+    {path:"08_structures/03_students_above_average",title:"Студенты выше среднего балла",level:"hard"},
+    {path:"08_structures/04_students_sort_by_rate",title:"Сортировка студентов по баллам",level:"hard"},
+    {path:"08_structures/05_hollywood_stars",title:"Голливудские звёзды",level:"hard"},
+    {path:"08_structures/06_vector_lengths",title:"Длины векторов",level:"medium"},
 
-    {path:"09_text_files/02_phone_book",title:"Телефонная книга",level:"hard"},
-    {path:"09_text_files/05_file_calculator",title:"Калькулятор из файла",level:"hard"},
-    {path:"09_text_files/06_caesar_cipher_for_file",title:"Шифр Цезаря для файла",level:"hard"},
-    {path:"09_text_files/06_caesar_cipher_for_file_extra",title:"Шифр Цезаря для файла (доп.)",level:"medium"},
-    {path:"09_text_files/07_print_file_extra",title:"Вывод файла",level:"medium"},
-    {path:"09_text_files/08_sum_numbers_file_extra",title:"Сумма чисел из файла",level:"medium"},
-    {path:"09_text_files/09_count_sentences",title:"Подсчёт предложений",level:"hard"}
+    {path:"09_text_files/01_print_file_extra",title:"Вывод файла",level:"medium"},
+    {path:"09_text_files/04_sum_numbers_file_extra",title:"Сумма чисел из файла",level:"medium"},
+    {path:"09_text_files/06_count_sentences",title:"Подсчёт предложений",level:"hard"},
+    {path:"09_text_files/07_caesar_cipher",title:"Шифр Цезаря для файла",level:"hard"},
+    {path:"09_text_files/08_caesar_cipher_for_file_extra",title:"Шифр Цезаря для файла (доп.)",level:"medium"},
+    {path:"09_text_files/09_phone_book",title:"Телефонная книга",level:"hard"},
+    {path:"09_text_files/10_file_calculator",title:"Калькулятор из файла",level:"hard"}
   ];
 
   const LEVELS = [
@@ -731,11 +731,8 @@ bash run_tests.sh</pre>
   ];
   const LEVEL_DIR = Object.fromEntries(LEVELS.map(level => [level.id, level.dir]));
 
-  const PATH_ALIASES = {
-    "03_expressions/05_boolean_expression":"03_expressions/05_boolean_expressio",
-    "05_dynamic_arrays/03_remove_duplicates":"05_dynamic_arrays/03_remove_duplicate",
-    "07_matrices/06_spiral_squares":"07_matrices/06_spiral_square"
-  };
+  // Все пути в TASKS совпадают с папками tasks/, поэтому псевдонимы не нужны.
+  const PATH_ALIASES = {};
 
   const FILE_BUTTONS = [
     {key:"readme", filename:"README.md", label:"📋 Условие", tabTitle:"Условие"},
