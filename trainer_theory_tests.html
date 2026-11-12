@@ -449,6 +449,81 @@
             gap:14px;
         }
 
+        .exam-note {
+            margin-top:14px;
+            padding:9px 13px;
+
+            border-radius:11px;
+
+            background:
+                    color-mix(
+                            in srgb,
+                            var(--yellow) 12%,
+                            transparent
+                    );
+
+            border:1px solid
+                    color-mix(
+                            in srgb,
+                            var(--yellow) 30%,
+                            transparent
+                    );
+
+            color:var(--yellow);
+
+            font-size:13px;
+            line-height:1.45;
+
+            display:inline-block;
+        }
+
+        .tabs {
+            display:flex;
+            flex-wrap:wrap;
+            gap:8px;
+
+            margin-bottom:12px;
+        }
+
+        .tab {
+            padding:10px 16px;
+
+            border-radius:12px;
+            border:1px solid var(--border);
+            background:var(--panel);
+
+            color:var(--muted);
+
+            font-size:13.5px;
+            font-weight:600;
+
+            cursor:pointer;
+        }
+
+        .tab:hover {
+            border-color:var(--border-hover);
+            color:var(--text);
+        }
+
+        .tab.active {
+            background:var(--accent-soft);
+            border-color:var(--accent);
+            color:var(--accent);
+        }
+
+        .menu-hint {
+            margin:-4px 0 14px;
+
+            color:var(--muted);
+
+            font-size:13px;
+            line-height:1.45;
+        }
+
+        .menu-hint:empty {
+            display:none;
+        }
+
         .topic {
             width:100%;
             padding:20px;
@@ -1231,7 +1306,27 @@
                 почему правильный вариант именно такой.
             </p>
 
+            <div class="exam-note">
+                ⚠ На экзамене задания почти такие же,
+                но формулировки там куда запутаннее.
+            </div>
+
         </div>
+
+
+        <div class="tabs">
+
+            <button class="tab active" id="tabActual">
+                🔥 Актуальные
+            </button>
+
+            <button class="tab" id="tabArchive">
+                📦 Неактуальные
+            </button>
+
+        </div>
+
+        <div class="menu-hint" id="menuHint"></div>
 
 
         <div class="grid" id="topicGrid"></div>
@@ -1264,10 +1359,9 @@
                 <label class="chk">
                     <input
                             type="checkbox"
-                            id="rndWidum"
-                            checked
+                            id="rndArchive"
                     >
-                    Включить вопросы с widum.ru/s21/
+                    Включить вопросы из неактуальных разделов
                 </label>
 
                 <button
@@ -2702,7 +2796,7 @@
         widum: {
             icon:"🎓",
             name:"Экзаменационные",
-            note:"Возможно, будут на экзамене",
+            note:"Будут на экзамене",
             src:true,
             q:[
 
@@ -3005,6 +3099,7 @@
         exam: {
             icon:"🎯",
             name:"100% экзамен",
+            note:"Формулировки на экзамене запутаннее",
             q:[
 
                 {
@@ -3401,13 +3496,22 @@
        MENU
        ============================================================ */
 
-    function buildMenu() {
+    const ACTUAL_KEYS = ["exam", "widum"];
+
+    const ARCHIVE_KEYS =
+        Object.keys(BANK).filter(
+            k => !ACTUAL_KEYS.includes(k)
+        );
+
+    let menuTab = "actual";
+
+    function buildMenu(keys) {
         const grid =
             $("topicGrid");
 
         grid.replaceChildren();
 
-        for (const key in BANK) {
+        for (const key of keys) {
 
             const t =
                 BANK[key];
@@ -3485,6 +3589,51 @@
     }
 
 
+    function renderMenu() {
+        const archive =
+            menuTab === "archive";
+
+        buildMenu(
+            archive
+                ? ARCHIVE_KEYS
+                : ACTUAL_KEYS
+        );
+
+        $("tabActual").classList.toggle(
+            "active",
+            !archive
+        );
+
+        $("tabArchive").classList.toggle(
+            "active",
+            archive
+        );
+
+        $("menuHint").textContent =
+            archive
+                ? "Эти разделы на экзамене не нужны — оставлены для истории."
+                : "";
+    }
+
+
+    $("tabActual").addEventListener(
+        "click",
+        () => {
+            menuTab = "actual";
+            renderMenu();
+        }
+    );
+
+
+    $("tabArchive").addEventListener(
+        "click",
+        () => {
+            menuTab = "archive";
+            renderMenu();
+        }
+    );
+
+
     $("rndStart").addEventListener(
         "click",
         () => {
@@ -3500,19 +3649,19 @@
                     )
                 );
 
-            const useW =
-                $("rndWidum").checked;
+            const useArchive =
+                $("rndArchive").checked;
 
             const pools = [];
 
-            for (const key in BANK) {
+            const keys =
+                ACTUAL_KEYS.concat(
+                    useArchive
+                        ? ARCHIVE_KEYS
+                        : []
+                );
 
-                if (
-                    key === "widum" &&
-                    !useW
-                ) {
-                    continue;
-                }
+            for (const key of keys) {
 
                 pools.push(
                     BANK[key].q.map(
@@ -4269,7 +4418,7 @@
        INIT
        ============================================================ */
 
-    buildMenu();
+    renderMenu();
 
 </script>
 
